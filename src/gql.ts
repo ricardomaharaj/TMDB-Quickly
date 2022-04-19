@@ -337,65 +337,30 @@ interface Person {
     adult?: boolean
     imdb_id?: string
     homepage?: string
-    movie_credits?: {
-        id?: number
+    combined_credits?: {
         cast?: [{
-            character?: string
-            credit_id?: string
-            release_date?: string
-            vote_count?: number
-            video?: boolean
-            adult?: boolean
-            vote_average?: number
-            title?: string
-            genre_ids?: number[]
+            id?: number
             original_language?: string
-            original_title?: string
-            popularity?: number
-            id?: number
-            backdrop_path?: string
-            overview?: string
-            poster_path?: string
-        }]
-        crew?: [{
-            id?: number
-            department?: string
-            original_language?: string
-            original_title?: string
-            job?: string
-            overview?: string
-            vote_count?: number
-            video?: boolean
-            poster_path?: string
-            backdrop_path?: string
-            title?: string
-            popularity?: number
-            genre_ids?: number[]
-            vote_average?: number
-            adult?: boolean
-            release_date?: string
-            credit_id?: string
-        }]
-    }
-    tv_credits?: {
-        id?: number
-        cast?: [{
-            credit_id?: string
-            original_name?: string
-            id?: number
-            genre_ids?: number[]
-            character?: string
-            name?: string
-            poster_path?: string
-            vote_count?: number
-            vote_average?: number
-            popularity?: number
             episode_count?: number
-            original_language?: string
-            first_air_date?: string
-            backdrop_path?: string
             overview?: string
-            origin_country?: string[]
+            origin_country?: [string]
+            original_name?: string
+            genre_ids?: [number]
+            name?: string
+            media_type?: string
+            poster_path?: string
+            first_air_date?: string
+            vote_average?: number
+            vote_count?: number
+            character?: string
+            backdrop_path?: string
+            popularity?: number
+            credit_id?: string
+            original_title?: string
+            video?: boolean
+            release_date?: string
+            title?: string
+            adult?: boolean
         }]
         crew?: [{
             id?: number
@@ -404,17 +369,23 @@ interface Person {
             episode_count?: number
             job?: string
             overview?: string
-            origin_country?: string[]
+            origin_country?: [string]
             original_name?: string
-            genre_ids?: number[]
-            name?: string
-            first_air_date?: string
-            backdrop_path?: string
-            popularity?: number
             vote_count?: number
-            vote_average?: number
-            poster_path?: string
+            name?: string
+            media_type?: string
+            popularity?: number
             credit_id?: string
+            backdrop_path?: string
+            first_air_date?: string
+            vote_average?: number
+            genre_ids?: [number]
+            poster_path?: string
+            original_title?: string
+            video?: boolean
+            title?: string
+            adult?: boolean
+            release_date?: string
         }]
     }
     images?: {
