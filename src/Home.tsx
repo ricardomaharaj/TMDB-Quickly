@@ -1,24 +1,21 @@
 import { useEffect } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { IMGURL } from './consts'
+import { IMGURL, renderStars, STAR } from './consts'
 import { MovieResult, PersonResult, ShowResult, useFindQuery } from './gql'
 import { Spinner } from './Spinner'
 
 enum TAB {
     MOVIES = 'MOVIES',
-    TV = 'TV SHOWS',
-    PEOPLE = 'PEOPLE'
+    SHOWS = 'SHOWS',
+    PEOPLE = 'PEOPLE',
 }
 
 export function Home() {
-
     let [params, setParams] = useSearchParams()
 
-    let query = params.get('query') || ''
-    let page = params.get('page') || '1'
     let tab = params.get('tab') || TAB.MOVIES
-
-    let pageInt = parseInt(page)
+    let page = params.get('page') || '1'
+    let query = params.get('query') || ''
 
     useEffect(() => {
         if (query) {
@@ -27,23 +24,19 @@ export function Home() {
     }, [])
 
     return <>
-        <div className='row'>
-            <input id='query' placeholder='Search' type='text' onKeyDown={(e: any) => { if (e.key === 'Enter') { setParams({ tab, page: '1', query: e.target.value }) } }} />
+        <div className='flex flex-row'>
+            <input
+                className='bg-slate-800 text-center text-xl w-full p-2 rounded-xl m-2'
+                id='query'
+                placeholder='SEARCH'
+                type='text'
+                onKeyDown={(e: any) => { if (e.key === 'Enter') { setParams({ tab, page: '1', query: e.target.value }) } }} />
         </div>
-        <div className='row'>
-            <div className={`${tab == TAB.MOVIES && 'selected'}`} onClick={() => setParams({ tab: TAB.MOVIES, query, page })}> MOVIES </div>
-            <div>|</div>
-            <div className={`${tab == TAB.TV && 'selected'}`} onClick={() => setParams({ tab: TAB.TV, query, page })}> TV SHOWS </div>
-            <div>|</div>
-            <div className={`${tab == TAB.PEOPLE && 'selected'}`} onClick={() => setParams({ tab: TAB.PEOPLE, query, page })}> PEOPLE </div>
-            {query && <>
-                <div>|</div>
-                <div onClick={() => { if (pageInt > 1) { setParams({ query, tab, page: `${pageInt - 1}` }) } }}> &lt; </div>
-                <div> PAGE {page} </div>
-                <div onClick={() => { setParams({ query, tab, page: `${pageInt + 1}` }) }}> &gt; </div>
-            </>}
+        <div className='flex flex-row m-2 justify-evenly xl:justify-start xl:space-x-2'>
+            <button className={`py-1 px-3 rounded-xl ${tab == TAB.MOVIES ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setParams({ tab: TAB.MOVIES, query, page })}> MOVIES </button>
+            <button className={`py-1 px-3 rounded-xl ${tab == TAB.SHOWS ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setParams({ tab: TAB.SHOWS, query, page })}> SHOWS </button>
+            <button className={`py-1 px-3 rounded-xl ${tab == TAB.PEOPLE ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setParams({ tab: TAB.PEOPLE, query, page })}> PEOPLE </button>
         </div>
-        <hr />
         <SearchResults />
     </>
 }
@@ -56,8 +49,15 @@ function SearchResults() {
     let page = params.get('page') || '1'
     let tab = params.get('tab') || TAB.MOVIES
 
+    let pageInt = parseInt(page) || 1
+
+    let nextPage = () => { setParams({ tab, query, page: `${pageInt + 1}` }) }
+    let lastPage = () => { setParams({ tab, query, page: `${pageInt - 1}` }) }
+
     let [res, re] = useFindQuery({ query, page })
     let { data, fetching, error } = res
+
+    let maxPages = data?.find?.total_pages
 
     let results = data?.find?.results
 
@@ -68,63 +68,47 @@ function SearchResults() {
     if (fetching) return <Spinner />
     if (error) return <> {JSON.stringify(error)} </>
     if (results) return <>
-        {tab == TAB.MOVIES && <>
-            {movies.map((x, i) => {
-                return <div className='row' key={i}>
-                    {x.poster_path ? <>
-                        <Link to={`/movie/${x.id}`} className='col'>
-                            <img src={IMGURL + x.poster_path} alt='' />
-                        </Link>
-                        <div className='col'>
-                            <div> {x.title} | {x.release_date?.substring(0, 4)} </div>
-                            <div> {x.overview} </div>
+        <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 m-2 gap-2'>
+            {tab == TAB.MOVIES && <>
+                {movies.map((x, i) => {
+                    return <Link to={`/movie/${x.id}`} key={i} className='flex flex-row'>
+                        {x.poster_path && <img className='w-32 rounded-xl mr-2' src={IMGURL + x.poster_path} alt='' />}
+                        <div className='space-y-1'>
+                            <div> {new Date(x.release_date!).getFullYear()} </div>
+                            <div> {x.title} </div>
+                            {x.vote_average! > 0 && <div className='flex flex-row space-x-1'>{renderStars(x.vote_average)}</div>}
                         </div>
-                    </> : <>
-                        <Link to={`movie/${x.id}`} className='col'>
-                            <div> {x.title} | {x.release_date} </div>
-                            <div> {x.overview} </div>
-                        </Link>
-                    </>}
-                </div>
-            })}
-        </>}
-        {tab == TAB.TV && <>
-            {shows.map((x, i) => {
-                return <div className='row' key={i}>
-                    {x.poster_path ? <>
-                        <Link to={`/tv/${x.id}`} className='col'>
-                            <img src={IMGURL + x.poster_path} alt='' />
-                        </Link>
-                        <div className='col'>
-                            <div> {x.name} | {x.first_air_date?.substring(0, 4)} </div>
-                            <div> {x.overview} </div>
-                        </div>
-                    </> : <>
-                        <Link to={`/tv/${x.id}`} className='col'>
-                            <div> {x.name} | {x.first_air_date} </div>
-                            <div> {x.overview} </div>
-                        </Link>
-                    </>}
-                </div>
-            })}
-        </>}
-        {tab == TAB.PEOPLE && <>
-            {people.map((x, i) => {
-                return <div className='row' key={i}>
-                    {x.profile_path ? <>
-                        <Link to={`/person/${x.id}`} className='col' >
-                            <img src={IMGURL + x.profile_path} alt='' />
-                        </Link>
-                        <div className='col'>
+                    </Link>
+                })}
+            </>}
+            {tab == TAB.SHOWS && <>
+                {shows.map((x, i) => {
+                    return <Link to={`/tv/${x.id}`} key={i} className='flex flex-row'>
+                        {x.poster_path && <img className='w-32 rounded-xl mr-2' src={IMGURL + x.poster_path} alt='' />}
+                        <div className='space-y-1'>
+                            <div> {new Date(x.first_air_date!).getFullYear()} </div>
                             <div> {x.name} </div>
+                            {x.vote_average! > 0 && <div className='flex flex-row space-x-1'>{renderStars(x.vote_average)}</div>}
                         </div>
-                    </> : <>
-                        <Link to={`/person/${x.id}`} className='col' >
-                            <div> {x.name} </div>
-                        </Link>
-                    </>}
-                </div>
-            })}
+                    </Link>
+                })}
+            </>}
+            {tab == TAB.PEOPLE && <>
+                {people.map((x, i) => {
+                    return <Link to={`/person/${x.id}`} key={i} className='flex flex-row'>
+                        {x.profile_path && <img className='w-32 rounded-xl mr-2' src={IMGURL + x.profile_path} alt='' />}
+                        <div className='mt-1'> {x.name} </div>
+                    </Link>
+                })}
+            </>}
+
+        </div>
+        {query && <>
+            <div className='flex flex-row m-2 justify-evenly xl:justify-start xl:space-x-2'>
+                <button className='bg-slate-800 px-4 py-1 rounded-xl' disabled={pageInt <= 1} onClick={lastPage}> BACK </button>
+                <div    className='bg-slate-800 px-4 py-1 rounded-xl' > {pageInt} </div>
+                <button className='bg-slate-800 px-4 py-1 rounded-xl' disabled={pageInt >= maxPages!} onClick={nextPage}> NEXT </button>
+            </div>
         </>}
     </>
     return <></>

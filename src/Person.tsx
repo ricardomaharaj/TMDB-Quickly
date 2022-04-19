@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
-import { IMGURL, GENDER, HD_IMGURL, uniqueOnly } from './consts'
+import { IMGURL, GENDER, uniqueOnly } from './consts'
 import { usePersonQuery } from './gql'
 import { Spinner } from './Spinner'
 
@@ -214,7 +214,7 @@ export function Person() {
             <div className='row scroll'>
                 {person.images?.profiles
                     ?.map((x, i) => {
-                        return <img className='poster' src={HD_IMGURL + x.file_path} alt='' key={i} />
+                        return <img className='poster' src={IMGURL + x.file_path} alt='' key={i} />
                     })}
             </div>
         </>}
