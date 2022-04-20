@@ -93,7 +93,7 @@ export function Person() {
                     })
                     .map((x, i) => {
                         let date = x.release_date || x.first_air_date
-                        return <Link to={`/${castFilter}/${x.id}`} key={i} className={Card}>
+                        return <Link to={`/${x.media_type}/${x.id}`} key={i} className={Card}>
                             {x.poster_path && <img className={CardImg} src={IMGURL + x.poster_path} alt='' />}
                             <div className={CardTextBox}>
                                 {date ? <div> {new Date(date).getFullYear()} </div> : <div> TBD </div>}
@@ -132,7 +132,7 @@ export function Person() {
                     })
                     .map((x, i) => {
                         let date = x.release_date || x.first_air_date
-                        return <Link to={`/${castFilter}/${x.id}`} key={i} className={Card}>
+                        return <Link to={`/${x.media_type}/${x.id}`} key={i} className={Card}>
                             {x.poster_path && <img className={CardImg} src={IMGURL + x.poster_path} alt='' />}
                             <div className={CardTextBox}>
                                 {date ? <div> {new Date(date).getFullYear()} </div> : <div> TBD </div>}
