@@ -86,13 +86,16 @@ export function Movie() {
             <div className={Bubble}>
                 <div> Status: {movie.status} </div>
                 <div> Runtime: {movie.runtime} Minutes </div>
-                {movie.budget && <div> Budget: ${movie.budget.toLocaleString()} </div>}
-                {movie.revenue && <div> Revenue: ${movie.revenue.toLocaleString()} </div>}
+                {movie.budget! > 0 && <div> Budget: ${movie.budget?.toLocaleString()} </div>}
+                {movie.revenue! > 0 && <div> Revenue: ${movie.revenue?.toLocaleString()} </div>}
                 <div> Original Language: {movie.original_language} </div>
                 <div> Original Title: {movie.original_title} </div>
                 <div> <a className='underline' target='_blank' rel='noopener noreferrer' href={`https://www.imdb.com/title/${movie.imdb_id}`}>IMDB</a> ID: {movie.imdb_id} </div>
                 <div> <a className='underline' target='_blank' rel='noopener noreferrer' href={`https://www.themoviedb.org/movie/${movie.id}`}>TMDB</a> ID: {movie.id} </div>
                 <div> Homepage: <a className='underline' href={movie.homepage}> {movie.homepage} </a> </div>
+            </div>
+            <div className={ButtonRow}>
+                {movie.genres?.map((x, i) => { return <div className={Bubble} key={i}> {x.name} </div> })}
             </div>
             <div className={ButtonRow}>
                 {releaseDates?.map((x, i) => {
