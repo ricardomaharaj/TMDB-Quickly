@@ -1,9 +1,23 @@
 import { useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
-import { IMGURL, ButtonRow, Button, SubText, Grid123, Bubble, Grid234, SingleRow, Select, Card, CardImg, CardTextBox } from './consts'
 import { usePersonQuery } from './gql'
 import { Spinner } from './Spinner'
 import { renderStars } from './util'
+import {
+    IMGURL,
+    ButtonRow,
+    Button,
+    SubText,
+    Grid123,
+    Bubble,
+    Grid234,
+    SingleRow,
+    Select,
+    Card,
+    CardImg,
+    CardTextBox,
+    Error
+} from './consts'
 
 export function Person() {
 
@@ -48,7 +62,7 @@ export function Person() {
     }
 
     if (fetching) return <Spinner />
-    if (error) return <> {JSON.stringify(error)} </>
+    if (error) return <div className={Error}> {error.message} </div>
     if (person) return <>
         <div className={Card}>
             {person.profile_path && <img className={CardImg} src={IMGURL + person.profile_path} alt='' />}

@@ -1,8 +1,25 @@
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { Bubble, Button, ButtonRow, Card, CardImg, CardTextBox, Grid123, Grid234, IMGURL, Select, SingleRow, SubText, VideoCard, VideoCardImg, VideoCardTextBox } from './consts'
 import { useSeasonQuery } from './gql'
 import { Spinner } from './Spinner'
+import {
+    Bubble,
+    Button,
+    ButtonRow,
+    Card,
+    CardImg,
+    CardTextBox,
+    Error,
+    Grid123,
+    Grid234,
+    IMGURL,
+    Select,
+    SingleRow,
+    SubText,
+    VideoCard,
+    VideoCardImg,
+    VideoCardTextBox
+} from './consts'
 
 export function Season() {
 
@@ -45,7 +62,7 @@ export function Season() {
     videoFilterOpts.splice(0, 0, 'ALL')
 
     if (fetching) return <Spinner />
-    if (error) return <> {JSON.stringify(error)} </>
+    if (error) return <div className={Error}> {error.message} </div>
     if (season) return <>
         <div className={Card}>
             {season.images && <img className={CardImg} src={IMGURL + season.poster_path} alt='' />}

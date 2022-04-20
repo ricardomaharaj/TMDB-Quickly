@@ -1,9 +1,26 @@
 import { useState } from 'react'
 import { useParams, Link, useSearchParams } from 'react-router-dom'
 import { useShowQuery } from './gql'
-import { Bubble, Button, ButtonRow, Card, CardImg, CardTextBox, Grid123, Grid234, IMGURL, Select, SingleRow, SubText, VideoCard, VideoCardImg, VideoCardTextBox } from './consts'
 import { Spinner } from './Spinner'
 import { renderStars } from './util'
+import {
+    Bubble,
+    Button,
+    ButtonRow,
+    Card,
+    CardImg,
+    CardTextBox,
+    Error,
+    Grid123,
+    Grid234,
+    IMGURL,
+    Select,
+    SingleRow,
+    SubText,
+    VideoCard,
+    VideoCardImg,
+    VideoCardTextBox
+} from './consts'
 
 export function Show() {
 
@@ -60,7 +77,7 @@ export function Show() {
     videoFilterOpts.splice(0, 0, 'ALL')
 
     if (fetching) return <Spinner />
-    if (error) return <> {JSON.stringify(error)} </>
+    if (error) return <div className={Error}> {error.message} </div>
     if (show) return <>
         <div className={Card}>
             {show.poster_path && <img className={CardImg} src={IMGURL + show.poster_path} alt='' />}

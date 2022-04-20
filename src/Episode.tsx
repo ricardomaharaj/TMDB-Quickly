@@ -1,8 +1,21 @@
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { Bubble, Button, ButtonRow, Card, CardImg, CardTextBox, Grid123, IMGURL, Select, SingleRow, SubText } from './consts'
 import { useEpisodeQuery } from './gql'
 import { Spinner } from './Spinner'
+import {
+    Bubble,
+    Button,
+    ButtonRow,
+    Card,
+    CardImg,
+    CardTextBox,
+    Error,
+    Grid123,
+    IMGURL,
+    Select,
+    SingleRow,
+    SubText
+} from './consts'
 
 export function Episode() {
 
@@ -31,7 +44,7 @@ export function Episode() {
     jobs.splice(0, 0, 'ALL')
 
     if (fetching) return <Spinner />
-    if (error) return <> {JSON.stringify(error)} </>
+    if (error) return <div className={Error}> {error.message} </div>
     if (episode) return <>
         <div className='row'>
             <img className='rounded-xl' src={IMGURL + episode.still_path} alt='' />

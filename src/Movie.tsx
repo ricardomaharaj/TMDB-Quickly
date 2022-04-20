@@ -1,9 +1,27 @@
 import { useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
-import { Button, ButtonRow, IMGURL, Grid123, RELEASE_TYPES, Select, Grid234, Bubble, SubText, SingleRow, Card, CardImg, CardTextBox, VideoCard, VideoCardImg, VideoCardTextBox } from './consts'
 import { useMovieQuery } from './gql'
 import { Spinner } from './Spinner'
 import { renderStars } from './util'
+import {
+    Button,
+    ButtonRow,
+    IMGURL,
+    Grid123,
+    RELEASE_TYPES,
+    Select,
+    Grid234,
+    Bubble,
+    SubText,
+    SingleRow,
+    Card,
+    CardImg,
+    CardTextBox,
+    VideoCard,
+    VideoCardImg,
+    VideoCardTextBox,
+    Error
+} from './consts'
 
 export function Movie() {
 
@@ -33,7 +51,7 @@ export function Movie() {
 
     let { id } = useParams()
 
-    let { '0': res } = useMovieQuery({ id })
+    let [res,] = useMovieQuery({ id })
     let { data, fetching, error } = res
 
     let movie = data?.movie
@@ -63,7 +81,7 @@ export function Movie() {
     videoFilterOpts.splice(0, 0, 'ALL')
 
     if (fetching) return <Spinner />
-    if (error) return <> {JSON.stringify(error)} </>
+    if (error) return <div className={Error}> {error.message} </div>
     if (movie) return <>
         <div className={Card}>
             {movie.poster_path && <img className={CardImg} src={IMGURL + movie.poster_path} alt='' />}

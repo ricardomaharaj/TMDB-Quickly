@@ -1,9 +1,19 @@
 import { useEffect } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { MovieResult, PersonResult, ShowResult, useFindQuery } from './gql'
-import { Button, ButtonRow, Card, CardImg, CardSubText, CardTextBox, Grid123, IMGURL } from './consts'
 import { Spinner } from './Spinner'
 import { renderStars } from './util'
+import {
+    Button,
+    ButtonRow,
+    Card,
+    CardImg,
+    CardSubText,
+    CardTextBox,
+    Error,
+    Grid123,
+    IMGURL
+} from './consts'
 
 enum TAB {
     MOVIES = 'MOVIES',
@@ -55,7 +65,7 @@ function SearchResults() {
     let nextPage = () => { setParams({ tab, query, page: `${pageInt + 1}` }) }
     let lastPage = () => { setParams({ tab, query, page: `${pageInt - 1}` }) }
 
-    let { "0": res } = useFindQuery({ query, page })
+    let [res,] = useFindQuery({ query, page })
     let { data, fetching, error } = res
 
     let maxPages = data?.find?.total_pages
@@ -67,7 +77,7 @@ function SearchResults() {
     let people: PersonResult[] = results?.filter(x => x.media_type === 'person')!
 
     if (fetching) return <Spinner />
-    if (error) return <> {JSON.stringify(error)} </>
+    if (error) return <div className={Error}> {error.message} </div>
     if (results) return <>
         <div className={Grid123}>
             {tab === TAB.MOVIES && <>
