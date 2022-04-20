@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { MovieResult, PersonResult, ShowResult, useFindQuery } from './gql'
-import { Button, ButtonRow, Grid123, IMGURL, Portrait, Poster } from './consts'
+import { Button, ButtonRow, Card, CardImg, CardSubText, CardTextBox, Grid123, IMGURL } from './consts'
 import { Spinner } from './Spinner'
 import { renderStars } from './util'
 
@@ -72,33 +72,39 @@ function SearchResults() {
         <div className={Grid123}>
             {tab === TAB.MOVIES && <>
                 {movies.map((x, i) => {
-                    return <Link to={`/movie/${x.id}`} key={i} className='row'>
-                        {x.poster_path && <img className={Poster} src={IMGURL + x.poster_path} alt='' />}
-                        <div className='space-y-1'>
+                    return <Link to={`/movie/${x.id}`} key={i} className={Card}>
+                        {x.poster_path && <img className={CardImg} src={IMGURL + x.poster_path} alt='' />}
+                        <div className={CardTextBox}>
                             <div> {new Date(x.release_date!).getFullYear()} </div>
                             <div> {x.title} </div>
-                            {x.vote_average! > 0 && <div className='row space-x-1'>{renderStars(x.vote_average)}</div>}
+                            {x.vote_average! > 0 && <div> {renderStars(x.vote_average)} </div>}
+                            <div className={CardSubText}>
+                                {x.overview?.length! > 100 ? x.overview?.substring(0, 97).padEnd(100, '.') : x.overview}
+                            </div>
                         </div>
                     </Link>
                 })}
             </>}
             {tab === TAB.SHOWS && <>
                 {shows.map((x, i) => {
-                    return <Link to={`/tv/${x.id}`} key={i} className='row'>
-                        {x.poster_path && <img className={Poster} src={IMGURL + x.poster_path} alt='' />}
-                        <div className='space-y-1'>
+                    return <Link to={`/tv/${x.id}`} key={i} className={Card}>
+                        {x.poster_path && <img className={CardImg} src={IMGURL + x.poster_path} alt='' />}
+                        <div className={CardTextBox}>
                             <div> {new Date(x.first_air_date!).getFullYear()} </div>
                             <div> {x.name} </div>
-                            {x.vote_average! > 0 && <div className='row space-x-1'>{renderStars(x.vote_average)}</div>}
+                            {x.vote_average! > 0 && <div> {renderStars(x.vote_average)} </div>}
+                            <div className={CardSubText}>
+                                {x.overview?.length! > 100 ? x.overview?.substring(0, 97).padEnd(100, '.') : x.overview}
+                            </div>
                         </div>
                     </Link>
                 })}
             </>}
             {tab === TAB.PEOPLE && <>
                 {people.map((x, i) => {
-                    return <Link to={`/person/${x.id}`} key={i} className='row'>
-                        {x.profile_path && <img className={Portrait} src={IMGURL + x.profile_path} alt='' />}
-                        <div className='mt-1'> {x.name} </div>
+                    return <Link to={`/person/${x.id}`} key={i} className={Card}>
+                        {x.profile_path && <img className={CardImg} src={IMGURL + x.profile_path} alt='' />}
+                        <div className={CardTextBox}> {x.name} </div>
                     </Link>
                 })}
             </>}

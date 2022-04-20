@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { Bubble, Button, ButtonRow, Grid123, IMGURL, Portrait, Select, SingleRow, SubText } from './consts'
+import { Bubble, Button, ButtonRow, Card, CardImg, CardTextBox, Grid123, IMGURL, Select, SingleRow, SubText } from './consts'
 import { useEpisodeQuery } from './gql'
 import { Spinner } from './Spinner'
 
@@ -33,10 +33,10 @@ export function Episode() {
     if (fetching) return <Spinner />
     if (error) return <> {JSON.stringify(error)} </>
     if (episode) return <>
-        <div className='row '>
+        <div className='row'>
             <img className='rounded-xl' src={IMGURL + episode.still_path} alt='' />
         </div>
-        <div className='col '>
+        <div className='col'>
             <div className={Bubble}>
                 S{episode.season_number?.toString().padStart(2, '0')}E{episode.episode_number?.toString().padStart(2, '0')} | {episode.name} | {new Date(episode.air_date!).toDateString().substring(4)}
             </div>
@@ -66,9 +66,9 @@ export function Episode() {
                         else return false
                     })
                     .map((x, i) => {
-                        return <Link to={`/person/${x.id}`} className='row' key={i} >
-                            {x.profile_path && <img className={Portrait} src={IMGURL + x.profile_path!} alt='' />}
-                            <div>
+                        return <Link to={`/person/${x.id}`} className={Card} key={i} >
+                            {x.profile_path && <img className={CardImg} src={IMGURL + x.profile_path!} alt='' />}
+                            <div className={CardTextBox}>
                                 <div> {x.name} </div>
                                 <div className={SubText}> {x.job} </div>
                             </div>
@@ -79,9 +79,9 @@ export function Episode() {
         {tab === TAB.GUEST && <>
             <div className={Grid123}>
                 {episode.guest_stars?.map((x, i) => {
-                    return <Link to={`/person/${x.id}`} className='row' key={i} >
-                        {x.profile_path && <img className={Portrait} src={IMGURL + x.profile_path!} alt='' />}
-                        <div>
+                    return <Link to={`/person/${x.id}`} className={Card} key={i} >
+                        {x.profile_path && <img className={CardImg} src={IMGURL + x.profile_path!} alt='' />}
+                        <div className={CardTextBox}>
                             <div> {x.name} </div>
                             <div className={SubText}> {x.character} </div>
                         </div>

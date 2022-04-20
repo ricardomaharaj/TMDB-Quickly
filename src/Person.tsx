@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
-import { IMGURL, ButtonRow, Button, Portrait, Poster, SubText, Grid123, Bubble, Grid234, SingleRow, Select } from './consts'
+import { IMGURL, ButtonRow, Button, SubText, Grid123, Bubble, Grid234, SingleRow, Select, Card, CardImg, CardTextBox } from './consts'
 import { usePersonQuery } from './gql'
 import { Spinner } from './Spinner'
 import { renderStars } from './util'
@@ -50,11 +50,9 @@ export function Person() {
     if (fetching) return <Spinner />
     if (error) return <> {JSON.stringify(error)} </>
     if (person) return <>
-        <div className='row'>
-            <div className='col'>
-                {person.profile_path && <img className={Portrait} src={IMGURL + person.profile_path} alt='' />}
-            </div>
-            <div className='col'>
+        <div className={Card}>
+            {person.profile_path && <img className={CardImg} src={IMGURL + person.profile_path} alt='' />}
+            <div className={CardTextBox}>
                 <div> {person.name} </div>
                 <div> Born: {new Date(person.birthday!).toDateString().substring(4)} </div>
                 {person.deathday && <> Died: {new Date(person.deathday).toDateString().substring(4)} </>}
@@ -95,9 +93,9 @@ export function Person() {
                     })
                     .map((x, i) => {
                         let date = x.release_date || x.first_air_date
-                        return <Link to={`/${castFilter}/${x.id}`} key={i} className='row'>
-                            {x.poster_path && <img className={Poster} src={IMGURL + x.poster_path} alt='' />}
-                            <div>
+                        return <Link to={`/${castFilter}/${x.id}`} key={i} className={Card}>
+                            {x.poster_path && <img className={CardImg} src={IMGURL + x.poster_path} alt='' />}
+                            <div className={CardTextBox}>
                                 {date ? <div> {new Date(date).getFullYear()} </div> : <div> TBD </div>}
                                 <div> {x.name || x.title} </div>
                                 <div className={SubText}> {x.character} </div>
@@ -134,9 +132,9 @@ export function Person() {
                     })
                     .map((x, i) => {
                         let date = x.release_date || x.first_air_date
-                        return <Link to={`/${castFilter}/${x.id}`} key={i} className='row'>
-                            {x.poster_path && <img className={Poster} src={IMGURL + x.poster_path} alt='' />}
-                            <div>
+                        return <Link to={`/${castFilter}/${x.id}`} key={i} className={Card}>
+                            {x.poster_path && <img className={CardImg} src={IMGURL + x.poster_path} alt='' />}
+                            <div className={CardTextBox}>
                                 {date ? <div> {new Date(date).getFullYear()} </div> : <div> TBD </div>}
                                 <div> {x.name || x.title} </div>
                                 <div className={SubText}> {x.job} </div>

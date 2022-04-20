@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
-import { Button, ButtonRow, IMGURL, Grid123, RELEASE_TYPES, Select, Grid234, Poster, Portrait, Bubble, SubText } from './consts'
+import { Button, ButtonRow, IMGURL, Grid123, RELEASE_TYPES, Select, Grid234, Bubble, SubText, SingleRow, Card, CardImg, CardTextBox, VideoCard, VideoCardImg, VideoCardTextBox } from './consts'
 import { useMovieQuery } from './gql'
 import { Spinner } from './Spinner'
 import { renderStars } from './util'
@@ -65,13 +65,13 @@ export function Movie() {
     if (fetching) return <Spinner />
     if (error) return <> {JSON.stringify(error)} </>
     if (movie) return <>
-        <div className='row'>
-            {movie.poster_path && <img className={Poster} src={IMGURL + movie.poster_path} alt='' />}
-            <div className='space-y-1'>
+        <div className={Card}>
+            {movie.poster_path && <img className={CardImg} src={IMGURL + movie.poster_path} alt='' />}
+            <div className={CardTextBox}>
                 <div> {new Date(movie.release_date!).getFullYear()} </div>
                 <div> {movie.title}  </div>
                 <div> {movie.tagline} </div>
-                <div className='row space-x-1'> {renderStars(movie.vote_average)} </div>
+                <div> {renderStars(movie.vote_average)} </div>
             </div>
         </div>
         <div className={ButtonRow}>
@@ -84,15 +84,15 @@ export function Movie() {
         {tab === TAB.INFO && <>
             <div className={Bubble}>{movie.overview}</div>
             <div className={Bubble}>
-                {movie.status && <div> Status: {movie.status} </div>}
-                {movie.runtime && <div> Runtime: {movie.runtime} Minutes </div>}
+                <div> Status: {movie.status} </div>
+                <div> Runtime: {movie.runtime} Minutes </div>
                 {movie.budget && <div> Budget: ${movie.budget.toLocaleString()} </div>}
                 {movie.revenue && <div> Revenue: ${movie.revenue.toLocaleString()} </div>}
-                {movie.homepage && <div> Homepage: <a className='underline' href={movie.homepage}> {movie.homepage} </a> </div>}
-                {movie.original_language && <div> Original Language: {movie.original_language} </div>}
-                {movie.original_title && <div> Original Title: {movie.original_title} </div>}
-                {movie.imdb_id && <div> <a className='underline' target='_blank' rel='noopener noreferrer' href={`https://www.imdb.com/title/${movie.imdb_id}`}>IMDB</a> ID: {movie.imdb_id} </div>}
-                {movie.id && <div> <a className='underline' target='_blank' rel='noopener noreferrer' href={`https://www.themoviedb.org/movie/${movie.id}`}>TMDB</a> ID: {movie.id} </div>}
+                <div> Original Language: {movie.original_language} </div>
+                <div> Original Title: {movie.original_title} </div>
+                <div> <a className='underline' target='_blank' rel='noopener noreferrer' href={`https://www.imdb.com/title/${movie.imdb_id}`}>IMDB</a> ID: {movie.imdb_id} </div>
+                <div> <a className='underline' target='_blank' rel='noopener noreferrer' href={`https://www.themoviedb.org/movie/${movie.id}`}>TMDB</a> ID: {movie.id} </div>
+                <div> Homepage: <a className='underline' href={movie.homepage}> {movie.homepage} </a> </div>
             </div>
             <div className={ButtonRow}>
                 {releaseDates?.map((x, i) => {
@@ -113,9 +113,9 @@ export function Movie() {
         {tab === TAB.CAST && <>
             <div className={Grid123}>
                 {movie.credits?.cast?.map((x, i) => {
-                    return <Link to={`/person/${x.id}`} key={i} className='row'>
-                        {x.profile_path && <img className={Portrait} src={IMGURL + x.profile_path} alt='' />}
-                        <div>
+                    return <Link to={`/person/${x.id}`} key={i} className={Card}>
+                        {x.profile_path && <img className={CardImg} src={IMGURL + x.profile_path} alt='' />}
+                        <div className={CardTextBox}>
                             <div> {x.name} </div>
                             <div className={SubText}> {x.character} </div>
                         </div>
@@ -124,7 +124,7 @@ export function Movie() {
             </div>
         </>}
         {tab === TAB.CREW && <>
-            <div className='row justify-center xl:justify-start'>
+            <div className={SingleRow}>
                 <select
                     defaultValue={crewFilter}
                     className={Select}
@@ -140,9 +140,9 @@ export function Movie() {
                         else return false
                     })
                     .map((x, i) => {
-                        return <Link to={`/person/${x.id}`} key={i} className='row'>
-                            {x.profile_path && <img className={Portrait} src={IMGURL + x.profile_path} alt='' />}
-                            <div>
+                        return <Link to={`/person/${x.id}`} key={i} className={Card}>
+                            {x.profile_path && <img className={CardImg} src={IMGURL + x.profile_path} alt='' />}
+                            <div className={CardTextBox}>
                                 <div> {x.name} </div>
                                 <div className={SubText}> {x.job} </div>
                             </div>
@@ -195,7 +195,7 @@ export function Movie() {
             </>}
         </>}
         {tab === TAB.VIDEOS && <>
-            <div className='row justify-center xl:justify-start'>
+            <div className={SingleRow}>
                 <select defaultValue={videoFilter}
                     className={Select}
                     onChange={e => setVideoFilter(e.target.value)}>
@@ -211,12 +211,12 @@ export function Movie() {
                     })
                     ?.sort((a, b) => Date.parse(a.published_at!) > Date.parse(b.published_at!) ? -1 : 1)
                     ?.map((x, i) => {
-                        return <div className='col' key={i}>
+                        return <div className={VideoCard} key={i}>
                             <a target='_blank'
                                 rel='noopener noreferrer'
                                 href={`https://www.youtube.com/watch?v=${x.key}`}>
-                                <img className='rounded' src={`https://i.ytimg.com/vi/${x.key}/hqdefault.jpg`} alt='' />
-                                <div className='mt-2'> {x.name} <span className='text-slate-400'> | {new Date(x.published_at!).toDateString().substring(4)} </span> </div>
+                                <img className={VideoCardImg} src={`https://i.ytimg.com/vi/${x.key}/hqdefault.jpg`} alt='' />
+                                <div className={VideoCardTextBox}> {x.name} <span className={SubText}> | {new Date(x.published_at!).toDateString().substring(4)} </span> </div>
                             </a>
                         </div>
                     })}

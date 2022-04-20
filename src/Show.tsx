@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useParams, Link, useSearchParams } from 'react-router-dom'
 import { useShowQuery } from './gql'
-import { Bubble, Button, ButtonRow, Grid123, Grid234, IMGURL, Portrait, Poster, Select, SubText } from './consts'
+import { Bubble, Button, ButtonRow, Card, CardImg, CardTextBox, Grid123, Grid234, IMGURL, Select, SingleRow, SubText, VideoCard, VideoCardImg, VideoCardTextBox } from './consts'
 import { Spinner } from './Spinner'
 import { renderStars } from './util'
 
@@ -30,7 +30,7 @@ export function Show() {
     let [videoFilter, setVideoFilter] = useState('ALL')
     let [posterFilter, setPosterFilter] = useState('en')
     let [backdropFilter, setBackdropFilter] = useState('en')
-    
+
     let { id } = useParams()
     let { "0": res } = useShowQuery({ id })
     let { data, fetching, error } = res
@@ -62,13 +62,13 @@ export function Show() {
     if (fetching) return <Spinner />
     if (error) return <> {JSON.stringify(error)} </>
     if (show) return <>
-        <div className='row'>
-            {show.poster_path && <img className={Poster} src={IMGURL + show.poster_path} alt='' />}
-            <div className='space-y-1'>
+        <div className={Card}>
+            {show.poster_path && <img className={CardImg} src={IMGURL + show.poster_path} alt='' />}
+            <div className={CardTextBox}>
                 <div> {new Date(show.first_air_date!).getFullYear()} </div>
                 <div> {show.name} </div>
                 <div> {show.tagline} </div>
-                <div className='row space-x-1'> {renderStars(show.vote_average)} </div>
+                <div> {renderStars(show.vote_average)} </div>
             </div>
         </div>
         <div className={ButtonRow}>
@@ -80,10 +80,10 @@ export function Show() {
             <div className={`${Button} ${tab === TAB.VIDEOS ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setParams({ tab: TAB.VIDEOS })}> VIDEOS </div>
         </div>
         {tab === TAB.INFO && <>
-            <div>
-                <div className={Bubble}> {show.overview} </div>
-            </div>
+            <div className={Bubble}> {show.overview} </div>
             <div className={Bubble}>
+                <div> Status: {show.status} </div>
+                <div> Show Type: {show.type} </div>
                 <div> Runtime: {show.episode_run_time![0]} Minutes </div>
                 <div> Seasons: {show.number_of_seasons} </div>
                 <div> Episodes: {show.number_of_episodes} </div>
@@ -103,9 +103,9 @@ export function Show() {
         {tab === TAB.CAST && <>
             <div className={Grid123}>
                 {show.credits?.cast?.map((x, i) => {
-                    return <Link to={`/person/${x.id}`} className='row' key={i} >
-                        {x.profile_path && <img className={Portrait} src={IMGURL + x.profile_path!} alt='' />}
-                        <div>
+                    return <Link to={`/person/${x.id}`} className={Card} key={i} >
+                        {x.profile_path && <img className={CardImg} src={IMGURL + x.profile_path!} alt='' />}
+                        <div className={CardTextBox}>
                             <div> {x.name} </div>
                             <div className={SubText}> {x.character} </div>
                         </div>
@@ -114,7 +114,7 @@ export function Show() {
             </div>
         </>}
         {tab === TAB.CREW && <>
-            <div className='row justify-center xl:justify-start'>
+            <div className={SingleRow}>
                 <select defaultValue={crewFilter}
                     className={Select}
                     onChange={e => setCrewFilter(e.target.value)}>
@@ -129,9 +129,9 @@ export function Show() {
                         else return false
                     })
                     .map((x, i) => {
-                        return <Link to={`/person/${x.id}`} className='row' key={i} >
-                            {x.profile_path && <img className={Portrait} src={IMGURL + x.profile_path!} alt='' />}
-                            <div>
+                        return <Link to={`/person/${x.id}`} className={Card} key={i} >
+                            {x.profile_path && <img className={CardImg} src={IMGURL + x.profile_path!} alt='' />}
+                            <div className={CardTextBox}>
                                 <div> {x.name} </div>
                                 <div className={SubText}> {x.job} </div>
                             </div>
@@ -142,9 +142,9 @@ export function Show() {
         {tab === TAB.SEASONS && <>
             <div className={Grid123}>
                 {show.seasons?.map((x, i) => {
-                    return <Link to={`/tv/${id}/season/${x.season_number}`} className='row' key={i}>
-                        {x.poster_path && <img className={Poster} src={IMGURL + x.poster_path} alt='' />}
-                        <div>
+                    return <Link to={`/tv/${id}/season/${x.season_number}`} className={Card} key={i}>
+                        {x.poster_path && <img className={CardImg} src={IMGURL + x.poster_path} alt='' />}
+                        <div className={CardTextBox}>
                             <div> {x.name} </div>
                             <div className={SubText}> {x.episode_count} Episodes </div>
                             <div className={SubText}> {new Date(x.air_date!).toDateString().substring(4)} </div>
@@ -196,7 +196,7 @@ export function Show() {
             </>}
         </>}
         {tab === TAB.VIDEOS && <>
-            <div className='row justify-center xl:justify-start'>
+            <div className={SingleRow}>
                 <select defaultValue={videoFilter}
                     className={Select}
                     onChange={e => setVideoFilter(e.target.value)}>
@@ -212,11 +212,11 @@ export function Show() {
                     })
                     ?.sort((a, b) => Date.parse(a.published_at!) > Date.parse(b.published_at!) ? -1 : 1)
                     ?.map((x, i) => {
-                        return <div className='col' key={i}>
+                        return <div className={VideoCard} key={i}>
                             <a target='_blank' rel='noopener noreferrer' href={`https://www.youtube.com/watch?v=${x.key}`}>
-                                <img className='rounded' src={`https://i.ytimg.com/vi/${x.key}/hqdefault.jpg`} alt='' />
+                                <img className={VideoCardImg} src={`https://i.ytimg.com/vi/${x.key}/hqdefault.jpg`} alt='' />
                             </a>
-                            <div className='mt-2'> {x.name} <span className='text-slate-400'> {new Date(x.published_at!).toDateString().substring(4)} </span> </div>
+                            <div className={VideoCardTextBox}> {x.name} <span className={SubText}> {new Date(x.published_at!).toDateString().substring(4)} </span> </div>
                         </div>
                     })}
             </div>

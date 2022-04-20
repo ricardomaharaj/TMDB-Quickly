@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { Bubble, Button, ButtonRow, Grid123, Grid234, IMGURL, Portrait, Poster, Select, SingleRow, SubText } from './consts'
+import { Bubble, Button, ButtonRow, Card, CardImg, CardTextBox, Grid123, Grid234, IMGURL, Select, SingleRow, SubText, VideoCard, VideoCardImg, VideoCardTextBox } from './consts'
 import { useSeasonQuery } from './gql'
 import { Spinner } from './Spinner'
 
@@ -47,9 +47,9 @@ export function Season() {
     if (fetching) return <Spinner />
     if (error) return <> {JSON.stringify(error)} </>
     if (season) return <>
-        <div className='row'>
-            {season.images && <img className={Poster} src={IMGURL + season.poster_path} alt='' />}
-            <div>
+        <div className={Card}>
+            {season.images && <img className={CardImg} src={IMGURL + season.poster_path} alt='' />}
+            <div className={CardTextBox}>
                 <div> {season.name} </div>
                 <div className={SubText}> {season.episodes?.length} Episodes </div>
                 <div className={SubText}> {new Date(season.air_date!).toDateString().substring(4)} </div>
@@ -82,11 +82,11 @@ export function Season() {
                 {season.credits?.cast?.map((x, i) => {
                     return <Link
                         to={`/person/${x.id}`}
-                        className='row'
+                        className={Card}
                         key={i}
                     >
-                        {x.profile_path && <img className={Portrait} src={IMGURL + x.profile_path!} alt='' />}
-                        <div>
+                        {x.profile_path && <img className={CardImg} src={IMGURL + x.profile_path!} alt='' />}
+                        <div className={CardTextBox}>
                             <div> {x.name} </div>
                             <div className={SubText}> {x.character} </div>
                         </div>
@@ -110,9 +110,9 @@ export function Season() {
                         else return false
                     })
                     .map((x, i) => {
-                        return <Link to={`/person/${x.id}`} className='row' key={i} >
-                            {x.profile_path && <img className={Portrait} src={IMGURL + x.profile_path!} alt='' />}
-                            <div>
+                        return <Link to={`/person/${x.id}`} className={Card} key={i} >
+                            {x.profile_path && <img className={CardImg} src={IMGURL + x.profile_path!} alt='' />}
+                            <div className={CardTextBox}>
                                 <div> {x.name} </div>
                                 <div className={SubText}> {x.job} </div>
                             </div>
@@ -151,11 +151,11 @@ export function Season() {
                     })
                     ?.sort((a, b) => Date.parse(a.published_at!) > Date.parse(b.published_at!) ? -1 : 1)
                     ?.map((x, i) => {
-                        return <div className='col' key={i}>
+                        return <div className={VideoCard} key={i}>
                             <a target='_blank' rel='noopener noreferrer' href={`https://www.youtube.com/watch?v=${x.key}`}>
-                                <img className='rounded' src={`https://i.ytimg.com/vi/${x.key}/hqdefault.jpg`} alt='' />
+                                <img className={VideoCardImg} src={`https://i.ytimg.com/vi/${x.key}/hqdefault.jpg`} alt='' />
                             </a>
-                            <div className='mt-2'> {x.name} <span className='text-slate-400'> {new Date(x.published_at!).toDateString().substring(4)} </span> </div>
+                            <div className={VideoCardTextBox}> {x.name} <span className={SubText}> {new Date(x.published_at!).toDateString().substring(4)} </span> </div>
                         </div>
                     })}
             </div>
