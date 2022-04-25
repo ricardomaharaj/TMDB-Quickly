@@ -6,8 +6,6 @@ import { Show } from './Show'
 import { Season } from './Season'
 import { Episode } from './Episode'
 import { Person } from './Person'
-import './App.css'
-import { LOGO } from './consts'
 
 let url: string = 'http://localhost:4000/gql'
 if (process.env.NODE_ENV === 'production') url = '/gql'
@@ -22,7 +20,10 @@ export function App() {
                 <div className='container mx-auto'>
                     <div className='col m-2 space-y-2'>
                         <Link to='/' className='row w-full justify-center '>
-                            <img className='max-h-20 p-2' src={LOGO} alt="" />
+                            <img
+                                className='max-h-20 p-2'
+                                src='https://www.themoviedb.org/assets/2/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg'
+                                alt='' />
                         </Link>
                         <Routes>
                             <Route path='/' element={<Home />} />

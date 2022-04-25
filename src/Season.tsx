@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useSeasonQuery } from './gql'
 import { Spinner } from './Spinner'
+import { toDateString } from './util'
+import { IMGURL, TABS } from './consts'
 import {
     Bubble,
     Button,
@@ -12,35 +14,24 @@ import {
     Error,
     Grid123,
     Grid234,
-    IMGURL,
     Select,
     SingleRow,
     SubText,
     VideoCard,
     VideoCardImg,
     VideoCardTextBox
-} from './consts'
+} from './ThemeData'
 
 export function Season() {
 
-    enum TAB {
-        EPISODES = 'EPISODES',
-        CAST = 'CAST',
-        CREW = 'CREW',
-        IMAGES = 'IMAGES',
-        VIDEOS = 'VIDEOS'
-    }
-
-    let { id, season_number } = useParams()
-
-    let { "0": res } = useSeasonQuery({ id, season_number })
-    let { data, fetching, error } = res
-
-    let [tab, setTab] = useState(TAB.EPISODES)
+    let [tab, setTab] = useState(TABS.EPISODES)
     let [crewFilter, setCrewFilter] = useState('ALL')
     let [videoFilter, setVideoFilter] = useState('ALL')
     let [posterFilter, setPosterFilter] = useState('en')
 
+    let { id, season_number } = useParams()
+    let [res,] = useSeasonQuery({ id, season_number })
+    let { data, fetching, error } = res
     let season = data?.season
 
     let crewFilterOpts: string[] = []
@@ -67,19 +58,20 @@ export function Season() {
         <div className={Card}>
             {season.images && <img className={CardImg} src={IMGURL + season.poster_path} alt='' />}
             <div className={CardTextBox}>
+                <div> Season {season.season_number} </div>
                 <div> {season.name} </div>
                 <div className={SubText}> {season.episodes?.length} Episodes </div>
-                <div className={SubText}> {new Date(season.air_date!).toDateString().substring(4)} </div>
+                <div className={SubText}> {toDateString(season.air_date)} </div>
             </div>
         </div>
         <div className={ButtonRow}>
-            <div className={`${Button} ${tab === TAB.EPISODES ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setTab(TAB.EPISODES)}> EPISODES </div>
-            <div className={`${Button} ${tab === TAB.CAST ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setTab(TAB.CAST)}> CAST </div>
-            <div className={`${Button} ${tab === TAB.CREW ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setTab(TAB.CREW)}> CREW </div>
-            <div className={`${Button} ${tab === TAB.IMAGES ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setTab(TAB.IMAGES)}> IMAGES </div>
-            <div className={`${Button} ${tab === TAB.VIDEOS ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setTab(TAB.VIDEOS)}> VIDEOS </div>
+            <div className={`${Button} ${tab === TABS.EPISODES ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setTab(TABS.EPISODES)}> EPISODES </div>
+            <div className={`${Button} ${tab === TABS.CAST ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setTab(TABS.CAST)}> CAST </div>
+            <div className={`${Button} ${tab === TABS.CREW ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setTab(TABS.CREW)}> CREW </div>
+            <div className={`${Button} ${tab === TABS.IMAGES ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setTab(TABS.IMAGES)}> IMAGES </div>
+            <div className={`${Button} ${tab === TABS.VIDEOS ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setTab(TABS.VIDEOS)}> VIDEOS </div>
         </div>
-        {tab === TAB.EPISODES && <>
+        {tab === TABS.EPISODES && <>
             <div className={Grid123}>
                 {season.episodes?.map((x, i) => {
                     return <Link
@@ -88,13 +80,13 @@ export function Season() {
                         key={i}
                     >
                         {x.still_path && <img className='rounded-xl mb-2' src={IMGURL + x.still_path} alt='' />}
-                        <div> {x.episode_number} | {x.name} | {new Date(x.air_date!).toDateString().substring(4)} </div>
+                        <div> {x.episode_number} | {x.name} | {toDateString(x.air_date)} </div>
                         <div className={SubText}> {x.overview} </div>
                     </Link>
                 })}
             </div>
         </>}
-        {tab === TAB.CAST && <>
+        {tab === TABS.CAST && <>
             <div className={Grid123}>
                 {season.credits?.cast?.map((x, i) => {
                     return <Link
@@ -111,7 +103,7 @@ export function Season() {
                 })}
             </div>
         </>}
-        {tab === TAB.CREW && <>
+        {tab === TABS.CREW && <>
             <div className={SingleRow}>
                 <select defaultValue={crewFilter}
                     className={Select}
@@ -137,7 +129,7 @@ export function Season() {
                     })}
             </div>
         </>}
-        {tab === TAB.IMAGES && <>
+        {tab === TABS.IMAGES && <>
             <div className={SingleRow}>
                 <select defaultValue={posterFilter}
                     className={Select}
@@ -151,7 +143,7 @@ export function Season() {
                     ?.map((x, i) => { return <img src={IMGURL + x.file_path} alt='' key={i} /> })}
             </div>
         </>}
-        {tab === TAB.VIDEOS && <>
+        {tab === TABS.VIDEOS && <>
             <div className={SingleRow}>
                 <select defaultValue={videoFilter}
                     className={Select}
@@ -172,7 +164,7 @@ export function Season() {
                             <a target='_blank' rel='noopener noreferrer' href={`https://www.youtube.com/watch?v=${x.key}`}>
                                 <img className={VideoCardImg} src={`https://i.ytimg.com/vi/${x.key}/hqdefault.jpg`} alt='' />
                             </a>
-                            <div className={VideoCardTextBox}> {x.name} <span className={SubText}> {new Date(x.published_at!).toDateString().substring(4)} </span> </div>
+                            <div className={VideoCardTextBox}> {x.name} <span className={SubText}> {toDateString(x.published_at)} </span> </div>
                         </div>
                     })}
             </div>

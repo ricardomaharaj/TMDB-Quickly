@@ -2,7 +2,8 @@ import { useState } from 'react'
 import { useParams, Link, useSearchParams } from 'react-router-dom'
 import { useShowQuery } from './gql'
 import { Spinner } from './Spinner'
-import { renderStars } from './util'
+import { renderStars, toDateString } from './util'
+import { IMGURL, TABS } from './consts'
 import {
     Bubble,
     Button,
@@ -13,45 +14,28 @@ import {
     Error,
     Grid123,
     Grid234,
-    IMGURL,
     Select,
     SingleRow,
     SubText,
     VideoCard,
     VideoCardImg,
     VideoCardTextBox
-} from './consts'
+} from './ThemeData'
 
 export function Show() {
 
-    enum TAB {
-        INFO = 'INFO',
-        CAST = 'CAST',
-        CREW = 'CREW',
-        SEASONS = 'SEASONS',
-        IMAGES = 'IMAGES',
-        VIDEOS = 'VIDEOS'
-    }
-
-    enum IMAGE_TAB {
-        POSTERS,
-        BACKDROPS
-    }
-
     let [params, setParams] = useSearchParams()
+    let tab = params.get('tab') || TABS.INFO
 
-    let tab = params.get('tab') || TAB.INFO
-
-    let [imageTab, setImageTab] = useState(IMAGE_TAB.POSTERS)
+    let [imageTab, setImageTab] = useState(TABS.POSTERS)
     let [crewFilter, setCrewFilter] = useState('ALL')
     let [videoFilter, setVideoFilter] = useState('ALL')
     let [posterFilter, setPosterFilter] = useState('en')
     let [backdropFilter, setBackdropFilter] = useState('en')
 
     let { id } = useParams()
-    let { "0": res } = useShowQuery({ id })
+    let [res,] = useShowQuery({ id })
     let { data, fetching, error } = res
-
     let show = data?.show
 
     let crewFilterOpts: string[] = []
@@ -82,21 +66,21 @@ export function Show() {
         <div className={Card}>
             {show.poster_path && <img className={CardImg} src={IMGURL + show.poster_path} alt='' />}
             <div className={CardTextBox}>
-                <div> {new Date(show.first_air_date!).getFullYear()} </div>
+                <div> {toDateString(show.first_air_date)} </div>
                 <div> {show.name} </div>
                 <div> {show.tagline} </div>
                 <div> {renderStars(show.vote_average)} </div>
             </div>
         </div>
         <div className={ButtonRow}>
-            <div className={`${Button} ${tab === TAB.INFO ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setParams({ tab: TAB.INFO })}> INFO </div>
-            <div className={`${Button} ${tab === TAB.CAST ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setParams({ tab: TAB.CAST })}> CAST </div>
-            <div className={`${Button} ${tab === TAB.CREW ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setParams({ tab: TAB.CREW })}> CREW </div>
-            <div className={`${Button} ${tab === TAB.SEASONS ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setParams({ tab: TAB.SEASONS })}> SEASONS </div>
-            <div className={`${Button} ${tab === TAB.IMAGES ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setParams({ tab: TAB.IMAGES })}> IMAGES </div>
-            <div className={`${Button} ${tab === TAB.VIDEOS ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setParams({ tab: TAB.VIDEOS })}> VIDEOS </div>
+            <div className={`${Button} ${tab === TABS.INFO ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setParams({ tab: TABS.INFO })}> INFO </div>
+            <div className={`${Button} ${tab === TABS.CAST ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setParams({ tab: TABS.CAST })}> CAST </div>
+            <div className={`${Button} ${tab === TABS.CREW ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setParams({ tab: TABS.CREW })}> CREW </div>
+            <div className={`${Button} ${tab === TABS.SEASONS ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setParams({ tab: TABS.SEASONS })}> SEASONS </div>
+            <div className={`${Button} ${tab === TABS.IMAGES ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setParams({ tab: TABS.IMAGES })}> IMAGES </div>
+            <div className={`${Button} ${tab === TABS.VIDEOS ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setParams({ tab: TABS.VIDEOS })}> VIDEOS </div>
         </div>
-        {tab === TAB.INFO && <>
+        {tab === TABS.INFO && <>
             <div className={Bubble}> {show.overview} </div>
             <div className={Bubble}>
                 <div> Status: {show.status} </div>
@@ -117,7 +101,7 @@ export function Show() {
                 })}
             </div>
         </>}
-        {tab === TAB.CAST && <>
+        {tab === TABS.CAST && <>
             <div className={Grid123}>
                 {show.credits?.cast?.map((x, i) => {
                     return <Link to={`/person/${x.id}`} className={Card} key={i} >
@@ -130,7 +114,7 @@ export function Show() {
                 })}
             </div>
         </>}
-        {tab === TAB.CREW && <>
+        {tab === TABS.CREW && <>
             <div className={SingleRow}>
                 <select defaultValue={crewFilter}
                     className={Select}
@@ -156,7 +140,7 @@ export function Show() {
                     })}
             </div>
         </>}
-        {tab === TAB.SEASONS && <>
+        {tab === TABS.SEASONS && <>
             <div className={Grid123}>
                 {show.seasons?.map((x, i) => {
                     return <Link to={`/tv/${id}/season/${x.season_number}`} className={Card} key={i}>
@@ -164,22 +148,22 @@ export function Show() {
                         <div className={CardTextBox}>
                             <div> {x.name} </div>
                             <div className={SubText}> {x.episode_count} Episodes </div>
-                            <div className={SubText}> {new Date(x.air_date!).toDateString().substring(4)} </div>
+                            <div className={SubText}> {toDateString(x.air_date)} </div>
                         </div>
                     </Link>
                 })}
             </div>
         </>}
-        {tab === TAB.IMAGES && <>
+        {tab === TABS.IMAGES && <>
             <div className={ButtonRow}>
                 <div
-                    className={`${Button} ${imageTab === IMAGE_TAB.POSTERS ? 'bg-slate-700' : 'bg-slate-800'}`}
-                    onClick={e => setImageTab(IMAGE_TAB.POSTERS)}> POSTERS </div>
+                    className={`${Button} ${imageTab === TABS.POSTERS ? 'bg-slate-700' : 'bg-slate-800'}`}
+                    onClick={e => setImageTab(TABS.POSTERS)}> POSTERS </div>
                 <div
-                    className={`${Button} ${imageTab === IMAGE_TAB.BACKDROPS ? 'bg-slate-700' : 'bg-slate-800'}`}
-                    onClick={e => setImageTab(IMAGE_TAB.BACKDROPS)}> BACKDROPS </div>
-                {imageTab === IMAGE_TAB.POSTERS && <>
-                    {imageTab === IMAGE_TAB.POSTERS && <>
+                    className={`${Button} ${imageTab === TABS.BACKDROPS ? 'bg-slate-700' : 'bg-slate-800'}`}
+                    onClick={e => setImageTab(TABS.BACKDROPS)}> BACKDROPS </div>
+                {imageTab === TABS.POSTERS && <>
+                    {imageTab === TABS.POSTERS && <>
                         <select defaultValue={posterFilter}
                             className={Select}
                             onChange={e => setPosterFilter(e.target.value)}>
@@ -187,8 +171,8 @@ export function Show() {
                         </select>
                     </>}
                 </>}
-                {imageTab === IMAGE_TAB.BACKDROPS && <>
-                    {imageTab === IMAGE_TAB.BACKDROPS && <>
+                {imageTab === TABS.BACKDROPS && <>
+                    {imageTab === TABS.BACKDROPS && <>
                         <select defaultValue={backdropFilter}
                             className={Select}
                             onChange={e => setBackdropFilter(e.target.value)}>
@@ -197,14 +181,14 @@ export function Show() {
                     </>}
                 </>}
             </div>
-            {imageTab === IMAGE_TAB.POSTERS && <>
+            {imageTab === TABS.POSTERS && <>
                 <div className={Grid234}>
                     {show.images?.posters
                         ?.filter(x => x.iso_639_1 === posterFilter)
                         ?.map((x, i) => { return <img src={IMGURL + x.file_path} alt='' key={i} /> })}
                 </div>
             </>}
-            {imageTab === IMAGE_TAB.BACKDROPS && <>
+            {imageTab === TABS.BACKDROPS && <>
                 <div className={Grid123}>
                     {show.images?.backdrops
                         ?.filter(x => x.iso_639_1 === backdropFilter)
@@ -212,7 +196,7 @@ export function Show() {
                 </div>
             </>}
         </>}
-        {tab === TAB.VIDEOS && <>
+        {tab === TABS.VIDEOS && <>
             <div className={SingleRow}>
                 <select defaultValue={videoFilter}
                     className={Select}
@@ -233,7 +217,7 @@ export function Show() {
                             <a target='_blank' rel='noopener noreferrer' href={`https://www.youtube.com/watch?v=${x.key}`}>
                                 <img className={VideoCardImg} src={`https://i.ytimg.com/vi/${x.key}/hqdefault.jpg`} alt='' />
                             </a>
-                            <div className={VideoCardTextBox}> {x.name} <span className={SubText}> {new Date(x.published_at!).toDateString().substring(4)} </span> </div>
+                            <div className={VideoCardTextBox}> {x.name} <span className={SubText}> {toDateString(x.published_at)} </span> </div>
                         </div>
                     })}
             </div>

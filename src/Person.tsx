@@ -2,9 +2,9 @@ import { useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { usePersonQuery } from './gql'
 import { Spinner } from './Spinner'
-import { renderStars } from './util'
+import { renderStars, toDateString } from './util'
+import { IMGURL, TABS } from './consts'
 import {
-    IMGURL,
     ButtonRow,
     Button,
     SubText,
@@ -17,33 +17,19 @@ import {
     CardImg,
     CardTextBox,
     Error
-} from './consts'
+} from './ThemeData'
 
 export function Person() {
 
-    enum TAB {
-        BIO = 'BIO',
-        CAST = 'CAST',
-        CREW = 'CREW',
-        IMAGES = 'IMAGES'
-    }
-
-    enum CAST {
-        MOVIES = 'movie',
-        SHOWS = 'tv'
-    }
-
     let [params, setParams] = useSearchParams()
+    let tab = params.get('tab') || TABS.BIO
 
-    let tab = params.get('tab') || TAB.BIO
-
-    let [castFilter, setCastFilter] = useState(CAST.MOVIES)
+    let [castFilter, setCastFilter] = useState('movie')
     let [crewFilter, setCrewFilter] = useState('ALL')
 
     let { id } = useParams()
-    let { "0": res } = usePersonQuery({ id })
+    let [res,] = usePersonQuery({ id })
     let { data, fetching, error } = res
-
     let person = data?.person
 
     let crewFilterOpts: string[] = []
@@ -54,9 +40,9 @@ export function Person() {
 
     let calculateAge = (birthday?: string, deathday?: string) => {
         let age: number = 0
-        let start: Date = new Date(birthday!)
+        let start: Date = new Date(birthday?.replace('-', '/')!)
         let end: Date = new Date()
-        if (deathday) end = new Date(deathday)
+        if (deathday) end = new Date(deathday?.replace('-', '/')!)
         age = end.getFullYear() - start.getFullYear()
         return <> Age: {age} </>
     }
@@ -68,31 +54,31 @@ export function Person() {
             {person.profile_path && <img className={CardImg} src={IMGURL + person.profile_path} alt='' />}
             <div className={CardTextBox}>
                 <div> {person.name} </div>
-                <div> Born: {new Date(person.birthday!).toDateString().substring(4)} </div>
-                {person.deathday && <> Died: {new Date(person.deathday).toDateString().substring(4)} </>}
+                <div> Born: {toDateString(person.birthday)} </div>
+                {person.deathday && <> Died: {toDateString(person.deathday)} </>}
                 <div> {calculateAge(person.birthday, person.deathday)} </div>
             </div>
         </div>
         <div className={ButtonRow}>
-            <div className={`${Button} ${tab === TAB.BIO ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setParams({ tab: TAB.BIO })} > BIO </div>
-            <div className={`${Button} ${tab === TAB.CAST ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setParams({ tab: TAB.CAST })} > CAST </div>
-            <div className={`${Button} ${tab === TAB.CREW ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setParams({ tab: TAB.CREW })} > CREW </div>
-            <div className={`${Button} ${tab === TAB.IMAGES ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setParams({ tab: TAB.IMAGES })} > IMAGES </div>
+            <div className={`${Button} ${tab === TABS.BIO ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setParams({ tab: TABS.BIO })} > BIO </div>
+            <div className={`${Button} ${tab === TABS.CAST ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setParams({ tab: TABS.CAST })} > CAST </div>
+            <div className={`${Button} ${tab === TABS.CREW ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setParams({ tab: TABS.CREW })} > CREW </div>
+            <div className={`${Button} ${tab === TABS.IMAGES ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setParams({ tab: TABS.IMAGES })} > IMAGES </div>
         </div>
-        {tab === TAB.BIO && <>
+        {tab === TABS.BIO && <>
             <div className={Bubble}>
                 {person.biography}
             </div>
         </>}
-        {tab === TAB.CAST && <>
+        {tab === TABS.CAST && <>
             <div className={ButtonRow}>
                 <div
-                    className={`${Button} ${castFilter === CAST.MOVIES ? 'bg-slate-700' : 'bg-slate-800'}`}
-                    onClick={() => { setCastFilter(CAST.MOVIES) }}
+                    className={`${Button} ${castFilter === 'movie' ? 'bg-slate-700' : 'bg-slate-800'}`}
+                    onClick={() => { setCastFilter('movie') }}
                 > MOVIES </div>
                 <div
-                    className={`${Button} ${castFilter === CAST.SHOWS ? 'bg-slate-700' : 'bg-slate-800'}`}
-                    onClick={() => { setCastFilter(CAST.SHOWS) }}
+                    className={`${Button} ${castFilter === 'tv' ? 'bg-slate-700' : 'bg-slate-800'}`}
+                    onClick={() => { setCastFilter('tv') }}
                 > SHOWS </div>
             </div>
             <div className={Grid123}>
@@ -120,7 +106,7 @@ export function Person() {
                 }
             </div>
         </>}
-        {tab === TAB.CREW && <>
+        {tab === TABS.CREW && <>
             <div className={SingleRow}>
                 <select
                     defaultValue={crewFilter}
@@ -159,7 +145,7 @@ export function Person() {
                 }
             </div>
         </>}
-        {tab === TAB.IMAGES && <>
+        {tab === TABS.IMAGES && <>
             <div className={Grid234}>
                 {person.images?.profiles
                     ?.map((x, i) => {

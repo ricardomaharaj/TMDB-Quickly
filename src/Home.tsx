@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { MovieResult, PersonResult, ShowResult, useFindQuery } from './gql'
 import { Spinner } from './Spinner'
 import { renderStars } from './util'
+import { IMGURL, TABS } from './consts'
 import {
     Button,
     ButtonRow,
@@ -11,20 +12,14 @@ import {
     CardSubText,
     CardTextBox,
     Error,
-    Grid123,
-    IMGURL
-} from './consts'
-
-enum TAB {
-    MOVIES = 'MOVIES',
-    SHOWS = 'SHOWS',
-    PEOPLE = 'PEOPLE',
-}
+    Grid123
+} from './ThemeData'
 
 export function Home() {
+
     let [params, setParams] = useSearchParams()
 
-    let tab = params.get('tab') || TAB.MOVIES
+    let tab = params.get('tab') || TABS.MOVIES
     let page = params.get('page') || '1'
     let query = params.get('query') || ''
 
@@ -44,9 +39,9 @@ export function Home() {
                 onKeyDown={(e: any) => { if (e.key === 'Enter') { setParams({ tab, page: '1', query: e.target.value }) } }} />
         </div>
         <div className={ButtonRow}>
-            <div className={`${Button} ${tab === TAB.MOVIES ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setParams({ tab: TAB.MOVIES, query, page })}> MOVIES </div>
-            <div className={`${Button} ${tab === TAB.SHOWS ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setParams({ tab: TAB.SHOWS, query, page })}> SHOWS </div>
-            <div className={`${Button} ${tab === TAB.PEOPLE ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setParams({ tab: TAB.PEOPLE, query, page })}> PEOPLE </div>
+            <div className={`${Button} ${tab === TABS.MOVIES ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setParams({ tab: TABS.MOVIES, query, page })}> MOVIES </div>
+            <div className={`${Button} ${tab === TABS.SHOWS ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setParams({ tab: TABS.SHOWS, query, page })}> SHOWS </div>
+            <div className={`${Button} ${tab === TABS.PEOPLE ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setParams({ tab: TABS.PEOPLE, query, page })}> PEOPLE </div>
         </div>
         <SearchResults />
     </>
@@ -58,7 +53,7 @@ function SearchResults() {
 
     let query = params.get('query') || ''
     let page = params.get('page') || '1'
-    let tab = params.get('tab') || TAB.MOVIES
+    let tab = params.get('tab') || TABS.MOVIES
 
     let pageInt = parseInt(page) || 1
 
@@ -67,10 +62,9 @@ function SearchResults() {
 
     let [res,] = useFindQuery({ query, page })
     let { data, fetching, error } = res
+    let results = data?.find?.results
 
     let maxPages = data?.find?.total_pages
-
-    let results = data?.find?.results
 
     let movies: MovieResult[] = results?.filter(x => x.media_type === 'movie')!
     let shows: ShowResult[] = results?.filter(x => x.media_type === 'tv')!
@@ -80,7 +74,7 @@ function SearchResults() {
     if (error) return <div className={Error}> {error.message} </div>
     if (results) return <>
         <div className={Grid123}>
-            {tab === TAB.MOVIES && <>
+            {tab === TABS.MOVIES && <>
                 {movies.map((x, i) => {
                     return <Link to={`/movie/${x.id}`} key={i} className={Card}>
                         {x.poster_path && <img className={CardImg} src={IMGURL + x.poster_path} alt='' />}
@@ -95,7 +89,7 @@ function SearchResults() {
                     </Link>
                 })}
             </>}
-            {tab === TAB.SHOWS && <>
+            {tab === TABS.SHOWS && <>
                 {shows.map((x, i) => {
                     return <Link to={`/tv/${x.id}`} key={i} className={Card}>
                         {x.poster_path && <img className={CardImg} src={IMGURL + x.poster_path} alt='' />}
@@ -110,7 +104,7 @@ function SearchResults() {
                     </Link>
                 })}
             </>}
-            {tab === TAB.PEOPLE && <>
+            {tab === TABS.PEOPLE && <>
                 {people.map((x, i) => {
                     return <Link to={`/person/${x.id}`} key={i} className={Card}>
                         {x.profile_path && <img className={CardImg} src={IMGURL + x.profile_path} alt='' />}

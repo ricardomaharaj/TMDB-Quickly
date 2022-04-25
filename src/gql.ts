@@ -1,6 +1,6 @@
 import { gql, useQuery } from 'urql'
 
-interface SearchResults {
+export interface SearchResults {
     page?: number
     results?: Result[]
     total_results?: number
@@ -551,7 +551,7 @@ interface Episode {
     }
 }
 
-// 
+//
 
 interface Arguments { id?: string, query?: string, page?: string, season_number?: string, episode_number?: string }
 

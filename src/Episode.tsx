@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useEpisodeQuery } from './gql'
 import { Spinner } from './Spinner'
+import { toDateString } from './util'
+import { IMGURL, TABS } from './consts'
 import {
     Bubble,
     Button,
@@ -11,37 +13,25 @@ import {
     CardTextBox,
     Error,
     Grid123,
-    IMGURL,
     Select,
     SingleRow,
     SubText
-} from './consts'
+} from './ThemeData'
 
 export function Episode() {
 
-    enum TAB {
-        INFO = 'INFO',
-        CREW = 'CREW',
-        GUEST = 'GUEST',
-        IMAGES = 'IMAGES'
-    }
-
-    let { id, season_number, episode_number } = useParams()
-
-    let { "0": res } = useEpisodeQuery({ id, season_number, episode_number })
-    let { data, fetching, error } = res
-
-    let [tab, setTab] = useState(TAB.INFO)
+    let [tab, setTab] = useState(TABS.INFO)
     let [crewFilter, setCrewFilter] = useState('ALL')
 
+    let { id, season_number, episode_number } = useParams()
+    let [res,] = useEpisodeQuery({ id, season_number, episode_number })
+    let { data, fetching, error } = res
     let episode = data?.episode
 
-    let jobs: string[] = []
-
-    episode?.crew?.forEach(({ job }) => { jobs.push(job!) })
-
-    jobs.sort((a, b) => { return a > b ? 1 : -1 })
-    jobs.splice(0, 0, 'ALL')
+    let crewFilterOpts: string[] = []
+    episode?.crew?.forEach(({ job }) => { crewFilterOpts.push(job!) })
+    crewFilterOpts.sort((a, b) => { return a > b ? 1 : -1 })
+    crewFilterOpts.splice(0, 0, 'ALL')
 
     if (fetching) return <Spinner />
     if (error) return <div className={Error}> {error.message} </div>
@@ -51,24 +41,24 @@ export function Episode() {
         </div>
         <div className='col'>
             <div className={Bubble}>
-                S{episode.season_number?.toString().padStart(2, '0')}E{episode.episode_number?.toString().padStart(2, '0')} | {episode.name} | {new Date(episode.air_date!).toDateString().substring(4)}
+                S{episode.season_number?.toString().padStart(2, '0')}E{episode.episode_number?.toString().padStart(2, '0')} | {episode.name} | {toDateString(episode.air_date)}
             </div>
         </div>
         <div className={ButtonRow}>
-            <div className={`${Button} ${tab === TAB.INFO ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setTab(TAB.INFO)}> INFO </div>
-            <div className={`${Button} ${tab === TAB.GUEST ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setTab(TAB.GUEST)}> GUESTS </div>
-            <div className={`${Button} ${tab === TAB.CREW ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setTab(TAB.CREW)}> CREW </div>
-            <div className={`${Button} ${tab === TAB.IMAGES ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setTab(TAB.IMAGES)}> IMAGES </div>
+            <div className={`${Button} ${tab === TABS.INFO ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setTab(TABS.INFO)}> INFO </div>
+            <div className={`${Button} ${tab === TABS.GUEST ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setTab(TABS.GUEST)}> GUESTS </div>
+            <div className={`${Button} ${tab === TABS.CREW ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setTab(TABS.CREW)}> CREW </div>
+            <div className={`${Button} ${tab === TABS.IMAGES ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setTab(TABS.IMAGES)}> IMAGES </div>
         </div>
-        {tab === TAB.INFO && <>
+        {tab === TABS.INFO && <>
             <div className={Bubble}> {episode.overview} </div>
         </>}
-        {tab === TAB.CREW && <>
+        {tab === TABS.CREW && <>
             <div className={SingleRow}>
                 <select defaultValue={crewFilter}
                     className={Select}
                     onChange={e => setCrewFilter(e.target.value)}>
-                    {jobs.map((x, i) => { return <option value={x} key={i}>{x}</option> })}
+                    {crewFilterOpts.map((x, i) => { return <option value={x} key={i}>{x}</option> })}
                 </select>
             </div>
             <div className={Grid123}>
@@ -89,7 +79,7 @@ export function Episode() {
                     })}
             </div>
         </>}
-        {tab === TAB.GUEST && <>
+        {tab === TABS.GUEST && <>
             <div className={Grid123}>
                 {episode.guest_stars?.map((x, i) => {
                     return <Link to={`/person/${x.id}`} className={Card} key={i} >
@@ -102,7 +92,7 @@ export function Episode() {
                 })}
             </div>
         </>}
-        {tab === TAB.IMAGES && <>
+        {tab === TABS.IMAGES && <>
             <div className={Grid123}>
                 {episode.images?.stills?.map((x, i) => { return <img src={IMGURL + x.file_path} alt='' key={i} /> })}
             </div>

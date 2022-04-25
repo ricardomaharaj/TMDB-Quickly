@@ -2,13 +2,12 @@ import { useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { useMovieQuery } from './gql'
 import { Spinner } from './Spinner'
-import { renderStars } from './util'
+import { renderStars, toDateString } from './util'
+import { IMGURL, TABS } from './consts'
 import {
     Button,
     ButtonRow,
-    IMGURL,
     Grid123,
-    RELEASE_TYPES,
     Select,
     Grid234,
     Bubble,
@@ -21,43 +20,35 @@ import {
     VideoCardImg,
     VideoCardTextBox,
     Error
-} from './consts'
+} from './ThemeData'
 
 export function Movie() {
 
-    enum TAB {
-        INFO = 'INFO',
-        CAST = 'CAST',
-        CREW = 'CREW',
-        IMAGES = 'IMAGES',
-        VIDEOS = 'VIDEOS'
-    }
-
-    enum IMAGE_TAB {
-        POSTERS,
-        BACKDROPS
-    }
+    const RELEASE_TYPES = [
+        '',
+        'Premiere',
+        'Theatrical (limited)',
+        'Theatrical',
+        'Digital',
+        'Physical',
+        'TV',
+    ]
 
     let [params, setParams] = useSearchParams()
+    let tab = params.get('tab') || TABS.INFO
 
-    let tab = params.get('tab') || TAB.INFO
-    let [imageTab, setImageTab] = useState(IMAGE_TAB.POSTERS)
-
+    let [imageTab, setImageTab] = useState(TABS.POSTERS)
     let [posterFilter, setPosterFilter] = useState('en')
     let [backdropFilter, setBackdropFilter] = useState('en')
     let [crewFilter, setCrewFilter] = useState('ALL')
-
     let [videoFilter, setVideoFilter] = useState('ALL')
 
     let { id } = useParams()
-
     let [res,] = useMovieQuery({ id })
     let { data, fetching, error } = res
-
     let movie = data?.movie
 
     let releaseDates = movie?.release_dates?.results?.filter(x => x?.iso_3166_1 === 'US')[0]?.release_dates
-
     let crewFilterOpts: string[] = []
     let posterLangOpts: string[] = []
     let backdropsLangOpts: string[] = []
@@ -86,21 +77,21 @@ export function Movie() {
         <div className={Card}>
             {movie.poster_path && <img className={CardImg} src={IMGURL + movie.poster_path} alt='' />}
             <div className={CardTextBox}>
-                <div> {new Date(movie.release_date!).getFullYear()} </div>
+                <div> {toDateString(movie.release_date)} </div>
                 <div> {movie.title}  </div>
                 <div> {movie.tagline} </div>
                 <div> {renderStars(movie.vote_average)} </div>
             </div>
         </div>
         <div className={ButtonRow}>
-            <div className={`${Button} ${tab === TAB.INFO ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setParams({ tab: TAB.INFO })}> INFO </div>
-            <div className={`${Button} ${tab === TAB.CAST ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setParams({ tab: TAB.CAST })}> CAST </div>
-            <div className={`${Button} ${tab === TAB.CREW ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setParams({ tab: TAB.CREW })}> CREW </div>
-            <div className={`${Button} ${tab === TAB.IMAGES ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setParams({ tab: TAB.IMAGES })}> IMAGES </div>
-            <div className={`${Button} ${tab === TAB.VIDEOS ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setParams({ tab: TAB.VIDEOS })}> VIDEOS </div>
+            <div className={`${Button} ${tab === TABS.INFO ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setParams({ tab: TABS.INFO })}> INFO </div>
+            <div className={`${Button} ${tab === TABS.CAST ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setParams({ tab: TABS.CAST })}> CAST </div>
+            <div className={`${Button} ${tab === TABS.CREW ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setParams({ tab: TABS.CREW })}> CREW </div>
+            <div className={`${Button} ${tab === TABS.IMAGES ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setParams({ tab: TABS.IMAGES })}> IMAGES </div>
+            <div className={`${Button} ${tab === TABS.VIDEOS ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setParams({ tab: TABS.VIDEOS })}> VIDEOS </div>
         </div>
-        {tab === TAB.INFO && <>
-            <div className={Bubble}>{movie.overview}</div>
+        {tab === TABS.INFO && <>
+            <div className={Bubble}> {movie.overview} </div>
             <div className={Bubble}>
                 <div> Status: {movie.status} </div>
                 <div> Runtime: {movie.runtime} Minutes </div>
@@ -119,7 +110,7 @@ export function Movie() {
                 {releaseDates?.map((x, i) => {
                     return <div className={Bubble} key={i}>
                         <div className='text-sm'> {RELEASE_TYPES[x.type!]} </div>
-                        <div className='text-sm'> {new Date(x.release_date!).toDateString().substring(4)} </div>
+                        <div className='text-sm'> {toDateString(x.release_date)} </div>
                     </div>
                 })}
             </div>
@@ -131,7 +122,7 @@ export function Movie() {
                 })}
             </div>
         </>}
-        {tab === TAB.CAST && <>
+        {tab === TABS.CAST && <>
             <div className={Grid123}>
                 {movie.credits?.cast?.map((x, i) => {
                     return <Link to={`/person/${x.id}`} key={i} className={Card}>
@@ -144,7 +135,7 @@ export function Movie() {
                 })}
             </div>
         </>}
-        {tab === TAB.CREW && <>
+        {tab === TABS.CREW && <>
             <div className={SingleRow}>
                 <select
                     defaultValue={crewFilter}
@@ -171,12 +162,12 @@ export function Movie() {
                     })}
             </div>
         </>}
-        {tab === TAB.IMAGES && <>
+        {tab === TABS.IMAGES && <>
             <div className={ButtonRow}>
-                <div className={`${Button} ${imageTab === IMAGE_TAB.POSTERS ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setImageTab(IMAGE_TAB.POSTERS)}> POSTERS </div>
-                <div className={`${Button} ${imageTab === IMAGE_TAB.BACKDROPS ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setImageTab(IMAGE_TAB.BACKDROPS)}> BACKDROPS </div>
-                {imageTab === IMAGE_TAB.POSTERS && <>
-                    {imageTab === IMAGE_TAB.POSTERS && <>
+                <div className={`${Button} ${imageTab === TABS.POSTERS ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setImageTab(TABS.POSTERS)}> POSTERS </div>
+                <div className={`${Button} ${imageTab === TABS.BACKDROPS ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setImageTab(TABS.BACKDROPS)}> BACKDROPS </div>
+                {imageTab === TABS.POSTERS && <>
+                    {imageTab === TABS.POSTERS && <>
                         <select defaultValue={posterFilter}
                             className={Select}
                             onChange={e => setPosterFilter(e.target.value)}>
@@ -184,8 +175,8 @@ export function Movie() {
                         </select>
                     </>}
                 </>}
-                {imageTab === IMAGE_TAB.BACKDROPS && <>
-                    {imageTab === IMAGE_TAB.BACKDROPS && <>
+                {imageTab === TABS.BACKDROPS && <>
+                    {imageTab === TABS.BACKDROPS && <>
                         <select defaultValue={backdropFilter}
                             className={Select}
                             onChange={e => setBackdropFilter(e.target.value)}>
@@ -194,7 +185,7 @@ export function Movie() {
                     </>}
                 </>}
             </div>
-            {imageTab === IMAGE_TAB.POSTERS && <>
+            {imageTab === TABS.POSTERS && <>
                 <div className={Grid234}>
                     {movie.images?.posters
                         ?.filter(x => x.iso_639_1 === posterFilter)
@@ -203,7 +194,7 @@ export function Movie() {
                         })}
                 </div>
             </>}
-            {imageTab === IMAGE_TAB.BACKDROPS && <>
+            {imageTab === TABS.BACKDROPS && <>
                 <div className={Grid123}>
                     {movie.images?.backdrops
                         ?.filter(x => x.iso_639_1 === backdropFilter)
@@ -215,7 +206,7 @@ export function Movie() {
                 </div>
             </>}
         </>}
-        {tab === TAB.VIDEOS && <>
+        {tab === TABS.VIDEOS && <>
             <div className={SingleRow}>
                 <select defaultValue={videoFilter}
                     className={Select}
@@ -237,7 +228,7 @@ export function Movie() {
                                 rel='noopener noreferrer'
                                 href={`https://www.youtube.com/watch?v=${x.key}`}>
                                 <img className={VideoCardImg} src={`https://i.ytimg.com/vi/${x.key}/hqdefault.jpg`} alt='' />
-                                <div className={VideoCardTextBox}> {x.name} <span className={SubText}> | {new Date(x.published_at!).toDateString().substring(4)} </span> </div>
+                                <div className={VideoCardTextBox}> {x.name} <span className={SubText}> | {toDateString(x.published_at)} </span> </div>
                             </a>
                         </div>
                     })}
