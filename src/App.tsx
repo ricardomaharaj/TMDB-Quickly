@@ -1,4 +1,4 @@
-import { createClient, Provider } from 'urql'
+import { createClient, Provider as UrqlProvider } from 'urql'
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom'
 import { Home } from './Home'
 import { Movie } from './Movie'
@@ -16,7 +16,7 @@ export function App() {
     document.querySelector('html')?.setAttribute('class', 'bg-slate-900 text-white')
     return <>
         <BrowserRouter>
-            <Provider value={urqlClient} >
+            <UrqlProvider value={urqlClient} >
                 <div className='container mx-auto'>
                     <div className='col m-2 space-y-2'>
                         <Link to='/' className='row w-full justify-center '>
@@ -36,7 +36,7 @@ export function App() {
                         </Routes>
                     </div>
                 </div>
-            </Provider>
+            </UrqlProvider>
         </BrowserRouter>
     </>
 }
