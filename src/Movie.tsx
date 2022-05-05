@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useParams, useSearchParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { useMovieQuery } from './gql'
 import { Spinner } from './Spinner'
 import { renderStars, toDateString } from './util'
@@ -22,21 +22,19 @@ import {
     Error
 } from './ThemeData'
 
+const RELEASE_TYPES = [
+    '',
+    'Premiere',
+    'Theatrical (limited)',
+    'Theatrical',
+    'Digital',
+    'Physical',
+    'TV',
+]
+
 export function Movie() {
 
-    const RELEASE_TYPES = [
-        '',
-        'Premiere',
-        'Theatrical (limited)',
-        'Theatrical',
-        'Digital',
-        'Physical',
-        'TV',
-    ]
-
-    let [params, setParams] = useSearchParams()
-    let tab = params.get('tab') || TABS.INFO
-
+    let [tab, setTab] = useState(TABS.INFO)
     let [imageTab, setImageTab] = useState(TABS.POSTERS)
     let [posterFilter, setPosterFilter] = useState('en')
     let [backdropFilter, setBackdropFilter] = useState('en')
@@ -84,11 +82,11 @@ export function Movie() {
             </div>
         </div>
         <div className={ButtonRow}>
-            <div className={`${Button} ${tab === TABS.INFO ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setParams({ tab: TABS.INFO })}> INFO </div>
-            <div className={`${Button} ${tab === TABS.CAST ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setParams({ tab: TABS.CAST })}> CAST </div>
-            <div className={`${Button} ${tab === TABS.CREW ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setParams({ tab: TABS.CREW })}> CREW </div>
-            <div className={`${Button} ${tab === TABS.IMAGES ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setParams({ tab: TABS.IMAGES })}> IMAGES </div>
-            <div className={`${Button} ${tab === TABS.VIDEOS ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setParams({ tab: TABS.VIDEOS })}> VIDEOS </div>
+            <div className={`${Button} ${tab === TABS.INFO ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setTab(TABS.INFO)}> INFO </div>
+            <div className={`${Button} ${tab === TABS.CAST ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setTab(TABS.CAST)}> CAST </div>
+            <div className={`${Button} ${tab === TABS.CREW ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setTab(TABS.CREW)}> CREW </div>
+            <div className={`${Button} ${tab === TABS.IMAGES ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setTab(TABS.IMAGES)}> IMAGES </div>
+            <div className={`${Button} ${tab === TABS.VIDEOS ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setTab(TABS.VIDEOS)}> VIDEOS </div>
         </div>
         {tab === TABS.INFO && <>
             <div className={Bubble}> {movie.overview} </div>

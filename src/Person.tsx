@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useParams, useSearchParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { usePersonQuery } from './gql'
 import { Spinner } from './Spinner'
 import { renderStars, toDateString } from './util'
@@ -21,9 +21,7 @@ import {
 
 export function Person() {
 
-    let [params, setParams] = useSearchParams()
-    let tab = params.get('tab') || TABS.BIO
-
+    let [tab, setTab] = useState(TABS.BIO)
     let [castFilter, setCastFilter] = useState('movie')
     let [crewFilter, setCrewFilter] = useState('ALL')
 
@@ -60,10 +58,10 @@ export function Person() {
             </div>
         </div>
         <div className={ButtonRow}>
-            <div className={`${Button} ${tab === TABS.BIO ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setParams({ tab: TABS.BIO })} > BIO </div>
-            <div className={`${Button} ${tab === TABS.CAST ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setParams({ tab: TABS.CAST })} > CAST </div>
-            <div className={`${Button} ${tab === TABS.CREW ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setParams({ tab: TABS.CREW })} > CREW </div>
-            <div className={`${Button} ${tab === TABS.IMAGES ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setParams({ tab: TABS.IMAGES })} > IMAGES </div>
+            <div className={`${Button} ${tab === TABS.BIO ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setTab(TABS.BIO)} > BIO </div>
+            <div className={`${Button} ${tab === TABS.CAST ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setTab(TABS.CAST)} > CAST </div>
+            <div className={`${Button} ${tab === TABS.CREW ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setTab(TABS.CREW)} > CREW </div>
+            <div className={`${Button} ${tab === TABS.IMAGES ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setTab(TABS.IMAGES)} > IMAGES </div>
         </div>
         {tab === TABS.BIO && <>
             <div className={Bubble}>

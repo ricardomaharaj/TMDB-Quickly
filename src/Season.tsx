@@ -58,18 +58,22 @@ export function Season() {
         <div className={Card}>
             {season.images && <img className={CardImg} src={IMGURL + season.poster_path} alt='' />}
             <div className={CardTextBox}>
-                <div> Season {season.season_number} </div>
-                <div> {season.name} </div>
+                {season.name === `Season ${season.season_number}` ? <>
+                    <div> {season.name} </div>
+                </> : <>
+                    <div> Season {season.season_number} </div>
+                    <div> {season.name} </div>
+                </>}
                 <div className={SubText}> {season.episodes?.length} Episodes </div>
                 <div className={SubText}> {toDateString(season.air_date)} </div>
             </div>
         </div>
         <div className={ButtonRow}>
-            <div className={`${Button} ${tab === TABS.EPISODES ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setTab(TABS.EPISODES)}> EPISODES </div>
-            <div className={`${Button} ${tab === TABS.CAST ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setTab(TABS.CAST)}> CAST </div>
-            <div className={`${Button} ${tab === TABS.CREW ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setTab(TABS.CREW)}> CREW </div>
-            <div className={`${Button} ${tab === TABS.IMAGES ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setTab(TABS.IMAGES)}> IMAGES </div>
-            <div className={`${Button} ${tab === TABS.VIDEOS ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setTab(TABS.VIDEOS)}> VIDEOS </div>
+            <div className={`${Button} ${tab === TABS.EPISODES ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setTab(TABS.EPISODES)}> EPISODES </div>
+            <div className={`${Button} ${tab === TABS.CAST ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setTab(TABS.CAST)}> CAST </div>
+            <div className={`${Button} ${tab === TABS.CREW ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setTab(TABS.CREW)}> CREW </div>
+            <div className={`${Button} ${tab === TABS.IMAGES ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setTab(TABS.IMAGES)}> IMAGES </div>
+            <div className={`${Button} ${tab === TABS.VIDEOS ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setTab(TABS.VIDEOS)}> VIDEOS </div>
         </div>
         {tab === TABS.EPISODES && <>
             <div className={Grid123}>

@@ -45,10 +45,10 @@ export function Episode() {
             </div>
         </div>
         <div className={ButtonRow}>
-            <div className={`${Button} ${tab === TABS.INFO ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setTab(TABS.INFO)}> INFO </div>
-            <div className={`${Button} ${tab === TABS.GUEST ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setTab(TABS.GUEST)}> GUESTS </div>
-            <div className={`${Button} ${tab === TABS.CREW ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setTab(TABS.CREW)}> CREW </div>
-            <div className={`${Button} ${tab === TABS.IMAGES ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setTab(TABS.IMAGES)}> IMAGES </div>
+            <div className={`${Button} ${tab === TABS.INFO ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setTab(TABS.INFO)}> INFO </div>
+            <div className={`${Button} ${tab === TABS.GUEST ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setTab(TABS.GUEST)}> GUESTS </div>
+            <div className={`${Button} ${tab === TABS.CREW ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setTab(TABS.CREW)}> CREW </div>
+            <div className={`${Button} ${tab === TABS.IMAGES ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setTab(TABS.IMAGES)}> IMAGES </div>
         </div>
         {tab === TABS.INFO && <>
             <div className={Bubble}> {episode.overview} </div>
