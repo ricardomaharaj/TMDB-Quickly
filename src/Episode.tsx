@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import { useEpisodeQuery } from './gql'
 import { Spinner } from './Spinner'
 import { toDateString } from './util'
-import { IMGURL, TABS } from './consts'
+import { IMGURL, Props, TABS } from './consts'
 import {
     Bubble,
     Button,
@@ -18,9 +18,8 @@ import {
     SubText
 } from './ThemeData'
 
-export function Episode() {
+export function Episode({ state, updateState }: Props) {
 
-    let [tab, setTab] = useState(TABS.INFO)
     let [crewFilter, setCrewFilter] = useState('ALL')
 
     let { id, season_number, episode_number } = useParams()
@@ -45,15 +44,15 @@ export function Episode() {
             </div>
         </div>
         <div className={ButtonRow}>
-            <div className={`${Button} ${tab === TABS.INFO ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setTab(TABS.INFO)}> INFO </div>
-            <div className={`${Button} ${tab === TABS.GUEST ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setTab(TABS.GUEST)}> GUESTS </div>
-            <div className={`${Button} ${tab === TABS.CREW ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setTab(TABS.CREW)}> CREW </div>
-            <div className={`${Button} ${tab === TABS.IMAGES ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setTab(TABS.IMAGES)}> IMAGES </div>
+            <div className={`${Button} ${state.episodeTab === TABS.INFO ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => updateState({ episodeTab: TABS.INFO })}> INFO </div>
+            <div className={`${Button} ${state.episodeTab === TABS.GUEST ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => updateState({ episodeTab: TABS.GUEST })}> GUESTS </div>
+            <div className={`${Button} ${state.episodeTab === TABS.CREW ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => updateState({ episodeTab: TABS.CREW })}> CREW </div>
+            <div className={`${Button} ${state.episodeTab === TABS.IMAGES ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => updateState({ episodeTab: TABS.IMAGES })}> IMAGES </div>
         </div>
-        {tab === TABS.INFO && <>
+        {state.episodeTab === TABS.INFO && <>
             <div className={Bubble}> {episode.overview} </div>
         </>}
-        {tab === TABS.CREW && <>
+        {state.episodeTab === TABS.CREW && <>
             <div className={SingleRow}>
                 <select defaultValue={crewFilter}
                     className={Select}
@@ -79,7 +78,7 @@ export function Episode() {
                     })}
             </div>
         </>}
-        {tab === TABS.GUEST && <>
+        {state.episodeTab === TABS.GUEST && <>
             <div className={Grid123}>
                 {episode.guest_stars?.map((x, i) => {
                     return <Link to={`/person/${x.id}`} className={Card} key={i} >
@@ -92,7 +91,7 @@ export function Episode() {
                 })}
             </div>
         </>}
-        {tab === TABS.IMAGES && <>
+        {state.episodeTab === TABS.IMAGES && <>
             <div className={Grid123}>
                 {episode.images?.stills?.map((x, i) => { return <img src={IMGURL + x.file_path} alt='' key={i} /> })}
             </div>

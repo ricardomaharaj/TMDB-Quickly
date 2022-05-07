@@ -1,18 +1,31 @@
 export const IMGURL = 'https://image.tmdb.org/t/p/w500'
 
 export enum TABS {
-    MOVIES = 'MOVIES',
-    SHOWS = 'SHOWS',
-    PEOPLE = 'PEOPLE',
-    CAST = 'CAST',
-    CREW = 'CREW',
-    IMAGES = 'IMAGES',
-    VIDEOS = 'VIDEOS',
-    SEASONS = 'SEASONS',
-    INFO = 'INFO',
-    GUEST = 'GUEST',
-    POSTERS = 'POSTERS',
-    BACKDROPS = 'BACKDROPS',
-    BIO = 'BIO',
-    EPISODES = 'EPISODES'
+    MOVIES,
+    SHOWS,
+    PEOPLE,
+    CAST,
+    CREW,
+    IMAGES,
+    VIDEOS,
+    SEASONS,
+    INFO,
+    GUEST,
+    POSTERS,
+    BACKDROPS,
+    BIO,
+    EPISODES,
 }
+
+export interface GlobalState {
+    query: string,
+    page: number,
+    homeTab: number,
+    movieTab: number,
+    showTab: number,
+    seasonTab: number,
+    episodeTab: number,
+    personTab: number,
+}
+
+export interface Props { state: GlobalState, updateState: any }

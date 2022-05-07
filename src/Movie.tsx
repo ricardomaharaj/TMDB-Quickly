@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import { useMovieQuery } from './gql'
 import { Spinner } from './Spinner'
 import { renderStars, toDateString } from './util'
-import { IMGURL, TABS } from './consts'
+import { IMGURL, Props, TABS } from './consts'
 import {
     Button,
     ButtonRow,
@@ -32,9 +32,8 @@ const RELEASE_TYPES = [
     'TV',
 ]
 
-export function Movie() {
+export function Movie({ state, updateState }: Props) {
 
-    let [tab, setTab] = useState(TABS.INFO)
     let [imageTab, setImageTab] = useState(TABS.POSTERS)
     let [posterFilter, setPosterFilter] = useState('en')
     let [backdropFilter, setBackdropFilter] = useState('en')
@@ -82,13 +81,13 @@ export function Movie() {
             </div>
         </div>
         <div className={ButtonRow}>
-            <div className={`${Button} ${tab === TABS.INFO ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setTab(TABS.INFO)}> INFO </div>
-            <div className={`${Button} ${tab === TABS.CAST ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setTab(TABS.CAST)}> CAST </div>
-            <div className={`${Button} ${tab === TABS.CREW ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setTab(TABS.CREW)}> CREW </div>
-            <div className={`${Button} ${tab === TABS.IMAGES ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setTab(TABS.IMAGES)}> IMAGES </div>
-            <div className={`${Button} ${tab === TABS.VIDEOS ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setTab(TABS.VIDEOS)}> VIDEOS </div>
+            <div className={`${Button} ${state.movieTab === TABS.INFO ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => updateState({ movieTab: TABS.INFO })}> INFO </div>
+            <div className={`${Button} ${state.movieTab === TABS.CAST ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => updateState({ movieTab: TABS.CAST })}> CAST </div>
+            <div className={`${Button} ${state.movieTab === TABS.CREW ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => updateState({ movieTab: TABS.CREW })}> CREW </div>
+            <div className={`${Button} ${state.movieTab === TABS.IMAGES ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => updateState({ movieTab: TABS.IMAGES })}> IMAGES </div>
+            <div className={`${Button} ${state.movieTab === TABS.VIDEOS ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => updateState({ movieTab: TABS.VIDEOS })}> VIDEOS </div>
         </div>
-        {tab === TABS.INFO && <>
+        {state.movieTab === TABS.INFO && <>
             <div className={Bubble}> {movie.overview} </div>
             <div className={Bubble}>
                 <div> Status: {movie.status} </div>
@@ -120,7 +119,7 @@ export function Movie() {
                 })}
             </div>
         </>}
-        {tab === TABS.CAST && <>
+        {state.movieTab === TABS.CAST && <>
             <div className={Grid123}>
                 {movie.credits?.cast?.map((x, i) => {
                     return <Link to={`/person/${x.id}`} key={i} className={Card}>
@@ -133,7 +132,7 @@ export function Movie() {
                 })}
             </div>
         </>}
-        {tab === TABS.CREW && <>
+        {state.movieTab === TABS.CREW && <>
             <div className={SingleRow}>
                 <select
                     defaultValue={crewFilter}
@@ -160,7 +159,7 @@ export function Movie() {
                     })}
             </div>
         </>}
-        {tab === TABS.IMAGES && <>
+        {state.movieTab === TABS.IMAGES && <>
             <div className={ButtonRow}>
                 <div className={`${Button} ${imageTab === TABS.POSTERS ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setImageTab(TABS.POSTERS)}> POSTERS </div>
                 <div className={`${Button} ${imageTab === TABS.BACKDROPS ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={e => setImageTab(TABS.BACKDROPS)}> BACKDROPS </div>
@@ -204,7 +203,7 @@ export function Movie() {
                 </div>
             </>}
         </>}
-        {tab === TABS.VIDEOS && <>
+        {state.movieTab === TABS.VIDEOS && <>
             <div className={SingleRow}>
                 <select defaultValue={videoFilter}
                     className={Select}

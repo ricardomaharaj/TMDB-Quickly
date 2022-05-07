@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import { usePersonQuery } from './gql'
 import { Spinner } from './Spinner'
 import { renderStars, toDateString } from './util'
-import { IMGURL, TABS } from './consts'
+import { IMGURL, Props, TABS } from './consts'
 import {
     ButtonRow,
     Button,
@@ -19,9 +19,8 @@ import {
     Error
 } from './ThemeData'
 
-export function Person() {
+export function Person({ state, updateState }: Props) {
 
-    let [tab, setTab] = useState(TABS.BIO)
     let [castFilter, setCastFilter] = useState('movie')
     let [crewFilter, setCrewFilter] = useState('ALL')
 
@@ -58,17 +57,17 @@ export function Person() {
             </div>
         </div>
         <div className={ButtonRow}>
-            <div className={`${Button} ${tab === TABS.BIO ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setTab(TABS.BIO)} > BIO </div>
-            <div className={`${Button} ${tab === TABS.CAST ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setTab(TABS.CAST)} > CAST </div>
-            <div className={`${Button} ${tab === TABS.CREW ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setTab(TABS.CREW)} > CREW </div>
-            <div className={`${Button} ${tab === TABS.IMAGES ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setTab(TABS.IMAGES)} > IMAGES </div>
+            <div className={`${Button} ${state.personTab === TABS.BIO ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => updateState({ personTab: TABS.BIO })} > BIO </div>
+            <div className={`${Button} ${state.personTab === TABS.CAST ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => updateState({ personTab: TABS.CAST })} > CAST </div>
+            <div className={`${Button} ${state.personTab === TABS.CREW ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => updateState({ personTab: TABS.CREW })} > CREW </div>
+            <div className={`${Button} ${state.personTab === TABS.IMAGES ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => updateState({ personTab: TABS.IMAGES })} > IMAGES </div>
         </div>
-        {tab === TABS.BIO && <>
+        {state.personTab === TABS.BIO && <>
             <div className={Bubble}>
                 {person.biography}
             </div>
         </>}
-        {tab === TABS.CAST && <>
+        {state.personTab === TABS.CAST && <>
             <div className={ButtonRow}>
                 <div
                     className={`${Button} ${castFilter === 'movie' ? 'bg-slate-700' : 'bg-slate-800'}`}
@@ -104,7 +103,7 @@ export function Person() {
                 }
             </div>
         </>}
-        {tab === TABS.CREW && <>
+        {state.personTab === TABS.CREW && <>
             <div className={SingleRow}>
                 <select
                     defaultValue={crewFilter}
@@ -143,7 +142,7 @@ export function Person() {
                 }
             </div>
         </>}
-        {tab === TABS.IMAGES && <>
+        {state.personTab === TABS.IMAGES && <>
             <div className={Grid234}>
                 {person.images?.profiles
                     ?.map((x, i) => {

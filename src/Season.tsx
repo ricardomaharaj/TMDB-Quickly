@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import { useSeasonQuery } from './gql'
 import { Spinner } from './Spinner'
 import { toDateString } from './util'
-import { IMGURL, TABS } from './consts'
+import { IMGURL, Props, TABS } from './consts'
 import {
     Bubble,
     Button,
@@ -22,9 +22,8 @@ import {
     VideoCardTextBox
 } from './ThemeData'
 
-export function Season() {
+export function Season({ state, updateState }: Props) {
 
-    let [tab, setTab] = useState(TABS.EPISODES)
     let [crewFilter, setCrewFilter] = useState('ALL')
     let [videoFilter, setVideoFilter] = useState('ALL')
     let [posterFilter, setPosterFilter] = useState('en')
@@ -58,24 +57,19 @@ export function Season() {
         <div className={Card}>
             {season.images && <img className={CardImg} src={IMGURL + season.poster_path} alt='' />}
             <div className={CardTextBox}>
-                {season.name === `Season ${season.season_number}` ? <>
-                    <div> {season.name} </div>
-                </> : <>
-                    <div> Season {season.season_number} </div>
-                    <div> {season.name} </div>
-                </>}
+                <div> {season.name} </div>
                 <div className={SubText}> {season.episodes?.length} Episodes </div>
                 <div className={SubText}> {toDateString(season.air_date)} </div>
             </div>
         </div>
         <div className={ButtonRow}>
-            <div className={`${Button} ${tab === TABS.EPISODES ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setTab(TABS.EPISODES)}> EPISODES </div>
-            <div className={`${Button} ${tab === TABS.CAST ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setTab(TABS.CAST)}> CAST </div>
-            <div className={`${Button} ${tab === TABS.CREW ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setTab(TABS.CREW)}> CREW </div>
-            <div className={`${Button} ${tab === TABS.IMAGES ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setTab(TABS.IMAGES)}> IMAGES </div>
-            <div className={`${Button} ${tab === TABS.VIDEOS ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setTab(TABS.VIDEOS)}> VIDEOS </div>
+            <div className={`${Button} ${state.seasonTab === TABS.EPISODES ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => updateState({ seasonTab: TABS.EPISODES })}> EPISODES </div>
+            <div className={`${Button} ${state.seasonTab === TABS.CAST ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => updateState({ seasonTab: TABS.CAST })}> CAST </div>
+            <div className={`${Button} ${state.seasonTab === TABS.CREW ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => updateState({ seasonTab: TABS.CREW })}> CREW </div>
+            <div className={`${Button} ${state.seasonTab === TABS.IMAGES ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => updateState({ seasonTab: TABS.IMAGES })}> IMAGES </div>
+            <div className={`${Button} ${state.seasonTab === TABS.VIDEOS ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => updateState({ seasonTab: TABS.VIDEOS })}> VIDEOS </div>
         </div>
-        {tab === TABS.EPISODES && <>
+        {state.seasonTab === TABS.EPISODES && <>
             <div className={Grid123}>
                 {season.episodes?.map((x, i) => {
                     return <Link
@@ -90,7 +84,7 @@ export function Season() {
                 })}
             </div>
         </>}
-        {tab === TABS.CAST && <>
+        {state.seasonTab === TABS.CAST && <>
             <div className={Grid123}>
                 {season.credits?.cast?.map((x, i) => {
                     return <Link
@@ -107,7 +101,7 @@ export function Season() {
                 })}
             </div>
         </>}
-        {tab === TABS.CREW && <>
+        {state.seasonTab === TABS.CREW && <>
             <div className={SingleRow}>
                 <select defaultValue={crewFilter}
                     className={Select}
@@ -133,7 +127,7 @@ export function Season() {
                     })}
             </div>
         </>}
-        {tab === TABS.IMAGES && <>
+        {state.seasonTab === TABS.IMAGES && <>
             <div className={SingleRow}>
                 <select defaultValue={posterFilter}
                     className={Select}
@@ -147,7 +141,7 @@ export function Season() {
                     ?.map((x, i) => { return <img src={IMGURL + x.file_path} alt='' key={i} /> })}
             </div>
         </>}
-        {tab === TABS.VIDEOS && <>
+        {state.seasonTab === TABS.VIDEOS && <>
             <div className={SingleRow}>
                 <select defaultValue={videoFilter}
                     className={Select}

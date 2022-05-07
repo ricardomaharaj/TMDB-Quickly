@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom'
 import { useShowQuery } from './gql'
 import { Spinner } from './Spinner'
 import { renderStars, toDateString } from './util'
-import { IMGURL, TABS } from './consts'
+import { IMGURL, Props, TABS } from './consts'
 import {
     Bubble,
     Button,
@@ -22,9 +22,8 @@ import {
     VideoCardTextBox
 } from './ThemeData'
 
-export function Show() {
+export function Show({ state, updateState }: Props) {
 
-    let [tab, setTab] = useState(TABS.INFO)
     let [imageTab, setImageTab] = useState(TABS.POSTERS)
     let [crewFilter, setCrewFilter] = useState('ALL')
     let [videoFilter, setVideoFilter] = useState('ALL')
@@ -71,14 +70,14 @@ export function Show() {
             </div>
         </div>
         <div className={ButtonRow}>
-            <div className={`${Button} ${tab === TABS.INFO ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setTab(TABS.INFO)}> INFO </div>
-            <div className={`${Button} ${tab === TABS.CAST ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setTab(TABS.CAST)}> CAST </div>
-            <div className={`${Button} ${tab === TABS.CREW ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setTab(TABS.CREW)}> CREW </div>
-            <div className={`${Button} ${tab === TABS.SEASONS ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setTab(TABS.SEASONS)}> SEASONS </div>
-            <div className={`${Button} ${tab === TABS.IMAGES ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setTab(TABS.IMAGES)}> IMAGES </div>
-            <div className={`${Button} ${tab === TABS.VIDEOS ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setTab(TABS.VIDEOS)}> VIDEOS </div>
+            <div className={`${Button} ${state.showTab === TABS.INFO ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => updateState({ showTab: TABS.INFO })}> INFO </div>
+            <div className={`${Button} ${state.showTab === TABS.CAST ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => updateState({ showTab: TABS.CAST })}> CAST </div>
+            <div className={`${Button} ${state.showTab === TABS.CREW ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => updateState({ showTab: TABS.CREW })}> CREW </div>
+            <div className={`${Button} ${state.showTab === TABS.SEASONS ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => updateState({ showTab: TABS.SEASONS })}> SEASONS </div>
+            <div className={`${Button} ${state.showTab === TABS.IMAGES ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => updateState({ showTab: TABS.IMAGES })}> IMAGES </div>
+            <div className={`${Button} ${state.showTab === TABS.VIDEOS ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => updateState({ showTab: TABS.VIDEOS })}> VIDEOS </div>
         </div>
-        {tab === TABS.INFO && <>
+        {state.showTab === TABS.INFO && <>
             <div className={Bubble}> {show.overview} </div>
             <div className={Bubble}>
                 <div> Status: {show.status} </div>
@@ -99,7 +98,7 @@ export function Show() {
                 })}
             </div>
         </>}
-        {tab === TABS.CAST && <>
+        {state.showTab === TABS.CAST && <>
             <div className={Grid123}>
                 {show.credits?.cast?.map((x, i) => {
                     return <Link to={`/person/${x.id}`} className={Card} key={i} >
@@ -112,7 +111,7 @@ export function Show() {
                 })}
             </div>
         </>}
-        {tab === TABS.CREW && <>
+        {state.showTab === TABS.CREW && <>
             <div className={SingleRow}>
                 <select defaultValue={crewFilter}
                     className={Select}
@@ -138,18 +137,13 @@ export function Show() {
                     })}
             </div>
         </>}
-        {tab === TABS.SEASONS && <>
+        {state.showTab === TABS.SEASONS && <>
             <div className={Grid123}>
                 {show.seasons?.map((x, i) => {
                     return <Link to={`/tv/${id}/season/${x.season_number}`} className={Card} key={i}>
                         {x.poster_path && <img className={CardImg} src={IMGURL + x.poster_path} alt='' />}
                         <div className={CardTextBox}>
-                            {x.name === `Season ${x.season_number}` ? <>
-                                <div> {x.name} </div>
-                            </> : <>
-                                <div> Season {x.season_number} </div>
-                                <div> {x.name} </div>
-                            </>}
+                            <div> {x.name} </div>
                             <div className={SubText}> {x.episode_count} Episodes </div>
                             <div className={SubText}> {toDateString(x.air_date)} </div>
                         </div>
@@ -157,7 +151,7 @@ export function Show() {
                 })}
             </div>
         </>}
-        {tab === TABS.IMAGES && <>
+        {state.showTab === TABS.IMAGES && <>
             <div className={ButtonRow}>
                 <div
                     className={`${Button} ${imageTab === TABS.POSTERS ? 'bg-slate-700' : 'bg-slate-800'}`}
@@ -199,7 +193,7 @@ export function Show() {
                 </div>
             </>}
         </>}
-        {tab === TABS.VIDEOS && <>
+        {state.showTab === TABS.VIDEOS && <>
             <div className={SingleRow}>
                 <select defaultValue={videoFilter}
                     className={Select}

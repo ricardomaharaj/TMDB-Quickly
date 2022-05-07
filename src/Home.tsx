@@ -1,9 +1,8 @@
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { MovieResult, PersonResult, ShowResult, useFindQuery } from './gql'
 import { Spinner } from './Spinner'
 import { renderStars } from './util'
-import { IMGURL, TABS } from './consts'
+import { IMGURL, Props, TABS } from './consts'
 import {
     Button,
     ButtonRow,
@@ -15,11 +14,7 @@ import {
     Grid123
 } from './ThemeData'
 
-export function Home() {
-
-    let [query, setQuery] = useState('')
-    let [filter, setFilter] = useState(TABS.MOVIES)
-
+export function Home({ state, updateState }: Props) {
     return <>
         <div className='row xl:justify-center'>
             <input
@@ -27,27 +22,26 @@ export function Home() {
                 id='query'
                 placeholder='SEARCH'
                 type='text'
-                onKeyDown={(e) => { if (e.key === 'Enter') { setQuery(e.currentTarget.value) } }} />
+                onKeyDown={(e) => { if (e.key === 'Enter') { updateState({ query: e.currentTarget.value }) } }} />
         </div>
         <div className={ButtonRow}>
-            <div className={`${Button} ${filter === TABS.MOVIES ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setFilter(TABS.MOVIES)}> MOVIES </div>
-            <div className={`${Button} ${filter === TABS.SHOWS ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setFilter(TABS.SHOWS)}> SHOWS </div>
-            <div className={`${Button} ${filter === TABS.PEOPLE ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setFilter(TABS.PEOPLE)}> PEOPLE </div>
+            <div className={`${Button} ${state.homeTab === TABS.MOVIES ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => updateState({ homeTab: TABS.MOVIES })}> MOVIES </div>
+            <div className={`${Button} ${state.homeTab === TABS.SHOWS ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => updateState({ homeTab: TABS.SHOWS })}> SHOWS </div>
+            <div className={`${Button} ${state.homeTab === TABS.PEOPLE ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => updateState({ homeTab: TABS.PEOPLE })}> PEOPLE </div>
         </div>
-        <SearchResults query={query} filter={filter} />
+        <SearchResults state={state} updateState={updateState} />
     </>
 }
 
-function SearchResults(props: { query: string, filter: string }) {
+function SearchResults({ state, updateState }: Props) {
 
-    let { query, filter } = props
+    let nextPage = () => updateState({ page: state.page + 1 })
+    let lastPage = () => updateState({ page: state.page - 1 })
 
-    let [page, setPage] = useState(1)
-
-    let nextPage = () => setPage(page + 1)
-    let lastPage = () => setPage(page - 1)
-
-    let [res,] = useFindQuery({ query, page: `${page}` })
+    let [res,] = useFindQuery({
+        query: state.query,
+        page: state.page.toString()
+    })
     let { data, fetching, error } = res
     let results = data?.find?.results
 
@@ -61,7 +55,7 @@ function SearchResults(props: { query: string, filter: string }) {
     if (error) return <div className={Error}> {error.message} </div>
     if (results) return <>
         <div className={Grid123}>
-            {filter === TABS.MOVIES && <>
+            {state.homeTab === TABS.MOVIES && <>
                 {movies.map((x, i) => {
                     return <Link to={`/movie/${x.id}`} key={i} className={Card}>
                         {x.poster_path && <img className={CardImg} src={IMGURL + x.poster_path} alt='' />}
@@ -76,7 +70,7 @@ function SearchResults(props: { query: string, filter: string }) {
                     </Link>
                 })}
             </>}
-            {filter === TABS.SHOWS && <>
+            {state.homeTab === TABS.SHOWS && <>
                 {shows.map((x, i) => {
                     return <Link to={`/tv/${x.id}`} key={i} className={Card}>
                         {x.poster_path && <img className={CardImg} src={IMGURL + x.poster_path} alt='' />}
@@ -91,7 +85,7 @@ function SearchResults(props: { query: string, filter: string }) {
                     </Link>
                 })}
             </>}
-            {filter === TABS.PEOPLE && <>
+            {state.homeTab === TABS.PEOPLE && <>
                 {people.map((x, i) => {
                     return <Link to={`/person/${x.id}`} key={i} className={Card}>
                         {x.profile_path && <img className={CardImg} src={IMGURL + x.profile_path} alt='' />}
@@ -100,11 +94,11 @@ function SearchResults(props: { query: string, filter: string }) {
                 })}
             </>}
         </div>
-        {query && <>
+        {state.query && <>
             <div className={ButtonRow}>
-                <button className={Button + ' bg-slate-800'} disabled={page <= 1} onClick={lastPage}> BACK </button>
-                <div className={Button + ' bg-slate-800'} > {page} </div>
-                <button className={Button + ' bg-slate-800'} disabled={page >= maxPages!} onClick={nextPage}> NEXT </button>
+                <button className={Button + ' bg-slate-800'} disabled={state.page <= 1} onClick={lastPage}> BACK </button>
+                <div className={Button + ' bg-slate-800'} > {state.page} </div>
+                <button className={Button + ' bg-slate-800'} disabled={state.page >= maxPages!} onClick={nextPage}> NEXT </button>
             </div>
         </>}
     </>

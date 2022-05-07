@@ -6,6 +6,8 @@ import { Show } from './Show'
 import { Season } from './Season'
 import { Episode } from './Episode'
 import { Person } from './Person'
+import { useState } from 'react'
+import { GlobalState, TABS } from './consts'
 
 let url: string = 'http://localhost:4000/gql'
 if (process.env.NODE_ENV === 'production') url = '/gql'
@@ -13,7 +15,22 @@ if (process.env.NODE_ENV === 'production') url = '/gql'
 let urqlClient = createClient({ url })
 
 export function App() {
+
+    let [state, setState] = useState<GlobalState>({
+        query: '',
+        page: 1,
+        homeTab: TABS.MOVIES,
+        movieTab: TABS.INFO,
+        showTab: TABS.INFO,
+        seasonTab: TABS.EPISODES,
+        episodeTab: TABS.INFO,
+        personTab: TABS.BIO,
+    })
+
+    let updateState = (update: GlobalState) => setState({ ...state, ...update })
+
     document.querySelector('html')?.setAttribute('class', 'bg-slate-900 text-white')
+
     return <>
         <BrowserRouter>
             <UrqlProvider value={urqlClient} >
@@ -26,13 +43,13 @@ export function App() {
                                 alt='' />
                         </Link>
                         <Routes>
-                            <Route path='/' element={<Home />} />
-                            <Route path='/movie/:id' element={<Movie />} />
-                            <Route path='/tv/:id' element={<Show />} />
-                            <Route path='/tv/:id/season/:season_number' element={<Season />} />
-                            <Route path='/tv/:id/season/:season_number/episode/:episode_number' element={<Episode />} />
-                            <Route path='/person/:id' element={<Person />} />
-                            <Route path='*' element={<Home />} />
+                            <Route path='/' element={<Home state={state} updateState={updateState} />} />
+                            <Route path='/movie/:id' element={<Movie state={state} updateState={updateState} />} />
+                            <Route path='/tv/:id' element={<Show state={state} updateState={updateState} />} />
+                            <Route path='/tv/:id/season/:season_number' element={<Season state={state} updateState={updateState} />} />
+                            <Route path='/tv/:id/season/:season_number/episode/:episode_number' element={<Episode state={state} updateState={updateState} />} />
+                            <Route path='/person/:id' element={<Person state={state} updateState={updateState} />} />
+                            <Route path='*' element={<Home state={state} updateState={updateState} />} />
                         </Routes>
                     </div>
                 </div>
