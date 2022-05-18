@@ -3,8 +3,9 @@ import { useParams, Link } from 'react-router-dom'
 import { useShowQuery } from './gql'
 import { Spinner } from './Spinner'
 import { renderStars, toDateString } from './util'
-import { IMGURL, Props, TABS } from './consts'
+import { FULLIMGURL, IMGURL, Props, TABS } from './consts'
 import {
+    BlurCard,
     Bubble,
     Button,
     ButtonRow,
@@ -14,6 +15,7 @@ import {
     Error,
     Grid123,
     Grid234,
+    ImageBG,
     Select,
     SingleRow,
     SubText,
@@ -59,14 +61,18 @@ export function Show({ state, updateState }: Props) {
 
     if (fetching) return <Spinner />
     if (error) return <div className={Error}> {error.message} </div>
-    if (show) return <>
-        <div className={Card}>
-            {show.poster_path && <img className={CardImg} src={IMGURL + show.poster_path} alt='' />}
-            <div className={CardTextBox}>
-                <div> {toDateString(show.first_air_date)} </div>
-                <div> {show.name} </div>
-                <div> {show.tagline} </div>
-                <div> {renderStars(show.vote_average)} </div>
+    return <>
+        <div className={ImageBG} style={{
+            backgroundImage: `url(${FULLIMGURL + show?.backdrop_path})`
+        }}>
+            <div className={BlurCard}>
+                {show?.poster_path && <img className={CardImg} src={IMGURL + show?.poster_path} alt='' />}
+                <div className={CardTextBox}>
+                    <div> {toDateString(show?.first_air_date)} </div>
+                    <div> {show?.name} </div>
+                    <div className='text-sm'> {show?.tagline} </div>
+                    <div> {renderStars(show?.vote_average)} </div>
+                </div>
             </div>
         </div>
         <div className={ButtonRow}>
@@ -78,37 +84,37 @@ export function Show({ state, updateState }: Props) {
             <div className={`${Button} ${state.showTab === TABS.VIDEOS ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => updateState({ showTab: TABS.VIDEOS })}> VIDEOS </div>
         </div>
         {state.showTab === TABS.INFO && <>
-            <div className={Bubble}> {show.overview} </div>
+            <div className={Bubble}> {show?.overview} </div>
             <div className={Bubble}>
-                <div> Status: {show.status} </div>
-                <div> Show Type: {show.type} </div>
-                <div> Runtime: {show.episode_run_time![0]} Minutes </div>
-                <div> Seasons: {show.number_of_seasons} </div>
-                <div> Episodes: {show.number_of_episodes} </div>
-                <div> <a className='underline' target='_blank' rel='noopener noreferrer' href={`https://www.imdb.com/title/${show.external_ids?.imdb_id}`}>IMDB</a> ID: {show.external_ids?.imdb_id} </div>
-                <div> <a className='underline' target='_blank' rel='noopener noreferrer' href={`https://www.themoviedb.org/tv/${show.id}`}>TMDB</a> ID: {show.id} </div>
-                <div> Homepage: <a className='underline' href={show.homepage} target='_blank' rel='noopener noreferrer'> {show.homepage} </a></div>
+                <div> Status: {show?.status} </div>
+                <div> Show Type: {show?.type} </div>
+                <div> Runtime: {show?.episode_run_time![0]} Minutes </div>
+                <div> Seasons: {show?.number_of_seasons} </div>
+                <div> Episodes: {show?.number_of_episodes} </div>
+                <div> <a className='underline' target='_blank' rel='noopener noreferrer' href={`https://www.imdb.com/title/${show?.external_ids?.imdb_id}`}>IMDB</a> ID: {show?.external_ids?.imdb_id} </div>
+                <div> <a className='underline' target='_blank' rel='noopener noreferrer' href={`https://www.themoviedb.org/tv/${show?.id}`}>TMDB</a> ID: {show?.id} </div>
+                <div> Homepage: <a className='underline' href={show?.homepage} target='_blank' rel='noopener noreferrer'> {show?.homepage} </a></div>
             </div>
             <div className={ButtonRow}>
-                {show.networks?.map((x, i) => {
-                    return <div className={Bubble} key={i}> {x.name} </div>
-                })}
-                {show.production_companies?.map((x, i) => {
-                    return <div className={Bubble} key={i}> {x.name} </div>
-                })}
+                {show?.networks?.map((x, i) =>
+                    <div className={Bubble} key={i}> {x.name} </div>
+                )}
+                {show?.production_companies?.map((x, i) =>
+                    <div className={Bubble} key={i}> {x.name} </div>
+                )}
             </div>
         </>}
         {state.showTab === TABS.CAST && <>
             <div className={Grid123}>
-                {show.credits?.cast?.map((x, i) => {
-                    return <Link to={`/person/${x.id}`} className={Card} key={i} >
+                {show?.credits?.cast?.map((x, i) =>
+                    <Link to={`/person/${x.id}`} className={Card} key={i} >
                         {x.profile_path && <img className={CardImg} src={IMGURL + x.profile_path!} alt='' />}
                         <div className={CardTextBox}>
                             <div> {x.name} </div>
                             <div className={SubText}> {x.character} </div>
                         </div>
                     </Link>
-                })}
+                )}
             </div>
         </>}
         {state.showTab === TABS.CREW && <>
@@ -120,27 +126,27 @@ export function Show({ state, updateState }: Props) {
                 </select>
             </div>
             <div className={Grid123}>
-                {show.credits?.crew
+                {show?.credits?.crew
                     ?.filter(({ job }) => {
                         if (crewFilter === 'ALL') return true
                         if (job === crewFilter) return true
                         else return false
                     })
-                    .map((x, i) => {
-                        return <Link to={`/person/${x.id}`} className={Card} key={i} >
+                    .map((x, i) =>
+                        <Link to={`/person/${x.id}`} className={Card} key={i} >
                             {x.profile_path && <img className={CardImg} src={IMGURL + x.profile_path!} alt='' />}
                             <div className={CardTextBox}>
                                 <div> {x.name} </div>
                                 <div className={SubText}> {x.job} </div>
                             </div>
                         </Link>
-                    })}
+                    )}
             </div>
         </>}
         {state.showTab === TABS.SEASONS && <>
             <div className={Grid123}>
-                {show.seasons?.map((x, i) => {
-                    return <Link to={`/tv/${id}/season/${x.season_number}`} className={Card} key={i}>
+                {show?.seasons?.map((x, i) =>
+                    <Link to={`/tv/${id}/season/${x.season_number}`} className={Card} key={i}>
                         {x.poster_path && <img className={CardImg} src={IMGURL + x.poster_path} alt='' />}
                         <div className={CardTextBox}>
                             <div> {x.name} </div>
@@ -148,7 +154,7 @@ export function Show({ state, updateState }: Props) {
                             <div className={SubText}> {toDateString(x.air_date)} </div>
                         </div>
                     </Link>
-                })}
+                )}
             </div>
         </>}
         {state.showTab === TABS.IMAGES && <>
@@ -164,7 +170,7 @@ export function Show({ state, updateState }: Props) {
                         <select defaultValue={posterFilter}
                             className={Select}
                             onChange={e => setPosterFilter(e.target.value)}>
-                            {posterLangOpts.map((x, i) => { return <option value={x} key={i}>{x} </option> })}
+                            {posterLangOpts.map((x, i) => <option value={x} key={i}>{x} </option>)}
                         </select>
                     </>}
                 </>}
@@ -173,23 +179,31 @@ export function Show({ state, updateState }: Props) {
                         <select defaultValue={backdropFilter}
                             className={Select}
                             onChange={e => setBackdropFilter(e.target.value)}>
-                            {backdropsLangOpts.map((x, i) => { return <option value={x} key={i}>{x} </option> })}
+                            {backdropsLangOpts.map((x, i) => <option value={x} key={i}>{x} </option>)}
                         </select>
                     </>}
                 </>}
             </div>
             {imageTab === TABS.POSTERS && <>
                 <div className={Grid234}>
-                    {show.images?.posters
+                    {show?.images?.posters
                         ?.filter(x => x.iso_639_1 === posterFilter)
-                        ?.map((x, i) => { return <img src={IMGURL + x.file_path} alt='' key={i} /> })}
+                        ?.map((x, i) =>
+                            <a target='_blank' rel='noopener noreferrer' href={FULLIMGURL + x.file_path} key={i}>
+                                <img src={IMGURL + x.file_path} alt='' />
+                            </a>
+                        )}
                 </div>
             </>}
             {imageTab === TABS.BACKDROPS && <>
                 <div className={Grid123}>
-                    {show.images?.backdrops
+                    {show?.images?.backdrops
                         ?.filter(x => x.iso_639_1 === backdropFilter)
-                        ?.map((x, i) => { return <img src={IMGURL + x.file_path} alt='' key={i} /> })}
+                        ?.map((x, i) =>
+                            <a target='_blank' rel='noopener noreferrer' href={FULLIMGURL + x.file_path} key={i}>
+                                <img src={IMGURL + x.file_path} alt='' />
+                            </a>
+                        )}
                 </div>
             </>}
         </>}
@@ -198,27 +212,26 @@ export function Show({ state, updateState }: Props) {
                 <select defaultValue={videoFilter}
                     className={Select}
                     onChange={e => setVideoFilter(e.target.value)}>
-                    {videoFilterOpts.map((x, i) => { return <option value={x} key={i}>{x} </option> })}
+                    {videoFilterOpts.map((x, i) => <option value={x} key={i}>{x} </option>)}
                 </select>
             </div>
             <div className={Grid234}>
-                {show.videos?.results
+                {show?.videos?.results
                     ?.filter(({ type }) => {
                         if (videoFilter === 'ALL') return true
                         if (type === videoFilter) return true
                         else return false
                     })
                     ?.sort((a, b) => Date.parse(a.published_at!) > Date.parse(b.published_at!) ? -1 : 1)
-                    ?.map((x, i) => {
-                        return <div className={VideoCard} key={i}>
+                    ?.map((x, i) =>
+                        <div className={VideoCard} key={i}>
                             <a target='_blank' rel='noopener noreferrer' href={`https://www.youtube.com/watch?v=${x.key}`}>
                                 <img className={VideoCardImg} src={`https://i.ytimg.com/vi/${x.key}/hqdefault.jpg`} alt='' />
                             </a>
                             <div className={VideoCardTextBox}> {x.name} <span className={SubText}> {toDateString(x.published_at)} </span> </div>
                         </div>
-                    })}
+                    )}
             </div>
         </>}
     </>
-    return <></>
 }

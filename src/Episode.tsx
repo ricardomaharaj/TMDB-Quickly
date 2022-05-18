@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import { useEpisodeQuery } from './gql'
 import { Spinner } from './Spinner'
 import { toDateString } from './util'
-import { IMGURL, Props, TABS } from './consts'
+import { FULLIMGURL, IMGURL, Props, TABS } from './consts'
 import {
     Bubble,
     Button,
@@ -13,6 +13,7 @@ import {
     CardTextBox,
     Error,
     Grid123,
+    ImageBG,
     Select,
     SingleRow,
     SubText
@@ -34,13 +35,12 @@ export function Episode({ state, updateState }: Props) {
 
     if (fetching) return <Spinner />
     if (error) return <div className={Error}> {error.message} </div>
-    if (episode) return <>
-        <div className='row'>
-            <img className='rounded-xl' src={IMGURL + episode.still_path} alt='' />
-        </div>
-        <div className='col'>
-            <div className={Bubble}>
-                S{episode.season_number?.toString().padStart(2, '0')}E{episode.episode_number?.toString().padStart(2, '0')} | {episode.name} | {toDateString(episode.air_date)}
+    return <>
+        <div className={ImageBG} style={{ backgroundImage: `url(${FULLIMGURL + episode?.still_path})` }} >
+            <div className={`col backdrop-blur-sm backdrop-brightness-50 rounded-xl p-10 space-y-2`}>
+                <div> S{episode?.season_number?.toString().padStart(2, '0')}E{episode?.episode_number?.toString().padStart(2, '0')} </div>
+                <div> {episode?.name} </div>
+                <div> {toDateString(episode?.air_date)} </div>
             </div>
         </div>
         <div className={ButtonRow}>
@@ -50,52 +50,51 @@ export function Episode({ state, updateState }: Props) {
             <div className={`${Button} ${state.episodeTab === TABS.IMAGES ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => updateState({ episodeTab: TABS.IMAGES })}> IMAGES </div>
         </div>
         {state.episodeTab === TABS.INFO && <>
-            <div className={Bubble}> {episode.overview} </div>
+            <div className={Bubble}> {episode?.overview} </div>
         </>}
         {state.episodeTab === TABS.CREW && <>
             <div className={SingleRow}>
                 <select defaultValue={crewFilter}
                     className={Select}
                     onChange={e => setCrewFilter(e.target.value)}>
-                    {crewFilterOpts.map((x, i) => { return <option value={x} key={i}>{x}</option> })}
+                    {crewFilterOpts.map((x, i) => <option value={x} key={i}>{x}</option>)}
                 </select>
             </div>
             <div className={Grid123}>
-                {episode.crew
+                {episode?.crew
                     ?.filter(({ job }) => {
                         if (crewFilter === 'ALL') return true
                         if (job === crewFilter) return true
                         else return false
                     })
-                    .map((x, i) => {
-                        return <Link to={`/person/${x.id}`} className={Card} key={i} >
+                    .map((x, i) =>
+                        <Link to={`/person/${x.id}`} className={Card} key={i} >
                             {x.profile_path && <img className={CardImg} src={IMGURL + x.profile_path!} alt='' />}
                             <div className={CardTextBox}>
                                 <div> {x.name} </div>
                                 <div className={SubText}> {x.job} </div>
                             </div>
                         </Link>
-                    })}
+                    )}
             </div>
         </>}
         {state.episodeTab === TABS.GUEST && <>
             <div className={Grid123}>
-                {episode.guest_stars?.map((x, i) => {
-                    return <Link to={`/person/${x.id}`} className={Card} key={i} >
+                {episode?.guest_stars?.map((x, i) =>
+                    <Link to={`/person/${x.id}`} className={Card} key={i} >
                         {x.profile_path && <img className={CardImg} src={IMGURL + x.profile_path!} alt='' />}
                         <div className={CardTextBox}>
                             <div> {x.name} </div>
                             <div className={SubText}> {x.character} </div>
                         </div>
                     </Link>
-                })}
+                )}
             </div>
         </>}
         {state.episodeTab === TABS.IMAGES && <>
             <div className={Grid123}>
-                {episode.images?.stills?.map((x, i) => { return <img src={IMGURL + x.file_path} alt='' key={i} /> })}
+                {episode?.images?.stills?.map((x, i) => <img src={IMGURL + x.file_path} alt='' key={i} />)}
             </div>
         </>}
     </>
-    return <></>
 }

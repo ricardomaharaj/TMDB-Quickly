@@ -3,8 +3,9 @@ import { Link, useParams } from 'react-router-dom'
 import { useSeasonQuery } from './gql'
 import { Spinner } from './Spinner'
 import { toDateString } from './util'
-import { IMGURL, Props, TABS } from './consts'
+import { FULLIMGURL, IMGURL, Props, TABS } from './consts'
 import {
+    BlurCard,
     Bubble,
     Button,
     ButtonRow,
@@ -14,6 +15,7 @@ import {
     Error,
     Grid123,
     Grid234,
+    ImageBG,
     Select,
     SingleRow,
     SubText,
@@ -53,13 +55,17 @@ export function Season({ state, updateState }: Props) {
 
     if (fetching) return <Spinner />
     if (error) return <div className={Error}> {error.message} </div>
-    if (season) return <>
-        <div className={Card}>
-            {season.images && <img className={CardImg} src={IMGURL + season.poster_path} alt='' />}
-            <div className={CardTextBox}>
-                <div> {season.name} </div>
-                <div className={SubText}> {season.episodes?.length} Episodes </div>
-                <div className={SubText}> {toDateString(season.air_date)} </div>
+    return <>
+        <div className={ImageBG} style={{
+            backgroundImage: `url(${FULLIMGURL + season?.poster_path})`
+        }} >
+            <div className={BlurCard}>
+                {season?.images && <img className={CardImg} src={IMGURL + season?.poster_path} alt='' />}
+                <div className={CardTextBox}>
+                    <div> {season?.name} </div>
+                    <div> {season?.episodes?.length} Episodes </div>
+                    <div> {toDateString(season?.air_date)} </div>
+                </div>
             </div>
         </div>
         <div className={ButtonRow}>
@@ -71,34 +77,27 @@ export function Season({ state, updateState }: Props) {
         </div>
         {state.seasonTab === TABS.EPISODES && <>
             <div className={Grid123}>
-                {season.episodes?.map((x, i) => {
-                    return <Link
-                        to={`/tv/${id}/season/${season_number}/episode/${x.episode_number}`}
-                        className={Bubble}
-                        key={i}
-                    >
+                {season?.episodes?.map((x, i) =>
+                    <Link to={`/tv/${id}/season/${season_number}/episode/${x.episode_number}`}
+                        className={Bubble} key={i} >
                         {x.still_path && <img className='rounded-xl mb-2' src={IMGURL + x.still_path} alt='' />}
                         <div> {x.episode_number} | {x.name} | {toDateString(x.air_date)} </div>
                         <div className={SubText}> {x.overview} </div>
                     </Link>
-                })}
+                )}
             </div>
         </>}
         {state.seasonTab === TABS.CAST && <>
             <div className={Grid123}>
-                {season.credits?.cast?.map((x, i) => {
-                    return <Link
-                        to={`/person/${x.id}`}
-                        className={Card}
-                        key={i}
-                    >
+                {season?.credits?.cast?.map((x, i) =>
+                    <Link to={`/person/${x.id}`} className={Card} key={i} >
                         {x.profile_path && <img className={CardImg} src={IMGURL + x.profile_path!} alt='' />}
                         <div className={CardTextBox}>
                             <div> {x.name} </div>
                             <div className={SubText}> {x.character} </div>
                         </div>
                     </Link>
-                })}
+                )}
             </div>
         </>}
         {state.seasonTab === TABS.CREW && <>
@@ -106,25 +105,25 @@ export function Season({ state, updateState }: Props) {
                 <select defaultValue={crewFilter}
                     className={Select}
                     onChange={e => setCrewFilter(e.target.value)}>
-                    {crewFilterOpts.map((x, i) => { return <option value={x} key={i}>{x}</option> })}
+                    {crewFilterOpts.map((x, i) => <option value={x} key={i}>{x}</option>)}
                 </select>
             </div>
             <div className={Grid123}>
-                {season.credits?.crew
+                {season?.credits?.crew
                     ?.filter(({ job }) => {
                         if (crewFilter === 'ALL') return true
                         if (job === crewFilter) return true
                         else return false
                     })
-                    .map((x, i) => {
-                        return <Link to={`/person/${x.id}`} className={Card} key={i} >
+                    .map((x, i) =>
+                        <Link to={`/person/${x.id}`} className={Card} key={i} >
                             {x.profile_path && <img className={CardImg} src={IMGURL + x.profile_path!} alt='' />}
                             <div className={CardTextBox}>
                                 <div> {x.name} </div>
                                 <div className={SubText}> {x.job} </div>
                             </div>
                         </Link>
-                    })}
+                    )}
             </div>
         </>}
         {state.seasonTab === TABS.IMAGES && <>
@@ -132,13 +131,17 @@ export function Season({ state, updateState }: Props) {
                 <select defaultValue={posterFilter}
                     className={Select}
                     onChange={e => setPosterFilter(e.target.value)}>
-                    {posterLangOpts.map((x, i) => { return <option value={x} key={i}>{x} </option> })}
+                    {posterLangOpts.map((x, i) => <option value={x} key={i}>{x} </option>)}
                 </select>
             </div>
             <div className={Grid234}>
-                {season.images?.posters
+                {season?.images?.posters
                     ?.filter(x => x.iso_639_1 === posterFilter)
-                    ?.map((x, i) => { return <img src={IMGURL + x.file_path} alt='' key={i} /> })}
+                    ?.map((x, i) =>
+                        <a target='_blank' rel='noopener noreferrer' href={FULLIMGURL + x.file_path} key={i}>
+                            <img src={IMGURL + x.file_path} alt='' />
+                        </a>
+                    )}
             </div>
         </>}
         {state.seasonTab === TABS.VIDEOS && <>
@@ -146,27 +149,26 @@ export function Season({ state, updateState }: Props) {
                 <select defaultValue={videoFilter}
                     className={Select}
                     onChange={e => setVideoFilter(e.target.value)}>
-                    {videoFilterOpts.map((x, i) => { return <option value={x} key={i}>{x} </option> })}
+                    {videoFilterOpts.map((x, i) => <option value={x} key={i}>{x} </option>)}
                 </select>
             </div>
             <div className={Grid234}>
-                {season.videos?.results
+                {season?.videos?.results
                     ?.filter(({ type }) => {
                         if (videoFilter === 'ALL') return true
                         if (type === videoFilter) return true
                         else return false
                     })
                     ?.sort((a, b) => Date.parse(a.published_at!) > Date.parse(b.published_at!) ? -1 : 1)
-                    ?.map((x, i) => {
-                        return <div className={VideoCard} key={i}>
+                    ?.map((x, i) =>
+                        <div className={VideoCard} key={i}>
                             <a target='_blank' rel='noopener noreferrer' href={`https://www.youtube.com/watch?v=${x.key}`}>
                                 <img className={VideoCardImg} src={`https://i.ytimg.com/vi/${x.key}/hqdefault.jpg`} alt='' />
                             </a>
                             <div className={VideoCardTextBox}> {x.name} <span className={SubText}> {toDateString(x.published_at)} </span> </div>
                         </div>
-                    })}
+                    )}
             </div>
         </>}
     </>
-    return <></>
 }

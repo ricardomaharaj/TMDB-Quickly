@@ -9,7 +9,7 @@ import { Person } from './Person'
 import { useState } from 'react'
 import { GlobalState, TABS } from './consts'
 
-let url = process.env.NODE_ENV === 'production' ? '/gql' : 'http://localhost:4000/gql'
+let url = 'https://r8r-gql.herokuapp.com/'
 
 let urqlClient = createClient({ url })
 
