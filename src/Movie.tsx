@@ -48,7 +48,7 @@ export function Movie({ state, updateState }: Props) {
     let releaseDates = movie?.release_dates?.results?.filter(x => x?.iso_3166_1 === 'US')[0]?.release_dates
     let crewFilterOpts: string[] = []
     let posterLangOpts: string[] = []
-    let backdropsLangOpts: string[] = []
+    let backdropLangOpts: string[] = []
     let videoFilterOpts: string[] = []
 
     movie?.credits?.crew?.forEach(({ job }) => {
@@ -58,7 +58,7 @@ export function Movie({ state, updateState }: Props) {
         if (posterLangOpts.findIndex(x => x === iso_639_1) === -1) posterLangOpts.push(iso_639_1!)
     })
     movie?.images?.backdrops?.forEach(({ iso_639_1 }) => {
-        if (backdropsLangOpts.findIndex(x => x === iso_639_1) === -1) backdropsLangOpts.push(iso_639_1!)
+        if (backdropLangOpts.findIndex(x => x === iso_639_1) === -1) backdropLangOpts.push(iso_639_1!)
     })
     movie?.videos?.results?.forEach(({ type }) => {
         if (videoFilterOpts.findIndex(x => x === type) === -1) videoFilterOpts.push(type!)
@@ -71,13 +71,19 @@ export function Movie({ state, updateState }: Props) {
     if (fetching) return <Spinner />
     if (error) return <div className={Error}> {error.message} </div>
     if (movie) return <>
-        <div className={Card}>
-            {movie.poster_path && <img className={CardImg} src={IMGURL + movie.poster_path} alt='' />}
-            <div className={CardTextBox}>
-                <div> {toDateString(movie.release_date)} </div>
-                <div> {movie.title}  </div>
-                <div> {movie.tagline} </div>
-                <div> {renderStars(movie.vote_average)} </div>
+        <div className='bg-center' style={{
+            backgroundImage: `url(https://image.tmdb.org/t/p/original${movie.poster_path})`
+        }}>
+            <div className={`row backdrop-blur-3xl backdrop-brightness-50`}>
+                {movie.poster_path && <>
+                    <img className={CardImg} src={IMGURL + movie.poster_path} alt='' />
+                </>}
+                <div className={CardTextBox}>
+                    <div> {toDateString(movie.release_date)} </div>
+                    <div> {movie.title}  </div>
+                    <div> {movie.tagline} </div>
+                    <div> {renderStars(movie.vote_average)} </div>
+                </div>
             </div>
         </div>
         <div className={ButtonRow}>
@@ -177,7 +183,7 @@ export function Movie({ state, updateState }: Props) {
                         <select defaultValue={backdropFilter}
                             className={Select}
                             onChange={e => setBackdropFilter(e.target.value)}>
-                            {backdropsLangOpts.map((x, i) => { return <option value={x} key={i}>{x} </option> })}
+                            {backdropLangOpts.map((x, i) => { return <option value={x} key={i}>{x} </option> })}
                         </select>
                     </>}
                 </>}

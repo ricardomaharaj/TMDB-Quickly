@@ -16,13 +16,22 @@ import {
 
 export function Home({ state, updateState }: Props) {
     return <>
-        <div className='row xl:justify-center'>
+        <div className={`row`}>
             <input
-                className='bg-slate-800 text-center text-xl w-full xl:w-auto p-2 rounded-xl'
+                className='bg-slate-800 text-center text-xl w-full p-2 rounded-xl'
                 id='query'
                 placeholder='SEARCH'
                 type='text'
-                onKeyDown={(e) => { if (e.key === 'Enter') { updateState({ query: e.currentTarget.value }) } }} />
+                defaultValue={state.query}
+                onKeyDown={e => e.key === 'Enter' ? updateState({ query: e.currentTarget.value }) : null} />
+            {state.query && <>
+                <div style={{
+                    position: 'fixed',
+                }} className={`text-center mx-2 text-xl font-extrabold p-2`} onClick={() => {
+                    document.querySelector<HTMLInputElement>('#query')!.value = ''
+                    updateState({ query: '' })
+                }}> X </div>
+            </>}
         </div>
         <div className={ButtonRow}>
             <div className={`${Button} ${state.homeTab === TABS.MOVIES ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => updateState({ homeTab: TABS.MOVIES })}> MOVIES </div>
@@ -53,11 +62,11 @@ function SearchResults({ state, updateState }: Props) {
 
     if (fetching) return <Spinner />
     if (error) return <div className={Error}> {error.message} </div>
-    if (results) return <>
+    return <>
         <div className={Grid123}>
             {state.homeTab === TABS.MOVIES && <>
-                {movies.map((x, i) => {
-                    return <Link to={`/movie/${x.id}`} key={i} className={Card}>
+                {movies.map((x, i) =>
+                    <Link to={`/movie/${x.id}`} key={i} className={Card}>
                         {x.poster_path && <img className={CardImg} src={IMGURL + x.poster_path} alt='' />}
                         <div className={CardTextBox}>
                             <div> {new Date(x.release_date!).getFullYear()} </div>
@@ -68,11 +77,11 @@ function SearchResults({ state, updateState }: Props) {
                             </div>
                         </div>
                     </Link>
-                })}
+                )}
             </>}
             {state.homeTab === TABS.SHOWS && <>
-                {shows.map((x, i) => {
-                    return <Link to={`/tv/${x.id}`} key={i} className={Card}>
+                {shows.map((x, i) =>
+                    <Link to={`/tv/${x.id}`} key={i} className={Card}>
                         {x.poster_path && <img className={CardImg} src={IMGURL + x.poster_path} alt='' />}
                         <div className={CardTextBox}>
                             <div> {new Date(x.first_air_date!).getFullYear()} </div>
@@ -83,15 +92,15 @@ function SearchResults({ state, updateState }: Props) {
                             </div>
                         </div>
                     </Link>
-                })}
+                )}
             </>}
             {state.homeTab === TABS.PEOPLE && <>
-                {people.map((x, i) => {
-                    return <Link to={`/person/${x.id}`} key={i} className={Card}>
+                {people.map((x, i) =>
+                    <Link to={`/person/${x.id}`} key={i} className={Card}>
                         {x.profile_path && <img className={CardImg} src={IMGURL + x.profile_path} alt='' />}
                         <div className={CardTextBox}> {x.name} </div>
                     </Link>
-                })}
+                )}
             </>}
         </div>
         {state.query && <>
@@ -102,5 +111,4 @@ function SearchResults({ state, updateState }: Props) {
             </div>
         </>}
     </>
-    return <></>
 }

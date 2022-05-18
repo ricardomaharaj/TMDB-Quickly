@@ -9,8 +9,7 @@ import { Person } from './Person'
 import { useState } from 'react'
 import { GlobalState, TABS } from './consts'
 
-let url: string = 'http://localhost:4000/gql'
-if (process.env.NODE_ENV === 'production') url = '/gql'
+let url = process.env.NODE_ENV === 'production' ? '/gql' : 'http://localhost:4000/gql'
 
 let urqlClient = createClient({ url })
 
