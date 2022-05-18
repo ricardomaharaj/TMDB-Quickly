@@ -1,7 +1,5 @@
 # TMDB Quickly
 
-Fully featured frontend for TMDB api
+Fully featured frontend for TMDB
 
-making use of Graphql client caching to reduce calls to TMDB api
-
-https://tmdb-quickly.herokuapp.com/
+use it now at: https://tmdb-quickly.netlify.app/
