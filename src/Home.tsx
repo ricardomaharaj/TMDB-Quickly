@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { MovieResult, PersonResult, ShowResult, useFindQuery } from './gql'
+import { MovieResult, PersonResult, ShowResult, useSearchQuery } from './gql'
 import { Spinner } from './Spinner'
 import { renderStars } from './util'
 import { IMGURL, Props, TABS } from './consts'
@@ -47,14 +47,14 @@ function SearchResults({ state, updateState }: Props) {
     let nextPage = () => updateState({ page: state.page + 1 })
     let lastPage = () => updateState({ page: state.page - 1 })
 
-    let [res,] = useFindQuery({
+    let [res,] = useSearchQuery({
         query: state.query,
         page: state.page.toString()
     })
     let { data, fetching, error } = res
-    let results = data?.find?.results
 
-    let maxPages = data?.find?.total_pages
+    let results = data?.search?.results
+    let maxPages = data?.search?.total_pages
 
     let movies: MovieResult[] = results?.filter(x => x.media_type === 'movie')!
     let shows: ShowResult[] = results?.filter(x => x.media_type === 'tv')!

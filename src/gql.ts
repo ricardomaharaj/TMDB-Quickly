@@ -553,9 +553,9 @@ interface Episode {
 
 //
 
-export function useFindQuery(variables: { query?: string, page?: string }) {
-    return useQuery<{ find: SearchResults }>({
-        query: gql`query ($query: String, $page: String) { find(query: $query, page: $page) }`,
+export function useSearchQuery(variables: { query?: string, page?: string }) {
+    return useQuery<{ search: SearchResults }>({
+        query: gql`query ($query: String, $page: String) { search(query: $query, page: $page) }`,
         variables
     })
 }
