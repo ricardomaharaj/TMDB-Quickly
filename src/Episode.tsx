@@ -93,7 +93,11 @@ export function Episode({ state, updateState }: Props) {
         </>}
         {state.episodeTab === TABS.IMAGES && <>
             <div className={Grid123}>
-                {episode?.images?.stills?.map((x, i) => <img src={IMGURL + x.file_path} alt='' key={i} />)}
+                {episode?.images?.stills?.map((x, i) =>
+                    <a target='_blank' rel='noopener noreferrer' href={FULLIMGURL + x.file_path} key={i}>
+                        <img src={IMGURL + x.file_path} alt='' />
+                    </a>
+                )}
             </div>
         </>}
     </>
