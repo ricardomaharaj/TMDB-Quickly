@@ -553,52 +553,35 @@ interface Episode {
 
 //
 
-interface Arguments { id?: string, query?: string, page?: string, season_number?: string, episode_number?: string }
-
-export function useFindQuery(variables: Arguments) {
-    let query = gql`
-    query find($query: String, $page: String) {
-        find(query: $query, page: $page)
-    }`
-    return useQuery<{ find: SearchResults }>({ query, variables })
+export function useFindQuery(variables: { query?: string, page?: string }) {
+    return useQuery<{ find: SearchResults }>({
+        query: gql`query ($query: String, $page: String) { find(query: $query, page: $page) }`,
+        variables
+    })
 }
 
-export function useMovieQuery(variables: Arguments) {
-    let query = gql`
-    query movie($id: ID) {
-        movie(id: $id)
-    }`
-    return useQuery<{ movie: Movie }>({ query, variables })
+export function useMovieQuery(variables: { id?: string }) {
+    return useQuery<{ movie: Movie }>({ query: gql`query ($id: ID) { movie(id: $id) }`, variables })
 }
 
-export function useShowQuery(variables: Arguments) {
-    let query = gql`
-    query show($id: ID) {
-        show(id: $id)
-    }`
-    return useQuery<{ show: Show }>({ query, variables })
+export function useShowQuery(variables: { id?: string }) {
+    return useQuery<{ show: Show }>({ query: gql`query ($id: ID) { show(id: $id) }`, variables })
 }
 
-export function usePersonQuery(variables: Arguments) {
-    let query = gql`
-    query person($id: ID) {
-        person(id: $id)
-    }`
-    return useQuery<{ person: Person }>({ query, variables })
+export function usePersonQuery(variables: { id?: string }) {
+    return useQuery<{ person: Person }>({ query: gql`query ($id: ID) { person(id: $id) }`, variables })
 }
 
-export function useSeasonQuery(variables: Arguments) {
-    let query = gql`
-    query season($id: ID, $season_number: String) {
-        season(id: $id, season_number: $season_number)
-    }`
-    return useQuery<{ season: Season }>({ query, variables })
+export function useSeasonQuery(variables: { id?: string, season_number?: string }) {
+    return useQuery<{ season: Season }>({
+        query: gql`query ($id: ID, $season_number: String) { season(id: $id, season_number: $season_number) }`,
+        variables
+    })
 }
 
-export function useEpisodeQuery(variables: Arguments) {
-    let query = gql`
-    query episode($id: ID, $season_number: String, $episode_number: String) {
-        episode(id: $id, season_number: $season_number, episode_number: $episode_number)
-    }`
-    return useQuery<{ episode: Episode }>({ query, variables })
+export function useEpisodeQuery(variables: { id?: string, season_number?: string, episode_number?: String }) {
+    return useQuery<{ episode: Episode }>({
+        query: gql`query ($id: ID, $season_number: String, $episode_number: String) { episode(id: $id, season_number: $season_number, episode_number: $episode_number) }`,
+        variables
+    })
 }
