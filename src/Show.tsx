@@ -71,7 +71,7 @@ export function Show({ state, updateState }: Props) {
                     {show?.first_air_date && <div> {show.first_air_date.substring(0, 4)} </div>}
                     <div> {show?.name} </div>
                     <div className='text-sm'> {show?.tagline} </div>
-                    <div> {renderStars(show?.vote_average)} </div>
+                    <div> {renderStars(show?.vote_average!)} </div>
                 </div>
             </div>
         </div>

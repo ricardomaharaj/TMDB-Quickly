@@ -96,7 +96,7 @@ export function Person({ state, updateState }: Props) {
                                 {date ? <div> {new Date(date).getFullYear()} </div> : <div> TBD </div>}
                                 <div> {x.name || x.title} </div>
                                 <div className={SubText}> {x.character} </div>
-                                {renderStars(x.vote_average)}
+                                {renderStars(x.vote_average!)}
                             </div>
                         </Link>
                     })
@@ -135,7 +135,7 @@ export function Person({ state, updateState }: Props) {
                                 {date ? <div> {new Date(date).getFullYear()} </div> : <div> TBD </div>}
                                 <div> {x.name || x.title} </div>
                                 <div className={SubText}> {x.job} </div>
-                                {renderStars(x.vote_average)}
+                                {renderStars(x.vote_average!)}
                             </div>
                         </Link>
                     })

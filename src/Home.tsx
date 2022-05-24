@@ -69,7 +69,7 @@ function SearchResults({ state, updateState }: Props) {
                         <div className={CardTextBox}>
                             {x.release_date && <div> {x.release_date.substring(0, 4)} </div>}
                             <div> {x.title} </div>
-                            {x.vote_average! > 0 && <div> {renderStars(x.vote_average)} </div>}
+                            {x.vote_average! > 0 && <div> {renderStars(x.vote_average!)} </div>}
                             <div className={CardSubText}>
                                 {x.overview?.length! > 100 ? x.overview?.substring(0, 97).padEnd(100, '.') : x.overview}
                             </div>
@@ -84,7 +84,7 @@ function SearchResults({ state, updateState }: Props) {
                         <div className={CardTextBox}>
                             {x.first_air_date && <div> {x.first_air_date.substring(0, 4)} </div>}
                             <div> {x.name} </div>
-                            {x.vote_average! > 0 && <div> {renderStars(x.vote_average)} </div>}
+                            {x.vote_average! > 0 && <div> {renderStars(x.vote_average!)} </div>}
                             <div className={CardSubText}>
                                 {x.overview?.length! > 100 ? x.overview?.substring(0, 97).padEnd(100, '.') : x.overview}
                             </div>

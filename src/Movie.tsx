@@ -84,7 +84,7 @@ export function Movie({ state, updateState }: Props) {
                     {movie?.release_date && <div> {movie.release_date.substring(0, 4)} </div>}
                     <div> {movie?.title}  </div>
                     <div className='text-sm'> {movie?.tagline} </div>
-                    <div> {renderStars(movie?.vote_average)} </div>
+                    <div> {renderStars(movie?.vote_average!)} </div>
                 </div>
             </div>
         </div>
