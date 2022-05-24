@@ -64,7 +64,7 @@ export function Season({ state, updateState }: Props) {
                 <div className={CardTextBox}>
                     <div> {season?.name} </div>
                     <div> {season?.episodes?.length} Episodes </div>
-                    <div> {toDateString(season?.air_date)} </div>
+                    <div> {toDateString(season?.air_date!)} </div>
                 </div>
             </div>
         </div>
@@ -81,7 +81,7 @@ export function Season({ state, updateState }: Props) {
                     <Link to={`/tv/${id}/season/${season_number}/episode/${x.episode_number}`}
                         className={Bubble} key={i} >
                         {x.still_path && <img className='rounded-xl mb-2' src={IMGURL + x.still_path} alt='' />}
-                        <div> {x.episode_number} | {x.name} | {toDateString(x.air_date)} </div>
+                        <div> {x.episode_number} | {x.name} | {toDateString(x.air_date!)} </div>
                         <div className={SubText}> {x.overview} </div>
                     </Link>
                 )}
@@ -165,7 +165,7 @@ export function Season({ state, updateState }: Props) {
                             <a target='_blank' rel='noopener noreferrer' href={`https://www.youtube.com/watch?v=${x.key}`}>
                                 <img className={VideoCardImg} src={`https://i.ytimg.com/vi/${x.key}/hqdefault.jpg`} alt='' />
                             </a>
-                            <div className={VideoCardTextBox}> {x.name} <span className={SubText}> {toDateString(x.published_at)} </span> </div>
+                            <div className={VideoCardTextBox}> {x.name} <span className={SubText}> {toDateString(x.published_at!)} </span> </div>
                         </div>
                     )}
             </div>

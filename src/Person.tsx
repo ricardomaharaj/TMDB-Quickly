@@ -51,7 +51,7 @@ export function Person({ state, updateState }: Props) {
             {person.profile_path && <img className={CardImg} src={IMGURL + person.profile_path} alt='' />}
             <div className={CardTextBox}>
                 <div> {person.name} </div>
-                <div> Born: {toDateString(person.birthday)} </div>
+                <div> Born: {toDateString(person.birthday!)} </div>
                 {person.deathday && <> Died: {toDateString(person.deathday)} </>}
                 <div> {calculateAge(person.birthday, person.deathday)} </div>
             </div>

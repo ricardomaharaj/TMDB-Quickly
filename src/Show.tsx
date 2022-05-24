@@ -68,7 +68,7 @@ export function Show({ state, updateState }: Props) {
             <div className={BlurCard}>
                 {show?.poster_path && <img className={CardImg} src={IMGURL + show?.poster_path} alt='' />}
                 <div className={CardTextBox}>
-                    <div> {toDateString(show?.first_air_date)} </div>
+                    {show?.first_air_date && <div> {show.first_air_date.substring(0, 4)} </div>}
                     <div> {show?.name} </div>
                     <div className='text-sm'> {show?.tagline} </div>
                     <div> {renderStars(show?.vote_average)} </div>
@@ -151,7 +151,7 @@ export function Show({ state, updateState }: Props) {
                         <div className={CardTextBox}>
                             <div> {x.name} </div>
                             <div className={SubText}> {x.episode_count} Episodes </div>
-                            <div className={SubText}> {toDateString(x.air_date)} </div>
+                            <div className={SubText}> {toDateString(x.air_date!)} </div>
                         </div>
                     </Link>
                 )}
@@ -228,7 +228,7 @@ export function Show({ state, updateState }: Props) {
                             <a target='_blank' rel='noopener noreferrer' href={`https://www.youtube.com/watch?v=${x.key}`}>
                                 <img className={VideoCardImg} src={`https://i.ytimg.com/vi/${x.key}/hqdefault.jpg`} alt='' />
                             </a>
-                            <div className={VideoCardTextBox}> {x.name} <span className={SubText}> {toDateString(x.published_at)} </span> </div>
+                            <div className={VideoCardTextBox}> {x.name} <span className={SubText}> {toDateString(x.published_at!)} </span> </div>
                         </div>
                     )}
             </div>

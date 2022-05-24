@@ -25,9 +25,7 @@ export function Home({ state, updateState }: Props) {
                 defaultValue={state.query}
                 onKeyDown={e => e.key === 'Enter' ? updateState({ query: e.currentTarget.value }) : null} />
             {state.query && <>
-                <div style={{
-                    position: 'fixed',
-                }} className={`text-center mx-2 text-xl font-extrabold p-2`} onClick={() => {
+                <div className='text-center fixed mx-2 text-xl font-extrabold p-2' onClick={() => {
                     document.querySelector<HTMLInputElement>('#query')!.value = ''
                     updateState({ query: '' })
                 }}> X </div>
@@ -69,7 +67,7 @@ function SearchResults({ state, updateState }: Props) {
                     <Link to={`/movie/${x.id}`} key={i} className={Card}>
                         {x.poster_path && <img className={CardImg} src={IMGURL + x.poster_path} alt='' />}
                         <div className={CardTextBox}>
-                            <div> {new Date(x.release_date!).getFullYear()} </div>
+                            {x.release_date && <div> {x.release_date.substring(0, 4)} </div>}
                             <div> {x.title} </div>
                             {x.vote_average! > 0 && <div> {renderStars(x.vote_average)} </div>}
                             <div className={CardSubText}>
@@ -84,7 +82,7 @@ function SearchResults({ state, updateState }: Props) {
                     <Link to={`/tv/${x.id}`} key={i} className={Card}>
                         {x.poster_path && <img className={CardImg} src={IMGURL + x.poster_path} alt='' />}
                         <div className={CardTextBox}>
-                            <div> {new Date(x.first_air_date!).getFullYear()} </div>
+                            {x.first_air_date && <div> {x.first_air_date.substring(0, 4)} </div>}
                             <div> {x.name} </div>
                             {x.vote_average! > 0 && <div> {renderStars(x.vote_average)} </div>}
                             <div className={CardSubText}>

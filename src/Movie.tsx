@@ -81,7 +81,7 @@ export function Movie({ state, updateState }: Props) {
                     <img className={CardImg} src={IMGURL + movie?.poster_path} alt='' />
                 </>}
                 <div className={CardTextBox}>
-                    <div> {toDateString(movie?.release_date)} </div>
+                    {movie?.release_date && <div> {movie.release_date.substring(0, 4)} </div>}
                     <div> {movie?.title}  </div>
                     <div className='text-sm'> {movie?.tagline} </div>
                     <div> {renderStars(movie?.vote_average)} </div>
@@ -115,7 +115,7 @@ export function Movie({ state, updateState }: Props) {
                 {releaseDates?.map((x, i) =>
                     <div className={Bubble} key={i}>
                         <div className='text-sm'> {RELEASE_TYPES[x.type!]} </div>
-                        <div className='text-sm'> {toDateString(x.release_date)} </div>
+                        <div className='text-sm'> {toDateString(x.release_date!)} </div>
                     </div>
                 )}
             </div>
@@ -234,7 +234,7 @@ export function Movie({ state, updateState }: Props) {
                             <a target='_blank' rel='noopener noreferrer'
                                 href={`https://www.youtube.com/watch?v=${x.key}`}>
                                 <img className={VideoCardImg} src={`https://i.ytimg.com/vi/${x.key}/hqdefault.jpg`} alt='' />
-                                <div className={VideoCardTextBox}> {x.name} <span className={SubText}> | {toDateString(x.published_at)} </span> </div>
+                                <div className={VideoCardTextBox}> {x.name} <span className={SubText}> | {toDateString(x.published_at!)} </span> </div>
                             </a>
                         </div>
                     )}

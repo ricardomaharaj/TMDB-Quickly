@@ -40,7 +40,7 @@ export function Episode({ state, updateState }: Props) {
             <div className={`col backdrop-blur-sm backdrop-brightness-50 rounded-xl p-10 space-y-2`}>
                 <div> S{episode?.season_number?.toString().padStart(2, '0')}E{episode?.episode_number?.toString().padStart(2, '0')} </div>
                 <div> {episode?.name} </div>
-                <div> {toDateString(episode?.air_date)} </div>
+                <div> {toDateString(episode?.air_date!)} </div>
             </div>
         </div>
         <div className={ButtonRow}>
