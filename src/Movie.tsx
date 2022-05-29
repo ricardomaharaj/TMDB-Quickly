@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useMovieQuery } from './gql'
 import { Spinner } from './Spinner'
-import { renderStars, toDateString } from './util'
+import { toDateString } from './util'
 import { FULLIMGURL, IMGURL, Props, TABS } from './consts'
 import {
     Button,
@@ -77,14 +77,12 @@ export function Movie({ state, updateState }: Props) {
             backgroundImage: `url(${FULLIMGURL + movie?.backdrop_path})`
         }}>
             <div className={BlurCard}>
-                {movie?.poster_path && <>
-                    <img className={CardImg} src={IMGURL + movie?.poster_path} alt='' />
-                </>}
+                {movie?.poster_path && <img className={CardImg} src={IMGURL + movie?.poster_path} alt='' />}
                 <div className={CardTextBox}>
-                    {movie?.release_date && <div> {movie.release_date.substring(0, 4)} </div>}
+                    {movie?.release_date && <div> {toDateString(movie?.release_date)} </div>}
                     <div> {movie?.title}  </div>
                     <div className='text-sm'> {movie?.tagline} </div>
-                    <div> {renderStars(movie?.vote_average!)} </div>
+                    {(movie?.vote_average! > 0) && <div> {movie?.vote_average} </div>}
                 </div>
             </div>
         </div>

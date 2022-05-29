@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { usePersonQuery } from './gql'
 import { Spinner } from './Spinner'
-import { renderStars, toDateString } from './util'
+import { toDateString } from './util'
 import { IMGURL, Props, TABS } from './consts'
 import {
     ButtonRow,
@@ -46,14 +46,14 @@ export function Person({ state, updateState }: Props) {
 
     if (fetching) return <Spinner />
     if (error) return <div className={Error}> {error.message} </div>
-    if (person) return <>
+    return <>
         <div className={Card}>
-            {person.profile_path && <img className={CardImg} src={IMGURL + person.profile_path} alt='' />}
+            {person?.profile_path && <img className={CardImg} src={IMGURL + person?.profile_path} alt='' />}
             <div className={CardTextBox}>
-                <div> {person.name} </div>
-                <div> Born: {toDateString(person.birthday!)} </div>
-                {person.deathday && <> Died: {toDateString(person.deathday)} </>}
-                <div> {calculateAge(person.birthday, person.deathday)} </div>
+                <div> {person?.name} </div>
+                <div> Born: {toDateString(person?.birthday!)} </div>
+                {person?.deathday && <> Died: {toDateString(person?.deathday)} </>}
+                <div> {calculateAge(person?.birthday, person?.deathday)} </div>
             </div>
         </div>
         <div className={ButtonRow}>
@@ -64,7 +64,7 @@ export function Person({ state, updateState }: Props) {
         </div>
         {state.personTab === TABS.BIO && <>
             <div className={Bubble}>
-                {person.biography}
+                {person?.biography}
             </div>
         </>}
         {state.personTab === TABS.CAST && <>
@@ -79,7 +79,7 @@ export function Person({ state, updateState }: Props) {
                 > SHOWS </div>
             </div>
             <div className={Grid123}>
-                {person.combined_credits?.cast
+                {person?.combined_credits?.cast
                     ?.filter(x => x.media_type === castFilter)
                     .sort((a, b) => {
                         let aDate = a.release_date || a.first_air_date
@@ -96,7 +96,7 @@ export function Person({ state, updateState }: Props) {
                                 {date ? <div> {new Date(date).getFullYear()} </div> : <div> TBD </div>}
                                 <div> {x.name || x.title} </div>
                                 <div className={SubText}> {x.character} </div>
-                                {renderStars(x.vote_average!)}
+                                {(x.vote_average! > 0) && <div> {x.vote_average} </div>}
                             </div>
                         </Link>
                     })
@@ -114,7 +114,7 @@ export function Person({ state, updateState }: Props) {
                 </select>
             </div>
             <div className={Grid123}>
-                {person.combined_credits?.crew
+                {person?.combined_credits?.crew
                     ?.filter(x => {
                         if (crewFilter === 'ALL') return true
                         if (x.job === crewFilter) return true
@@ -135,7 +135,7 @@ export function Person({ state, updateState }: Props) {
                                 {date ? <div> {new Date(date).getFullYear()} </div> : <div> TBD </div>}
                                 <div> {x.name || x.title} </div>
                                 <div className={SubText}> {x.job} </div>
-                                {renderStars(x.vote_average!)}
+                                {(x.vote_average! > 0) && <div> {x.vote_average} </div>}
                             </div>
                         </Link>
                     })
@@ -144,12 +144,8 @@ export function Person({ state, updateState }: Props) {
         </>}
         {state.personTab === TABS.IMAGES && <>
             <div className={Grid234}>
-                {person.images?.profiles
-                    ?.map((x, i) => {
-                        return <img src={IMGURL + x.file_path} alt='' key={i} />
-                    })}
+                {person?.images?.profiles?.map((x, i) => <img src={IMGURL + x.file_path} alt='' key={i} />)}
             </div>
         </>}
     </>
-    return <></>
 }

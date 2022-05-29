@@ -41,6 +41,7 @@ export function Episode({ state, updateState }: Props) {
                 <div> S{episode?.season_number?.toString().padStart(2, '0')}E{episode?.episode_number?.toString().padStart(2, '0')} </div>
                 <div> {episode?.name} </div>
                 <div> {toDateString(episode?.air_date!)} </div>
+                {(episode?.vote_average! > 0) && <div> {episode?.vote_average?.toFixed(1)} </div>}
             </div>
         </div>
         <div className={ButtonRow}>

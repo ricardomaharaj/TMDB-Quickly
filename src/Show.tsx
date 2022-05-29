@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useShowQuery } from './gql'
 import { Spinner } from './Spinner'
-import { renderStars, toDateString } from './util'
+import { toDateString } from './util'
 import { FULLIMGURL, IMGURL, Props, TABS } from './consts'
 import {
     BlurCard,
@@ -68,10 +68,10 @@ export function Show({ state, updateState }: Props) {
             <div className={BlurCard}>
                 {show?.poster_path && <img className={CardImg} src={IMGURL + show?.poster_path} alt='' />}
                 <div className={CardTextBox}>
-                    {show?.first_air_date && <div> {show.first_air_date.substring(0, 4)} </div>}
+                    {show?.first_air_date && <div> {toDateString(show?.first_air_date)} </div>}
                     <div> {show?.name} </div>
                     <div className='text-sm'> {show?.tagline} </div>
-                    <div> {renderStars(show?.vote_average!)} </div>
+                    {(show?.vote_average! > 0) && <div> {show?.vote_average} </div>}
                 </div>
             </div>
         </div>

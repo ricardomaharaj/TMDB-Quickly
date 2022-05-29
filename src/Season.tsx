@@ -81,7 +81,7 @@ export function Season({ state, updateState }: Props) {
                     <Link to={`/tv/${id}/season/${season_number}/episode/${x.episode_number}`}
                         className={Bubble} key={i} >
                         {x.still_path && <img className='rounded-xl mb-2' src={IMGURL + x.still_path} alt='' />}
-                        <div> {x.episode_number} | {x.name} | {toDateString(x.air_date!)} </div>
+                        <div> {x.episode_number} | {x.name} | {toDateString(x.air_date!)} | {(x.vote_average! > 0) && <> {x.vote_average?.toFixed(1)} </>} </div>
                         <div className={SubText}> {x.overview} </div>
                     </Link>
                 )}
