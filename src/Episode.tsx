@@ -18,6 +18,7 @@ import {
     SingleRow,
     SubText
 } from './ThemeData'
+import { Stars } from './Stars'
 
 export function Episode({ state, updateState }: Props) {
 
@@ -41,7 +42,7 @@ export function Episode({ state, updateState }: Props) {
                 <div> S{episode?.season_number?.toString().padStart(2, '0')}E{episode?.episode_number?.toString().padStart(2, '0')} </div>
                 <div> {episode?.name} </div>
                 <div> {toDateString(episode?.air_date!)} </div>
-                {(episode?.vote_average! > 0) && <div> {episode?.vote_average?.toFixed(1)} </div>}
+                <Stars average={episode?.vote_average!} />
             </div>
         </div>
         <div className={ButtonRow}>

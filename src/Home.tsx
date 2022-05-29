@@ -12,6 +12,7 @@ import {
     Error,
     Grid123
 } from './ThemeData'
+import { Stars } from './Stars'
 
 export function Home({ state, updateState }: Props) {
     return <>
@@ -68,7 +69,7 @@ function SearchResults({ state, updateState }: Props) {
                         <div className={CardTextBox}>
                             {x.release_date && <div> {x.release_date.substring(0, 4)} </div>}
                             <div> {x.title} </div>
-                            {(x.vote_average! > 0) && <div> {x.vote_average} </div>}
+                            <Stars average={x.vote_average!} />
                             <div className={CardSubText}>
                                 {x.overview?.length! > 100 ? x.overview?.substring(0, 97).padEnd(100, '.') : x.overview}
                             </div>
@@ -83,7 +84,7 @@ function SearchResults({ state, updateState }: Props) {
                         <div className={CardTextBox}>
                             {x.first_air_date && <div> {x.first_air_date.substring(0, 4)} </div>}
                             <div> {x.name} </div>
-                            {(x.vote_average! > 0) && <div> {x.vote_average} </div>}
+                            <Stars average={x.vote_average!} />
                             <div className={CardSubText}>
                                 {x.overview?.length! > 100 ? x.overview?.substring(0, 97).padEnd(100, '.') : x.overview}
                             </div>

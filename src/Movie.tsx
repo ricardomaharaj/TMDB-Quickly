@@ -23,6 +23,7 @@ import {
     BlurCard,
     ImageBG
 } from './ThemeData'
+import { Stars } from './Stars'
 
 const RELEASE_TYPES = [
     '',
@@ -82,7 +83,7 @@ export function Movie({ state, updateState }: Props) {
                     {movie?.release_date && <div> {toDateString(movie?.release_date)} </div>}
                     <div> {movie?.title}  </div>
                     <div className='text-sm'> {movie?.tagline} </div>
-                    {(movie?.vote_average! > 0) && <div> {movie?.vote_average} </div>}
+                    <Stars average={movie?.vote_average!} />
                 </div>
             </div>
         </div>

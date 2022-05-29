@@ -23,6 +23,7 @@ import {
     VideoCardImg,
     VideoCardTextBox
 } from './ThemeData'
+import { Stars } from './Stars'
 
 export function Show({ state, updateState }: Props) {
 
@@ -71,7 +72,7 @@ export function Show({ state, updateState }: Props) {
                     {show?.first_air_date && <div> {toDateString(show?.first_air_date)} </div>}
                     <div> {show?.name} </div>
                     <div className='text-sm'> {show?.tagline} </div>
-                    {(show?.vote_average! > 0) && <div> {show?.vote_average} </div>}
+                    <Stars average={show?.vote_average!} />
                 </div>
             </div>
         </div>
