@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { MovieResult, PersonResult, ShowResult, useSearchQuery } from './gql'
 import { Spinner } from './Spinner'
 import { IMGURL, Props, TABS } from './consts'
+import { Stars } from './Stars'
 import {
     Button,
     ButtonRow,
@@ -12,7 +13,6 @@ import {
     Error,
     Grid123
 } from './ThemeData'
-import { Stars } from './Stars'
 
 export function Home({ state, updateState }: Props) {
     return <>
@@ -68,11 +68,13 @@ function SearchResults({ state, updateState }: Props) {
                         {x.poster_path && <img className={CardImg} src={IMGURL + x.poster_path} alt='' />}
                         <div className={CardTextBox}>
                             {x.release_date && <div> {x.release_date.substring(0, 4)} </div>}
-                            <div> {x.title} </div>
-                            <Stars average={x.vote_average!} />
-                            <div className={CardSubText}>
-                                {x.overview?.length! > 100 ? x.overview?.substring(0, 97).padEnd(100, '.') : x.overview}
-                            </div>
+                            {x.title && <div> {x.title} </div>}
+                            {((x.vote_average) && (x.vote_average > 0)) && <Stars average={x.vote_average!} />}
+                            {x.overview && <>
+                                <div className={CardSubText}>
+                                    {x.overview.length > 100 ? x.overview.substring(0, 97).padEnd(100, '.') : x.overview}
+                                </div>
+                            </>}
                         </div>
                     </Link>
                 )}
@@ -83,11 +85,13 @@ function SearchResults({ state, updateState }: Props) {
                         {x.poster_path && <img className={CardImg} src={IMGURL + x.poster_path} alt='' />}
                         <div className={CardTextBox}>
                             {x.first_air_date && <div> {x.first_air_date.substring(0, 4)} </div>}
-                            <div> {x.name} </div>
-                            <Stars average={x.vote_average!} />
-                            <div className={CardSubText}>
-                                {x.overview?.length! > 100 ? x.overview?.substring(0, 97).padEnd(100, '.') : x.overview}
-                            </div>
+                            {x.name && <div> {x.name} </div>}
+                            {((x.vote_average) && (x.vote_average > 0)) && <Stars average={x.vote_average} />}
+                            {x.overview && <>
+                                <div className={CardSubText}>
+                                    {x.overview.length > 100 ? x.overview.substring(0, 97).padEnd(100, '.') : x.overview}
+                                </div>
+                            </>}
                         </div>
                     </Link>
                 )}
@@ -96,7 +100,9 @@ function SearchResults({ state, updateState }: Props) {
                 {people.map((x, i) =>
                     <Link to={`/person/${x.id}`} key={i} className={Card}>
                         {x.profile_path && <img className={CardImg} src={IMGURL + x.profile_path} alt='' />}
-                        <div className={CardTextBox}> {x.name} </div>
+                        {x.name && <>
+                            <div className={CardTextBox}> {x.name} </div>
+                        </>}
                     </Link>
                 )}
             </>}
