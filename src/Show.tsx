@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom'
 import { useShowQuery } from './gql'
 import { Spinner } from './Spinner'
 import { toDateString } from './util'
-import { FULLIMGURL, IMGURL, Props, TABS } from './consts'
+import { FULLIMGURL, IMGURL, Props } from './consts'
 import { Stars } from './Stars'
 import {
     BlurCard,
@@ -27,7 +27,7 @@ import {
 
 export function Show({ state, updateState }: Props) {
 
-    let [imageTab, setImageTab] = useState(TABS.POSTERS)
+    let [imageTab, setImageTab] = useState('POSTERS')
     let [crewFilter, setCrewFilter] = useState('ALL')
     let [videoFilter, setVideoFilter] = useState('ALL')
     let [posterFilter, setPosterFilter] = useState('en')
@@ -62,19 +62,19 @@ export function Show({ state, updateState }: Props) {
                     {show?.first_air_date && <div> {toDateString(show.first_air_date)} </div>}
                     {show?.name && <div> {show?.name} </div>}
                     {show?.tagline && <div className='text-sm'> {show.tagline} </div>}
-                    {show?.vote_average && show?.vote_average > 0 && <Stars average={show.vote_average} />}
+                    {show?.vote_average! > 0 && <Stars average={show?.vote_average!} />}
                 </div>
             </div>
         </div>
         <div className={ButtonRow}>
-            <div className={`${Button} ${state.showTab === TABS.INFO ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => updateState({ showTab: TABS.INFO })}> INFO </div>
-            <div className={`${Button} ${state.showTab === TABS.CAST ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => updateState({ showTab: TABS.CAST })}> CAST </div>
-            <div className={`${Button} ${state.showTab === TABS.CREW ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => updateState({ showTab: TABS.CREW })}> CREW </div>
-            <div className={`${Button} ${state.showTab === TABS.SEASONS ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => updateState({ showTab: TABS.SEASONS })}> SEASONS </div>
-            <div className={`${Button} ${state.showTab === TABS.IMAGES ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => updateState({ showTab: TABS.IMAGES })}> IMAGES </div>
-            <div className={`${Button} ${state.showTab === TABS.VIDEOS ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => updateState({ showTab: TABS.VIDEOS })}> VIDEOS </div>
+            {['INFO', 'CAST', 'CREW', 'SEASONS', 'IMAGES', 'VIDEOS'].map((x, i) =>
+                <div
+                    className={`${Button} ${state.showTab === x ? 'bg-slate-700' : 'bg-slate-800'}`}
+                    onClick={() => updateState({ showTab: x })}
+                    key={i}> {x} </div>
+            )}
         </div>
-        {state.showTab === TABS.INFO && <>
+        {state.showTab === 'INFO' && <>
             {show?.overview && <div className={Bubble}> {show.overview} </div>}
             <div className={Bubble}>
                 {show?.status && <div> Status: {show.status} </div>}
@@ -96,7 +96,7 @@ export function Show({ state, updateState }: Props) {
                 {show?.production_companies?.map((x, i) => <div className={Bubble} key={i}> {x.name} </div>)}
             </div>
         </>}
-        {state.showTab === TABS.CAST &&
+        {state.showTab === 'CAST' &&
             <div className={Grid123}>
                 {show?.credits?.cast?.map((x, i) =>
                     <Link to={`/person/${x.id}`} className={Card} key={i} >
@@ -109,7 +109,7 @@ export function Show({ state, updateState }: Props) {
                 )}
             </div>
         }
-        {state.showTab === TABS.CREW && <>
+        {state.showTab === 'CREW' && <>
             <div className={SingleRow}>
                 <select defaultValue={crewFilter}
                     className={Select}
@@ -136,7 +136,7 @@ export function Show({ state, updateState }: Props) {
                 }
             </div>
         </>}
-        {state.showTab === TABS.SEASONS && <>
+        {state.showTab === 'SEASONS' && <>
             <div className={Grid123}>
                 {show?.seasons && show?.seasons.map((x, i) =>
                     <Link to={`/tv/${id}/season/${x.season_number}`} className={Card} key={i}>
@@ -150,22 +150,26 @@ export function Show({ state, updateState }: Props) {
                 )}
             </div>
         </>}
-        {state.showTab === TABS.IMAGES && <>
+        {state.showTab === 'IMAGES' && <>
             <div className={ButtonRow}>
-                <div className={`${Button} ${imageTab === TABS.POSTERS ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setImageTab(TABS.POSTERS)}> POSTERS </div>
-                <div className={`${Button} ${imageTab === TABS.BACKDROPS ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setImageTab(TABS.BACKDROPS)}> BACKDROPS </div>
-                {imageTab === TABS.POSTERS &&
+                {['POSTERS', 'BACKDROPS'].map((x, i) =>
+                    <div
+                        className={`${Button} ${imageTab === x ? 'bg-slate-700' : 'bg-slate-800'}`}
+                        onClick={() => setImageTab(x)}
+                        key={i}> {x} </div>
+                )}
+                {imageTab === 'POSTERS' &&
                     <select defaultValue={posterFilter} className={Select} onChange={e => setPosterFilter(e.target.value)}>
                         {posterLangOpts.map((x, i) => <option value={x} key={i}>{x} </option>)}
                     </select>
                 }
-                {imageTab === TABS.BACKDROPS &&
+                {imageTab === 'BACKDROPS' &&
                     <select defaultValue={backdropFilter} className={Select} onChange={e => setBackdropFilter(e.target.value)}>
                         {backdropsLangOpts.map((x, i) => <option value={x} key={i}>{x} </option>)}
                     </select>
                 }
             </div>
-            {imageTab === TABS.POSTERS &&
+            {imageTab === 'POSTERS' &&
                 <div className={Grid234}>
                     {show?.images?.posters
                         ?.filter(x => x.iso_639_1 === posterFilter)
@@ -177,7 +181,7 @@ export function Show({ state, updateState }: Props) {
                     }
                 </div>
             }
-            {imageTab === TABS.BACKDROPS &&
+            {imageTab === 'BACKDROPS' &&
                 <div className={Grid123}>
                     {show?.images?.backdrops
                         ?.filter(x => x.iso_639_1 === backdropFilter)
@@ -190,7 +194,7 @@ export function Show({ state, updateState }: Props) {
                 </div>
             }
         </>}
-        {state.showTab === TABS.VIDEOS && <>
+        {state.showTab === 'VIDEOS' && <>
             <div className={SingleRow}>
                 <select defaultValue={videoFilter}
                     className={Select}

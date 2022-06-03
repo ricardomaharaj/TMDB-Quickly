@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import { useEpisodeQuery } from './gql'
 import { Spinner } from './Spinner'
 import { toDateString } from './util'
-import { FULLIMGURL, IMGURL, Props, TABS } from './consts'
+import { FULLIMGURL, IMGURL, Props } from './consts'
 import { Stars } from './Stars'
 import {
     Bubble,
@@ -49,13 +49,15 @@ export function Episode({ state, updateState }: Props) {
             </div>
         </div>
         <div className={ButtonRow}>
-            <div className={`${Button} ${state.episodeTab === TABS.INFO ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => updateState({ episodeTab: TABS.INFO })}> INFO </div>
-            <div className={`${Button} ${state.episodeTab === TABS.GUEST ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => updateState({ episodeTab: TABS.GUEST })}> GUESTS </div>
-            <div className={`${Button} ${state.episodeTab === TABS.CREW ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => updateState({ episodeTab: TABS.CREW })}> CREW </div>
-            <div className={`${Button} ${state.episodeTab === TABS.IMAGES ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => updateState({ episodeTab: TABS.IMAGES })}> IMAGES </div>
+            {['INFO', 'GUEST', 'CREW', 'IMAGES'].map((x, i) =>
+                <div
+                    className={`${Button} ${state.episodeTab === x ? 'bg-slate-700' : 'bg-slate-800'}`}
+                    onClick={() => updateState({ episodeTab: x })}
+                    key={i}> {x} </div>
+            )}
         </div>
-        {state.episodeTab === TABS.INFO && <> {episode?.overview && <div className={Bubble}> {episode?.overview} </div>} </>}
-        {state.episodeTab === TABS.CREW && <>
+        {state.episodeTab === 'INFO' && <> {episode?.overview && <div className={Bubble}> {episode?.overview} </div>} </>}
+        {state.episodeTab === 'CREW' && <>
             <div className={SingleRow}>
                 <select defaultValue={crewFilter}
                     className={Select}
@@ -81,7 +83,7 @@ export function Episode({ state, updateState }: Props) {
                     )}
             </div>
         </>}
-        {state.episodeTab === TABS.GUEST && <>
+        {state.episodeTab === 'GUEST' && <>
             <div className={Grid123}>
                 {episode?.guest_stars?.map((x, i) =>
                     <Link to={`/person/${x.id}`} className={Card} key={i}>
@@ -94,7 +96,7 @@ export function Episode({ state, updateState }: Props) {
                 )}
             </div>
         </>}
-        {state.episodeTab === TABS.IMAGES && <>
+        {state.episodeTab === 'IMAGES' && <>
             <div className={Grid123}>
                 {episode?.images?.stills?.map((x, i) =>
                     <a target='_blank' rel='noopener noreferrer' href={FULLIMGURL + x.file_path} key={i}>

@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import { useMovieQuery } from './gql'
 import { Spinner } from './Spinner'
 import { toDateString } from './util'
-import { FULLIMGURL, IMGURL, Props, TABS } from './consts'
+import { FULLIMGURL, IMGURL, Props } from './consts'
 import { Stars } from './Stars'
 import {
     Button,
@@ -37,7 +37,7 @@ const RELEASE_TYPES = [
 
 export function Movie({ state, updateState }: Props) {
 
-    let [imageTab, setImageTab] = useState(TABS.POSTERS)
+    let [imageTab, setImageTab] = useState('POSTERS')
     let [posterFilter, setPosterFilter] = useState('en')
     let [backdropFilter, setBackdropFilter] = useState('en')
     let [crewFilter, setCrewFilter] = useState('ALL')
@@ -74,23 +74,19 @@ export function Movie({ state, updateState }: Props) {
                     {movie?.release_date && <div> {toDateString(movie?.release_date)} </div>}
                     {movie?.title && <div> {movie?.title} </div>}
                     {movie?.tagline && <div className='text-sm'> {movie?.tagline} </div>}
-                    {movie?.vote_average && movie?.vote_average > 0 && <Stars average={movie?.vote_average} />}
+                    {movie?.vote_average! > 0 && <Stars average={movie?.vote_average!} />}
                 </div>
             </div>
         </div>
         <div className={ButtonRow}>
-            <div className={`${Button} ${state.movieTab === TABS.INFO ? 'bg-slate-700' : 'bg-slate-800'}`}
-                onClick={() => updateState({ movieTab: TABS.INFO })}> INFO </div>
-            <div className={`${Button} ${state.movieTab === TABS.CAST ? 'bg-slate-700' : 'bg-slate-800'}`}
-                onClick={() => updateState({ movieTab: TABS.CAST })}> CAST </div>
-            <div className={`${Button} ${state.movieTab === TABS.CREW ? 'bg-slate-700' : 'bg-slate-800'}`}
-                onClick={() => updateState({ movieTab: TABS.CREW })}> CREW </div>
-            <div className={`${Button} ${state.movieTab === TABS.IMAGES ? 'bg-slate-700' : 'bg-slate-800'}`}
-                onClick={() => updateState({ movieTab: TABS.IMAGES })}> IMAGES </div>
-            <div className={`${Button} ${state.movieTab === TABS.VIDEOS ? 'bg-slate-700' : 'bg-slate-800'}`}
-                onClick={() => updateState({ movieTab: TABS.VIDEOS })}> VIDEOS </div>
+            {['INFO', 'CAST', 'CREW', 'IMAGES', 'VIDEOS'].map((x, i) =>
+                <div
+                    className={`${Button} ${state.movieTab === x ? 'bg-slate-700' : 'bg-slate-800'}`}
+                    onClick={() => updateState({ movieTab: x })}
+                    key={i}> {x} </div>
+            )}
         </div>
-        {state.movieTab === TABS.INFO && <>
+        {state.movieTab === 'INFO' && <>
             {movie?.overview && <div className={Bubble}> {movie?.overview} </div>}
             <div className={Bubble}>
                 {movie?.status && <div> Status: {movie?.status} </div>}
@@ -123,18 +119,19 @@ export function Movie({ state, updateState }: Props) {
                 {movie?.production_companies?.map((x, i) => <div className={Bubble} key={i}> {x.name} </div>)}
             </div>
         </>}
-        {state.movieTab === TABS.CAST && <div className={Grid123}>
-            {movie?.credits?.cast?.map((x, i) =>
-                <Link to={`/person/${x.id}`} key={i} className={Card}>
-                    {x.profile_path && <img className={CardImg} src={IMGURL + x.profile_path} alt='' />}
-                    <div className={CardTextBox}>
-                        <div> {x.name} </div>
-                        <div className={SubText}> {x.character} </div>
-                    </div>
-                </Link>)
-            }
-        </div>}
-        {state.movieTab === TABS.CREW && <>
+        {state.movieTab === 'CAST' &&
+            <div className={Grid123}>
+                {movie?.credits?.cast?.map((x, i) =>
+                    <Link to={`/person/${x.id}`} key={i} className={Card}>
+                        {x.profile_path && <img className={CardImg} src={IMGURL + x.profile_path} alt='' />}
+                        <div className={CardTextBox}>
+                            <div> {x.name} </div>
+                            <div className={SubText}> {x.character} </div>
+                        </div>
+                    </Link>)
+                }
+            </div>}
+        {state.movieTab === 'CREW' && <>
             <div className={SingleRow}>
                 <select defaultValue={crewFilter} className={Select} onChange={e => setCrewFilter(e.target.value)}>
                     {crewFilterOpts.map((x, i) => <option value={x} key={i}>{x}</option>)}
@@ -159,22 +156,26 @@ export function Movie({ state, updateState }: Props) {
                 }
             </div>
         </>}
-        {state.movieTab === TABS.IMAGES && <>
+        {state.movieTab === 'IMAGES' && <>
             <div className={ButtonRow}>
-                <div className={`${Button} ${imageTab === TABS.POSTERS ? 'bg-slate-700' : 'bg-slate-800'}`}
-                    onClick={() => setImageTab(TABS.POSTERS)}> POSTERS </div>
-                <div className={`${Button} ${imageTab === TABS.BACKDROPS ? 'bg-slate-700' : 'bg-slate-800'}`}
-                    onClick={() => setImageTab(TABS.BACKDROPS)}> BACKDROPS </div>
-                {imageTab === TABS.POSTERS &&
+                {['POSTERS', 'BACKDROPS'].map((x, i) =>
+                    <div
+                        className={`${Button} ${imageTab === x ? 'bg-slate-700' : 'bg-slate-800'}`}
+                        onClick={() => setImageTab(x)}
+                        key={i}> {x} </div>
+                )}
+                {imageTab === 'POSTERS' &&
                     <select defaultValue={posterFilter} className={Select} onChange={e => setPosterFilter(e.target.value)}>
                         {posterLangOpts.map((x, i) => <option value={x} key={i}> {x} </option>)}
-                    </select>}
-                {imageTab === TABS.BACKDROPS &&
+                    </select>
+                }
+                {imageTab === 'BACKDROPS' &&
                     <select defaultValue={backdropFilter} className={Select} onChange={e => setBackdropFilter(e.target.value)}>
                         {backdropLangOpts.map((x, i) => <option value={x} key={i}> {x} </option>)}
-                    </select>}
+                    </select>
+                }
             </div>
-            {imageTab === TABS.POSTERS && <div className={Grid234}>
+            {imageTab === 'POSTERS' && <div className={Grid234}>
                 {movie?.images?.posters
                     ?.filter(x => x.iso_639_1 === posterFilter)
                     ?.map((x, i) =>
@@ -184,7 +185,7 @@ export function Movie({ state, updateState }: Props) {
                     )
                 }
             </div>}
-            {imageTab === TABS.BACKDROPS && <div className={Grid123}>
+            {imageTab === 'BACKDROPS' && <div className={Grid123}>
                 {movie?.images?.backdrops
                     ?.filter(x => x.iso_639_1 === backdropFilter)
                     ?.map((x, i) =>
@@ -195,7 +196,7 @@ export function Movie({ state, updateState }: Props) {
                 }
             </div>}
         </>}
-        {state.movieTab === TABS.VIDEOS && <>
+        {state.movieTab === 'VIDEOS' && <>
             <div className={SingleRow}>
                 <select defaultValue={videoFilter} className={Select} onChange={e => setVideoFilter(e.target.value)}>
                     {videoFilterOpts.map((x, i) => <option value={x} key={i}> {x} </option>)}

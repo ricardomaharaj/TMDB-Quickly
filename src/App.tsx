@@ -7,7 +7,7 @@ import { Season } from './Season'
 import { Episode } from './Episode'
 import { Person } from './Person'
 import { useState } from 'react'
-import { GlobalState, TABS } from './consts'
+import { GlobalState } from './consts'
 
 let url = process.env.NODE_ENV === 'production' ? 'https://r8r-gql.herokuapp.com/' : 'http://localhost:4000/'
 
@@ -18,12 +18,12 @@ export function App() {
     let [state, setState] = useState<GlobalState>({
         query: '',
         page: 1,
-        homeTab: TABS.MOVIES,
-        movieTab: TABS.INFO,
-        showTab: TABS.INFO,
-        seasonTab: TABS.EPISODES,
-        episodeTab: TABS.INFO,
-        personTab: TABS.BIO,
+        homeTab: 'MOVIES',
+        movieTab: 'INFO',
+        showTab: 'INFO',
+        seasonTab: 'EPISODES',
+        episodeTab: 'INFO',
+        personTab: 'BIO',
     })
 
     let updateState = (update: GlobalState) => setState({ ...state, ...update })

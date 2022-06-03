@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import { useSeasonQuery } from './gql'
 import { Spinner } from './Spinner'
 import { toDateString } from './util'
-import { FULLIMGURL, IMGURL, Props, TABS } from './consts'
+import { FULLIMGURL, IMGURL, Props } from './consts'
 import {
     BlurCard,
     Bubble,
@@ -61,13 +61,14 @@ export function Season({ state, updateState }: Props) {
             </div>
         </div>
         <div className={ButtonRow}>
-            <div className={`${Button} ${state.seasonTab === TABS.EPISODES ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => updateState({ seasonTab: TABS.EPISODES })}> EPISODES </div>
-            <div className={`${Button} ${state.seasonTab === TABS.CAST ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => updateState({ seasonTab: TABS.CAST })}> CAST </div>
-            <div className={`${Button} ${state.seasonTab === TABS.CREW ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => updateState({ seasonTab: TABS.CREW })}> CREW </div>
-            <div className={`${Button} ${state.seasonTab === TABS.IMAGES ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => updateState({ seasonTab: TABS.IMAGES })}> IMAGES </div>
-            <div className={`${Button} ${state.seasonTab === TABS.VIDEOS ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => updateState({ seasonTab: TABS.VIDEOS })}> VIDEOS </div>
+            {['EPISODES', 'CAST', 'CREW', 'IMAGES', 'VIDEOS'].map((x, i) =>
+                <div
+                    className={`${Button} ${state.seasonTab === x ? 'bg-slate-700' : 'bg-slate-800'}`}
+                    onClick={() => updateState({ seasonTab: x })}
+                    key={i}> {x} </div>
+            )}
         </div>
-        {state.seasonTab === TABS.EPISODES && <>
+        {state.seasonTab === 'EPISODES' && <>
             <div className={Grid123}>
                 {season?.episodes?.map((x, i) =>
                     <Link className={Bubble} key={i} to={`/tv/${id}/season/${season_number}/episode/${x.episode_number}`}>
@@ -83,7 +84,7 @@ export function Season({ state, updateState }: Props) {
                 )}
             </div>
         </>}
-        {state.seasonTab === TABS.CAST &&
+        {state.seasonTab === 'CAST' &&
             <div className={Grid123}>
                 {season?.credits?.cast?.map((x, i) =>
                     <Link to={`/person/${x.id}`} className={Card} key={i}>
@@ -96,7 +97,7 @@ export function Season({ state, updateState }: Props) {
                 )}
             </div>
         }
-        {state.seasonTab === TABS.CREW && <>
+        {state.seasonTab === 'CREW' && <>
             <div className={SingleRow}>
                 <select defaultValue={crewFilter}
                     className={Select}
@@ -123,7 +124,7 @@ export function Season({ state, updateState }: Props) {
                 }
             </div>
         </>}
-        {state.seasonTab === TABS.IMAGES && <>
+        {state.seasonTab === 'IMAGES' && <>
             <div className={SingleRow}>
                 <select defaultValue={posterFilter}
                     className={Select}
@@ -142,7 +143,7 @@ export function Season({ state, updateState }: Props) {
                 }
             </div>
         </>}
-        {state.seasonTab === TABS.VIDEOS && <>
+        {state.seasonTab === 'VIDEOS' && <>
             <div className={SingleRow}>
                 <select defaultValue={videoFilter}
                     className={Select}
