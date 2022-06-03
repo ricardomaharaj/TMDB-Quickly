@@ -4,6 +4,7 @@ import { useShowQuery } from './gql'
 import { Spinner } from './Spinner'
 import { toDateString } from './util'
 import { FULLIMGURL, IMGURL, Props, TABS } from './consts'
+import { Stars } from './Stars'
 import {
     BlurCard,
     Bubble,
@@ -23,7 +24,6 @@ import {
     VideoCardImg,
     VideoCardTextBox
 } from './ThemeData'
-import { Stars } from './Stars'
 
 export function Show({ state, updateState }: Props) {
 
@@ -43,18 +43,10 @@ export function Show({ state, updateState }: Props) {
     let backdropsLangOpts: string[] = []
     let videoFilterOpts: string[] = []
 
-    show?.credits?.crew?.forEach(({ job }) => {
-        if (crewFilterOpts.findIndex(x => x === job) === -1) crewFilterOpts.push(job!)
-    })
-    show?.images?.posters?.forEach(({ iso_639_1 }) => {
-        if (posterLangOpts.findIndex(x => x === iso_639_1) === -1) posterLangOpts.push(iso_639_1!)
-    })
-    show?.images?.backdrops?.forEach(({ iso_639_1 }) => {
-        if (backdropsLangOpts.findIndex(x => x === iso_639_1) === -1) backdropsLangOpts.push(iso_639_1!)
-    })
-    show?.videos?.results?.forEach(({ type }) => {
-        if (videoFilterOpts.findIndex(x => x === type) === -1) videoFilterOpts.push(type!)
-    })
+    show?.credits?.crew?.forEach(({ job }) => { if (crewFilterOpts.findIndex(x => x === job) === -1) crewFilterOpts.push(job!) })
+    show?.images?.posters?.forEach(({ iso_639_1 }) => { if (posterLangOpts.findIndex(x => x === iso_639_1) === -1) posterLangOpts.push(iso_639_1!) })
+    show?.images?.backdrops?.forEach(({ iso_639_1 }) => { if (backdropsLangOpts.findIndex(x => x === iso_639_1) === -1) backdropsLangOpts.push(iso_639_1!) })
+    show?.videos?.results?.forEach(({ type }) => { if (videoFilterOpts.findIndex(x => x === type) === -1) videoFilterOpts.push(type!) })
 
     crewFilterOpts.sort((a, b) => { return a > b ? 1 : -1 })
     crewFilterOpts.splice(0, 0, 'ALL')
@@ -63,16 +55,14 @@ export function Show({ state, updateState }: Props) {
     if (fetching) return <Spinner />
     if (error) return <div className={Error}> {error.message} </div>
     return <>
-        <div className={ImageBG} style={{
-            backgroundImage: `url(${FULLIMGURL + show?.backdrop_path})`
-        }}>
+        <div className={ImageBG} style={{ backgroundImage: `url(${FULLIMGURL + show?.backdrop_path})` }}>
             <div className={BlurCard}>
-                {show?.poster_path && <img className={CardImg} src={IMGURL + show?.poster_path} alt='' />}
+                {show?.poster_path && <img className={CardImg} src={IMGURL + show.poster_path} alt='' />}
                 <div className={CardTextBox}>
-                    {show?.first_air_date && <div> {toDateString(show?.first_air_date)} </div>}
-                    <div> {show?.name} </div>
-                    <div className='text-sm'> {show?.tagline} </div>
-                    <Stars average={show?.vote_average!} />
+                    {show?.first_air_date && <div> {toDateString(show.first_air_date)} </div>}
+                    {show?.name && <div> {show?.name} </div>}
+                    {show?.tagline && <div className='text-sm'> {show.tagline} </div>}
+                    {show?.vote_average && show?.vote_average > 0 && <Stars average={show.vote_average} />}
                 </div>
             </div>
         </div>
@@ -85,45 +75,46 @@ export function Show({ state, updateState }: Props) {
             <div className={`${Button} ${state.showTab === TABS.VIDEOS ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => updateState({ showTab: TABS.VIDEOS })}> VIDEOS </div>
         </div>
         {state.showTab === TABS.INFO && <>
-            <div className={Bubble}> {show?.overview} </div>
+            {show?.overview && <div className={Bubble}> {show.overview} </div>}
             <div className={Bubble}>
-                <div> Status: {show?.status} </div>
-                <div> Show Type: {show?.type} </div>
-                <div> Runtime: {show?.episode_run_time![0]} Minutes </div>
-                <div> Seasons: {show?.number_of_seasons} </div>
-                <div> Episodes: {show?.number_of_episodes} </div>
-                <div> <a className='underline' target='_blank' rel='noopener noreferrer' href={`https://www.imdb.com/title/${show?.external_ids?.imdb_id}`}>IMDB</a> ID: {show?.external_ids?.imdb_id} </div>
-                <div> <a className='underline' target='_blank' rel='noopener noreferrer' href={`https://www.themoviedb.org/tv/${show?.id}`}>TMDB</a> ID: {show?.id} </div>
-                <div> Homepage: <a className='underline' href={show?.homepage} target='_blank' rel='noopener noreferrer'> {show?.homepage} </a></div>
+                {show?.status && <div> Status: {show.status} </div>}
+                {show?.type && <div> Show Type: {show.type} </div>}
+                {show?.episode_run_time && show.episode_run_time[0] && show.episode_run_time[0] > 0 && <div> Runtime: {show.episode_run_time[0]} Minutes </div>}
+                {show?.number_of_seasons && show.number_of_seasons > 0 && <div> Seasons: {show.number_of_seasons} </div>}
+                {show?.number_of_episodes && show.number_of_episodes > 0 && <div> Episodes: {show.number_of_episodes} </div>}
+                {show?.external_ids?.imdb_id && <div>
+                    <a className='underline' target='_blank' rel='noopener noreferrer' href={`https://www.imdb.com/title/${show?.external_ids.imdb_id}`}> IMDB </a>
+                    <span> ID: {show.external_ids.imdb_id} </span>
+                </div>}
+                <div>
+                    <a className='underline' target='_blank' rel='noopener noreferrer' href={`https://www.themoviedb.org/tv/${show?.id}`}> TMDB </a>
+                    <span> ID: {id} </span>
+                </div>
             </div>
             <div className={ButtonRow}>
-                {show?.networks?.map((x, i) =>
-                    <div className={Bubble} key={i}> {x.name} </div>
-                )}
-                {show?.production_companies?.map((x, i) =>
-                    <div className={Bubble} key={i}> {x.name} </div>
-                )}
+                {show?.networks?.map((x, i) => <div className={Bubble} key={i}> {x.name} </div>)}
+                {show?.production_companies?.map((x, i) => <div className={Bubble} key={i}> {x.name} </div>)}
             </div>
         </>}
-        {state.showTab === TABS.CAST && <>
+        {state.showTab === TABS.CAST &&
             <div className={Grid123}>
                 {show?.credits?.cast?.map((x, i) =>
                     <Link to={`/person/${x.id}`} className={Card} key={i} >
                         {x.profile_path && <img className={CardImg} src={IMGURL + x.profile_path!} alt='' />}
                         <div className={CardTextBox}>
-                            <div> {x.name} </div>
-                            <div className={SubText}> {x.character} </div>
+                            {x.name && <div> {x.name} </div>}
+                            {x.character && <div className={SubText}> {x.character} </div>}
                         </div>
                     </Link>
                 )}
             </div>
-        </>}
+        }
         {state.showTab === TABS.CREW && <>
             <div className={SingleRow}>
                 <select defaultValue={crewFilter}
                     className={Select}
                     onChange={e => setCrewFilter(e.target.value)}>
-                    {crewFilterOpts.map((x, i) => { return <option value={x} key={i}>{x}</option> })}
+                    {crewFilterOpts.map((x, i) => <option value={x} key={i}>{x}</option>)}
                 </select>
             </div>
             <div className={Grid123}>
@@ -133,26 +124,27 @@ export function Show({ state, updateState }: Props) {
                         if (job === crewFilter) return true
                         else return false
                     })
-                    .map((x, i) =>
+                    ?.map((x, i) =>
                         <Link to={`/person/${x.id}`} className={Card} key={i} >
-                            {x.profile_path && <img className={CardImg} src={IMGURL + x.profile_path!} alt='' />}
+                            {x.profile_path && <img className={CardImg} src={IMGURL + x.profile_path} alt='' />}
                             <div className={CardTextBox}>
-                                <div> {x.name} </div>
-                                <div className={SubText}> {x.job} </div>
+                                {x.name && <div> {x.name} </div>}
+                                {x.job && <div className={SubText}> {x.job} </div>}
                             </div>
                         </Link>
-                    )}
+                    )
+                }
             </div>
         </>}
         {state.showTab === TABS.SEASONS && <>
             <div className={Grid123}>
-                {show?.seasons?.map((x, i) =>
+                {show?.seasons && show?.seasons.map((x, i) =>
                     <Link to={`/tv/${id}/season/${x.season_number}`} className={Card} key={i}>
                         {x.poster_path && <img className={CardImg} src={IMGURL + x.poster_path} alt='' />}
                         <div className={CardTextBox}>
-                            <div> {x.name} </div>
-                            <div className={SubText}> {x.episode_count} Episodes </div>
-                            <div className={SubText}> {toDateString(x.air_date!)} </div>
+                            {x.name && <div> {x.name} </div>}
+                            {x.episode_count && x.episode_count > 0 && <div className={SubText}> {x.episode_count} Episodes </div>}
+                            {x.air_date && <div className={SubText}> {toDateString(x.air_date)} </div>}
                         </div>
                     </Link>
                 )}
@@ -160,32 +152,20 @@ export function Show({ state, updateState }: Props) {
         </>}
         {state.showTab === TABS.IMAGES && <>
             <div className={ButtonRow}>
-                <div
-                    className={`${Button} ${imageTab === TABS.POSTERS ? 'bg-slate-700' : 'bg-slate-800'}`}
-                    onClick={e => setImageTab(TABS.POSTERS)}> POSTERS </div>
-                <div
-                    className={`${Button} ${imageTab === TABS.BACKDROPS ? 'bg-slate-700' : 'bg-slate-800'}`}
-                    onClick={e => setImageTab(TABS.BACKDROPS)}> BACKDROPS </div>
-                {imageTab === TABS.POSTERS && <>
-                    {imageTab === TABS.POSTERS && <>
-                        <select defaultValue={posterFilter}
-                            className={Select}
-                            onChange={e => setPosterFilter(e.target.value)}>
-                            {posterLangOpts.map((x, i) => <option value={x} key={i}>{x} </option>)}
-                        </select>
-                    </>}
-                </>}
-                {imageTab === TABS.BACKDROPS && <>
-                    {imageTab === TABS.BACKDROPS && <>
-                        <select defaultValue={backdropFilter}
-                            className={Select}
-                            onChange={e => setBackdropFilter(e.target.value)}>
-                            {backdropsLangOpts.map((x, i) => <option value={x} key={i}>{x} </option>)}
-                        </select>
-                    </>}
-                </>}
+                <div className={`${Button} ${imageTab === TABS.POSTERS ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setImageTab(TABS.POSTERS)}> POSTERS </div>
+                <div className={`${Button} ${imageTab === TABS.BACKDROPS ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => setImageTab(TABS.BACKDROPS)}> BACKDROPS </div>
+                {imageTab === TABS.POSTERS &&
+                    <select defaultValue={posterFilter} className={Select} onChange={e => setPosterFilter(e.target.value)}>
+                        {posterLangOpts.map((x, i) => <option value={x} key={i}>{x} </option>)}
+                    </select>
+                }
+                {imageTab === TABS.BACKDROPS &&
+                    <select defaultValue={backdropFilter} className={Select} onChange={e => setBackdropFilter(e.target.value)}>
+                        {backdropsLangOpts.map((x, i) => <option value={x} key={i}>{x} </option>)}
+                    </select>
+                }
             </div>
-            {imageTab === TABS.POSTERS && <>
+            {imageTab === TABS.POSTERS &&
                 <div className={Grid234}>
                     {show?.images?.posters
                         ?.filter(x => x.iso_639_1 === posterFilter)
@@ -193,10 +173,11 @@ export function Show({ state, updateState }: Props) {
                             <a target='_blank' rel='noopener noreferrer' href={FULLIMGURL + x.file_path} key={i}>
                                 <img src={IMGURL + x.file_path} alt='' />
                             </a>
-                        )}
+                        )
+                    }
                 </div>
-            </>}
-            {imageTab === TABS.BACKDROPS && <>
+            }
+            {imageTab === TABS.BACKDROPS &&
                 <div className={Grid123}>
                     {show?.images?.backdrops
                         ?.filter(x => x.iso_639_1 === backdropFilter)
@@ -204,9 +185,10 @@ export function Show({ state, updateState }: Props) {
                             <a target='_blank' rel='noopener noreferrer' href={FULLIMGURL + x.file_path} key={i}>
                                 <img src={IMGURL + x.file_path} alt='' />
                             </a>
-                        )}
+                        )
+                    }
                 </div>
-            </>}
+            }
         </>}
         {state.showTab === TABS.VIDEOS && <>
             <div className={SingleRow}>
@@ -229,9 +211,13 @@ export function Show({ state, updateState }: Props) {
                             <a target='_blank' rel='noopener noreferrer' href={`https://www.youtube.com/watch?v=${x.key}`}>
                                 <img className={VideoCardImg} src={`https://i.ytimg.com/vi/${x.key}/hqdefault.jpg`} alt='' />
                             </a>
-                            <div className={VideoCardTextBox}> {x.name} <span className={SubText}> {toDateString(x.published_at!)} </span> </div>
+                            <div className={VideoCardTextBox}>
+                                {x.name && <span> {x.name} </span>}
+                                {x.published_at && <span className={SubText}> {toDateString(x.published_at)} </span>}
+                            </div>
                         </div>
-                    )}
+                    )
+                }
             </div>
         </>}
     </>

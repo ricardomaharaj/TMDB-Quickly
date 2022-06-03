@@ -4,6 +4,7 @@ import { useEpisodeQuery } from './gql'
 import { Spinner } from './Spinner'
 import { toDateString } from './util'
 import { FULLIMGURL, IMGURL, Props, TABS } from './consts'
+import { Stars } from './Stars'
 import {
     Bubble,
     Button,
@@ -18,7 +19,6 @@ import {
     SingleRow,
     SubText
 } from './ThemeData'
-import { Stars } from './Stars'
 
 export function Episode({ state, updateState }: Props) {
 
@@ -37,12 +37,15 @@ export function Episode({ state, updateState }: Props) {
     if (fetching) return <Spinner />
     if (error) return <div className={Error}> {error.message} </div>
     return <>
-        <div className={ImageBG} style={{ backgroundImage: `url(${FULLIMGURL + episode?.still_path})` }} >
-            <div className={`col backdrop-blur-sm backdrop-brightness-50 rounded-xl p-10 space-y-2`}>
-                <div> S{episode?.season_number?.toString().padStart(2, '0')}E{episode?.episode_number?.toString().padStart(2, '0')} </div>
-                <div> {episode?.name} </div>
-                <div> {toDateString(episode?.air_date!)} </div>
-                <Stars average={episode?.vote_average!} />
+        <div className={ImageBG} style={{ backgroundImage: `url(${FULLIMGURL + episode?.still_path})` }}>
+            <div className='col backdrop-blur-sm backdrop-brightness-50 rounded-xl p-10 space-y-2'>
+                <div>
+                    <span> S{episode?.season_number?.toString().padStart(2, '0')} </span>
+                    <span> E{episode?.episode_number?.toString().padStart(2, '0')} </span>
+                </div>
+                {episode?.name && <div> {episode?.name} </div>}
+                {episode?.air_date && <div> {toDateString(episode?.air_date)} </div>}
+                {episode?.vote_average && episode?.vote_average > 0 && <Stars average={episode?.vote_average} />}
             </div>
         </div>
         <div className={ButtonRow}>
@@ -51,9 +54,7 @@ export function Episode({ state, updateState }: Props) {
             <div className={`${Button} ${state.episodeTab === TABS.CREW ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => updateState({ episodeTab: TABS.CREW })}> CREW </div>
             <div className={`${Button} ${state.episodeTab === TABS.IMAGES ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => updateState({ episodeTab: TABS.IMAGES })}> IMAGES </div>
         </div>
-        {state.episodeTab === TABS.INFO && <>
-            <div className={Bubble}> {episode?.overview} </div>
-        </>}
+        {state.episodeTab === TABS.INFO && <> {episode?.overview && <div className={Bubble}> {episode?.overview} </div>} </>}
         {state.episodeTab === TABS.CREW && <>
             <div className={SingleRow}>
                 <select defaultValue={crewFilter}
@@ -69,12 +70,12 @@ export function Episode({ state, updateState }: Props) {
                         if (job === crewFilter) return true
                         else return false
                     })
-                    .map((x, i) =>
-                        <Link to={`/person/${x.id}`} className={Card} key={i} >
-                            {x.profile_path && <img className={CardImg} src={IMGURL + x.profile_path!} alt='' />}
+                    ?.map((x, i) =>
+                        <Link to={`/person/${x.id}`} className={Card} key={i}>
+                            {x.profile_path && <img className={CardImg} src={IMGURL + x.profile_path} alt='' />}
                             <div className={CardTextBox}>
-                                <div> {x.name} </div>
-                                <div className={SubText}> {x.job} </div>
+                                {x.name && <div> {x.name} </div>}
+                                {x.job && <div className={SubText}> {x.job} </div>}
                             </div>
                         </Link>
                     )}
@@ -83,11 +84,11 @@ export function Episode({ state, updateState }: Props) {
         {state.episodeTab === TABS.GUEST && <>
             <div className={Grid123}>
                 {episode?.guest_stars?.map((x, i) =>
-                    <Link to={`/person/${x.id}`} className={Card} key={i} >
-                        {x.profile_path && <img className={CardImg} src={IMGURL + x.profile_path!} alt='' />}
+                    <Link to={`/person/${x.id}`} className={Card} key={i}>
+                        {x.profile_path && <img className={CardImg} src={IMGURL + x.profile_path} alt='' />}
                         <div className={CardTextBox}>
-                            <div> {x.name} </div>
-                            <div className={SubText}> {x.character} </div>
+                            {x.name && <div> {x.name} </div>}
+                            {x.character && <div className={SubText}> {x.character} </div>}
                         </div>
                     </Link>
                 )}

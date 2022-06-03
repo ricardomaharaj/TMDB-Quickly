@@ -7,12 +7,15 @@ const HALFSTAR = <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" 
 </svg>
 
 export function Stars(props: { average: number }) {
-    let rounded = Math.round(props.average) / 2
+    let { average } = props
+    let rounded = Math.round(average) / 2
     let split = `${rounded}`.split('.')
     let numStars = parseInt(split[0])
-
-    return <div className='row space-x-1'>
-        {new Array(numStars).fill(FULLSTAR).map((x, i) => <div key={i}>{x}</div>)}
-        {(split.length === 2) && <div> {HALFSTAR} </div>}
-    </div>
+    let arr = new Array(numStars)
+    return <>
+        <div className='row space-x-1'>
+            {arr.fill(FULLSTAR).map((x, i) => <div key={i}>{x}</div>)}
+            {(split.length === 2) && <div> {HALFSTAR} </div>}
+        </div>
+    </>
 }
