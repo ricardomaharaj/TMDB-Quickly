@@ -37,15 +37,15 @@ export function Episode({ state, updateState }: Props) {
     if (fetching) return <Spinner />
     if (error) return <div className={Error}> {error.message} </div>
     return <>
-        <div className={ImageBG} style={{ backgroundImage: `url(${FULLIMGURL + episode?.still_path})` }}>
+        <div className={ImageBG} style={{ backgroundImage: `url(${IMGURL + episode?.still_path})` }}>
             <div className='col backdrop-blur-sm backdrop-brightness-50 rounded-xl p-10 space-y-2'>
                 <div>
                     <span> S{episode?.season_number?.toString().padStart(2, '0')} </span>
                     <span> E{episode?.episode_number?.toString().padStart(2, '0')} </span>
                 </div>
-                {episode?.name && <div> {episode?.name} </div>}
-                {episode?.air_date && <div> {toDateString(episode?.air_date)} </div>}
-                {episode?.vote_average && episode?.vote_average > 0 && <Stars average={episode?.vote_average} />}
+                <div> {episode?.name} </div>
+                <div> {toDateString(episode?.air_date!)} </div>
+                {episode?.vote_average! > 0 && <Stars average={episode?.vote_average!} />}
             </div>
         </div>
         <div className={ButtonRow}>
@@ -56,13 +56,13 @@ export function Episode({ state, updateState }: Props) {
                     key={i}> {x} </div>
             )}
         </div>
-        {state.episodeTab === 'INFO' && <> {episode?.overview && <div className={Bubble}> {episode?.overview} </div>} </>}
+        {state.episodeTab === 'INFO' && <div className={Bubble}> {episode?.overview} </div>}
         {state.episodeTab === 'CREW' && <>
             <div className={SingleRow}>
                 <select defaultValue={crewFilter}
                     className={Select}
                     onChange={e => setCrewFilter(e.target.value)}>
-                    {crewFilterOpts.map((x, i) => <option value={x} key={i}>{x}</option>)}
+                    {crewFilterOpts.map((x, i) => <option value={x} key={i}> {x} </option>)}
                 </select>
             </div>
             <div className={Grid123}>
@@ -76,8 +76,8 @@ export function Episode({ state, updateState }: Props) {
                         <Link to={`/person/${x.id}`} className={Card} key={i}>
                             {x.profile_path && <img className={CardImg} src={IMGURL + x.profile_path} alt='' />}
                             <div className={CardTextBox}>
-                                {x.name && <div> {x.name} </div>}
-                                {x.job && <div className={SubText}> {x.job} </div>}
+                                <div> {x.name} </div>
+                                <div className={SubText}> {x.job} </div>
                             </div>
                         </Link>
                     )}
@@ -89,8 +89,8 @@ export function Episode({ state, updateState }: Props) {
                     <Link to={`/person/${x.id}`} className={Card} key={i}>
                         {x.profile_path && <img className={CardImg} src={IMGURL + x.profile_path} alt='' />}
                         <div className={CardTextBox}>
-                            {x.name && <div> {x.name} </div>}
-                            {x.character && <div className={SubText}> {x.character} </div>}
+                            <div> {x.name} </div>
+                            <div className={SubText}> {x.character} </div>
                         </div>
                     </Link>
                 )}

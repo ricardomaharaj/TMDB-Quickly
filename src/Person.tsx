@@ -34,13 +34,13 @@ export function Person({ state, updateState }: Props) {
     person?.combined_credits?.crew?.forEach(({ job }) => { if (crewFilterOpts.findIndex(x => x === job) === -1) crewFilterOpts.push(job!) })
     crewFilterOpts.splice(0, 0, 'ALL')
 
-    let calculateAge = (birthday?: string, deathday?: string) => {
+    let calculateAge = (birthday: string, deathday?: string) => {
         let age: number = 0
-        let start: Date = new Date(birthday?.replace('-', '/')!)
+        let start: Date = new Date(birthday.replace('-', '/'))
         let end: Date = new Date()
-        if (deathday) end = new Date(deathday?.replace('-', '/')!)
+        if (deathday) end = new Date(deathday.replace('-', '/'))
         age = end.getFullYear() - start.getFullYear()
-        return <> Age: {age} </>
+        return age
     }
 
     if (fetching) return <Spinner />
@@ -49,10 +49,10 @@ export function Person({ state, updateState }: Props) {
         <div className={Card}>
             {person?.profile_path && <img className={CardImg} src={IMGURL + person?.profile_path} alt='' />}
             <div className={CardTextBox}>
-                {person?.name && <div> {person?.name} </div>}
-                {person?.birthday && <div> Born: {toDateString(person?.birthday)} </div>}
-                {person?.deathday && <> Died: {toDateString(person?.deathday)} </>}
-                {person?.birthday && <div> {calculateAge(person?.birthday, person?.deathday)} </div>}
+                <div> {person?.name} </div>
+                <div> Born: {toDateString(person?.birthday!)} </div>
+                {person?.deathday && <div> Died: {toDateString(person?.deathday)} </div>}
+                <div> Age: {calculateAge(person?.birthday!, person?.deathday)} </div>
             </div>
         </div>
         <div className={ButtonRow}>
@@ -63,7 +63,7 @@ export function Person({ state, updateState }: Props) {
                     key={i}> {x} </div>
             )}
         </div>
-        {state.personTab === 'BIO' && <> {person?.biography && <div className={Bubble}> {person?.biography} </div>} </>}
+        {state.personTab === 'BIO' && <div className={Bubble}> {person?.biography} </div>}
         {state.personTab === 'CAST' && <>
             <div className={ButtonRow}>
                 <div className={`${Button} ${castFilter === 'movie' ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => { setCastFilter('movie') }}> MOVIES </div>
@@ -85,8 +85,8 @@ export function Person({ state, updateState }: Props) {
                             {x.poster_path && <img className={CardImg} src={IMGURL + x.poster_path} alt='' />}
                             <div className={CardTextBox}>
                                 <div> {date ? date.substring(0, 4) : 'TBD'} </div>
-                                {(x.name || x.title) && <div> {x.name || x.title} </div>}
-                                {x.character && <div className={SubText}> {x.character} </div>}
+                                <div> {x.name || x.title} </div>
+                                <div className={SubText}> {x.character} </div>
                                 {x.vote_average! > 0 && <Stars average={x.vote_average!} />}
                             </div>
                         </Link>
@@ -120,8 +120,8 @@ export function Person({ state, updateState }: Props) {
                             {x.poster_path && <img className={CardImg} src={IMGURL + x.poster_path} alt='' />}
                             <div className={CardTextBox}>
                                 <div> {date ? date.substring(0, 4) : 'TBD'} </div>
-                                {(x.name || x.title) && <div> {x.name || x.title} </div>}
-                                {x.job && <div className={SubText}> {x.job} </div>}
+                                <div> {x.name || x.title} </div>
+                                <div className={SubText}> {x.job} </div>
                                 {x.vote_average! > 0 && <Stars average={x.vote_average!} />}
                             </div>
                         </Link>

@@ -55,13 +55,13 @@ export function Show({ state, updateState }: Props) {
     if (fetching) return <Spinner />
     if (error) return <div className={Error}> {error.message} </div>
     return <>
-        <div className={ImageBG} style={{ backgroundImage: `url(${FULLIMGURL + show?.backdrop_path})` }}>
+        <div className={ImageBG} style={{ backgroundImage: `url(${IMGURL + show?.backdrop_path})` }}>
             <div className={BlurCard}>
                 {show?.poster_path && <img className={CardImg} src={IMGURL + show.poster_path} alt='' />}
                 <div className={CardTextBox}>
-                    {show?.first_air_date && <div> {toDateString(show.first_air_date)} </div>}
-                    {show?.name && <div> {show?.name} </div>}
-                    {show?.tagline && <div className='text-sm'> {show.tagline} </div>}
+                    <div> {toDateString(show?.first_air_date!)} </div>
+                    <div> {show?.name} </div>
+                    <div className='text-sm'> {show?.tagline} </div>
                     {show?.vote_average! > 0 && <Stars average={show?.vote_average!} />}
                 </div>
             </div>
@@ -75,19 +75,19 @@ export function Show({ state, updateState }: Props) {
             )}
         </div>
         {state.showTab === 'INFO' && <>
-            {show?.overview && <div className={Bubble}> {show.overview} </div>}
+            <div className={Bubble}> {show?.overview} </div>
             <div className={Bubble}>
                 {show?.status && <div> Status: {show.status} </div>}
                 {show?.type && <div> Show Type: {show.type} </div>}
-                {show?.episode_run_time && show.episode_run_time[0] && show.episode_run_time[0] > 0 && <div> Runtime: {show.episode_run_time[0]} Minutes </div>}
-                {show?.number_of_seasons && show.number_of_seasons > 0 && <div> Seasons: {show.number_of_seasons} </div>}
-                {show?.number_of_episodes && show.number_of_episodes > 0 && <div> Episodes: {show.number_of_episodes} </div>}
+                {show?.episode_run_time![0]! > 0 && <div> Runtime: {show?.episode_run_time![0]!} Minutes </div>}
+                {show?.number_of_seasons! > 0 && <div> Seasons: {show?.number_of_seasons} </div>}
+                {show?.number_of_episodes! > 0 && <div> Episodes: {show?.number_of_episodes} </div>}
                 {show?.external_ids?.imdb_id && <div>
-                    <a className='underline' target='_blank' rel='noopener noreferrer' href={`https://www.imdb.com/title/${show?.external_ids.imdb_id}`}> IMDB </a>
+                    <a className='underline' target='_blank' rel='noopener noreferrer' href={`https://www.imdb.com/title/${show?.external_ids.imdb_id}`}>IMDB</a>
                     <span> ID: {show.external_ids.imdb_id} </span>
                 </div>}
                 <div>
-                    <a className='underline' target='_blank' rel='noopener noreferrer' href={`https://www.themoviedb.org/tv/${show?.id}`}> TMDB </a>
+                    <a className='underline' target='_blank' rel='noopener noreferrer' href={`https://www.themoviedb.org/tv/${show?.id}`}>TMDB</a>
                     <span> ID: {id} </span>
                 </div>
             </div>
@@ -102,8 +102,8 @@ export function Show({ state, updateState }: Props) {
                     <Link to={`/person/${x.id}`} className={Card} key={i} >
                         {x.profile_path && <img className={CardImg} src={IMGURL + x.profile_path!} alt='' />}
                         <div className={CardTextBox}>
-                            {x.name && <div> {x.name} </div>}
-                            {x.character && <div className={SubText}> {x.character} </div>}
+                            <div> {x.name} </div>
+                            <div className={SubText}> {x.character} </div>
                         </div>
                     </Link>
                 )}
@@ -128,8 +128,8 @@ export function Show({ state, updateState }: Props) {
                         <Link to={`/person/${x.id}`} className={Card} key={i} >
                             {x.profile_path && <img className={CardImg} src={IMGURL + x.profile_path} alt='' />}
                             <div className={CardTextBox}>
-                                {x.name && <div> {x.name} </div>}
-                                {x.job && <div className={SubText}> {x.job} </div>}
+                                <div> {x.name} </div>
+                                <div className={SubText}> {x.job} </div>
                             </div>
                         </Link>
                     )
@@ -142,9 +142,9 @@ export function Show({ state, updateState }: Props) {
                     <Link to={`/tv/${id}/season/${x.season_number}`} className={Card} key={i}>
                         {x.poster_path && <img className={CardImg} src={IMGURL + x.poster_path} alt='' />}
                         <div className={CardTextBox}>
-                            {x.name && <div> {x.name} </div>}
-                            {x.episode_count && x.episode_count > 0 && <div className={SubText}> {x.episode_count} Episodes </div>}
-                            {x.air_date && <div className={SubText}> {toDateString(x.air_date)} </div>}
+                            <div> {x.name} </div>
+                            <div className={SubText}> {x.episode_count} Episodes </div>
+                            <div className={SubText}> {toDateString(x.air_date!)} </div>
                         </div>
                     </Link>
                 )}
@@ -216,8 +216,8 @@ export function Show({ state, updateState }: Props) {
                                 <img className={VideoCardImg} src={`https://i.ytimg.com/vi/${x.key}/hqdefault.jpg`} alt='' />
                             </a>
                             <div className={VideoCardTextBox}>
-                                {x.name && <span> {x.name} </span>}
-                                {x.published_at && <span className={SubText}> {toDateString(x.published_at)} </span>}
+                                <span> {x.name} </span>
+                                <span className={SubText}> {toDateString(x.published_at!)} </span>
                             </div>
                         </div>
                     )

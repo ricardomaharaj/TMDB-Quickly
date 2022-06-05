@@ -50,13 +50,13 @@ export function Season({ state, updateState }: Props) {
     if (fetching) return <Spinner />
     if (error) return <div className={Error}> {error.message} </div>
     return <>
-        <div className={ImageBG} style={{ backgroundImage: `url(${FULLIMGURL + season?.poster_path})` }}>
+        <div className={ImageBG} style={{ backgroundImage: `url(${IMGURL + season?.poster_path})` }}>
             <div className={BlurCard}>
                 {season?.poster_path && <img className={CardImg} src={IMGURL + season.poster_path} alt='' />}
                 <div className={CardTextBox}>
-                    {season?.name && <div> {season.name} </div>}
-                    {season?.episodes && season.episodes.length > 0 && <div> {season.episodes.length} Episodes </div>}
-                    {season?.air_date && <div> {toDateString(season.air_date)} </div>}
+                    <div> {season?.name} </div>
+                    <div> {season?.episodes?.length} Episodes </div>
+                    <div> {toDateString(season?.air_date!)} </div>
                 </div>
             </div>
         </div>
@@ -74,12 +74,12 @@ export function Season({ state, updateState }: Props) {
                     <Link className={Bubble} key={i} to={`/tv/${id}/season/${season_number}/episode/${x.episode_number}`}>
                         {x.still_path && <img className='rounded-xl mb-2' src={IMGURL + x.still_path} alt='' />}
                         <div>
-                            {x.episode_number && <span> {x.episode_number} | </span>}
-                            {x.name && <span> {x.name} | </span>}
-                            {x.air_date && <span> {toDateString(x.air_date)} | </span>}
-                            {x.vote_average && x.vote_average > 0 && <span> {x.vote_average.toFixed(1)} </span>}
+                            <span> {x.episode_number} | </span>
+                            <span> {x.name} | </span>
+                            <span> {toDateString(x.air_date!)} | </span>
+                            {x.vote_average! > 0 && <span> {x.vote_average?.toFixed(1)} </span>}
                         </div>
-                        {x.overview && <div className={SubText}> {x.overview} </div>}
+                        <div className={SubText}> {x.overview} </div>
                     </Link>
                 )}
             </div>
@@ -90,8 +90,8 @@ export function Season({ state, updateState }: Props) {
                     <Link to={`/person/${x.id}`} className={Card} key={i}>
                         {x.profile_path && <img className={CardImg} src={IMGURL + x.profile_path} alt='' />}
                         <div className={CardTextBox}>
-                            {x.name && <div> {x.name} </div>}
-                            {x.character && <div className={SubText}> {x.character} </div>}
+                            <div> {x.name} </div>
+                            <div className={SubText}> {x.character} </div>
                         </div>
                     </Link>
                 )}
@@ -116,8 +116,8 @@ export function Season({ state, updateState }: Props) {
                         <Link to={`/person/${x.id}`} className={Card} key={i}>
                             {x.profile_path && <img className={CardImg} src={IMGURL + x.profile_path} alt='' />}
                             <div className={CardTextBox}>
-                                {x.name && <div> {x.name} </div>}
-                                {x.job && <div className={SubText}> {x.job} </div>}
+                                <div> {x.name} </div>
+                                <div className={SubText}> {x.job} </div>
                             </div>
                         </Link>
                     )
@@ -165,8 +165,8 @@ export function Season({ state, updateState }: Props) {
                                 <img className={VideoCardImg} src={`https://i.ytimg.com/vi/${x.key}/hqdefault.jpg`} alt='' />
                             </a>
                             <div className={VideoCardTextBox}>
-                                {x.name && <span> {x.name}  </span>}
-                                {x.published_at && <span className={SubText}> {toDateString(x.published_at)} </span>}
+                                <span> {x.name}  </span>
+                                <span className={SubText}> {toDateString(x.published_at!)} </span>
                             </div>
                         </div>
                     )

@@ -62,12 +62,12 @@ function SearchResults({ state, updateState }: Props) {
                     <Link to={`/movie/${x.id}`} key={i} className={Card}>
                         {x.poster_path && <img className={CardImg} src={IMGURL + x.poster_path} alt='' />}
                         <div className={CardTextBox}>
-                            {x.release_date && <div> {x.release_date.substring(0, 4)} </div>}
-                            {x.title && <div> {x.title} </div>}
+                            <div> {x.release_date?.substring(0, 4)} </div>
+                            <div> {x.title} </div>
                             {x.vote_average! > 0 && <Stars average={x.vote_average!} />}
-                            {x.overview && <div className={CardSubText}>
-                                {x.overview.length > 100 ? x.overview.substring(0, 97).padEnd(100, '.') : x.overview}
-                            </div>}
+                            <div className={CardSubText}>
+                                {x.overview!.length > 100 ? x.overview!.substring(0, 97).padEnd(100, '.') : x.overview}
+                            </div>
                         </div>
                     </Link>
                 )
@@ -77,12 +77,12 @@ function SearchResults({ state, updateState }: Props) {
                     <Link to={`/tv/${x.id}`} key={i} className={Card}>
                         {x.poster_path && <img className={CardImg} src={IMGURL + x.poster_path} alt='' />}
                         <div className={CardTextBox}>
-                            {x.first_air_date && <div> {x.first_air_date.substring(0, 4)} </div>}
-                            {x.name && <div> {x.name} </div>}
+                            <div> {x.first_air_date?.substring(0, 4)} </div>
+                            <div> {x.name} </div>
                             {x.vote_average! > 0 && <Stars average={x.vote_average!} />}
-                            {x.overview && <div className={CardSubText}>
-                                {x.overview.length > 100 ? x.overview.substring(0, 97).padEnd(100, '.') : x.overview}
-                            </div>}
+                            <div className={CardSubText}>
+                                {x.overview!.length > 100 ? x.overview!.substring(0, 97).padEnd(100, '.') : x.overview}
+                            </div>
                         </div>
                     </Link>
                 )
@@ -91,7 +91,7 @@ function SearchResults({ state, updateState }: Props) {
                 people.map((x, i) =>
                     <Link to={`/person/${x.id}`} key={i} className={Card}>
                         {x.profile_path && <img className={CardImg} src={IMGURL + x.profile_path} alt='' />}
-                        {x.name && <div className={CardTextBox}> {x.name} </div>}
+                        <div className={CardTextBox}> {x.name} </div>
                     </Link>
                 )
             }

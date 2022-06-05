@@ -67,13 +67,13 @@ export function Movie({ state, updateState }: Props) {
     if (fetching) return <Spinner />
     if (error) return <div className={Error}> {error.message} </div>
     return <>
-        <div className={ImageBG} style={{ backgroundImage: `url(${FULLIMGURL + movie?.backdrop_path})` }} >
+        <div className={ImageBG} style={{ backgroundImage: `url(${IMGURL + movie?.backdrop_path})` }} >
             <div className={BlurCard}>
                 {movie?.poster_path && <img className={CardImg} src={IMGURL + movie?.poster_path} alt='' />}
                 <div className={CardTextBox}>
-                    {movie?.release_date && <div> {toDateString(movie?.release_date)} </div>}
-                    {movie?.title && <div> {movie?.title} </div>}
-                    {movie?.tagline && <div className='text-sm'> {movie?.tagline} </div>}
+                    <div> {toDateString(movie?.release_date!)} </div>
+                    <div> {movie?.title} </div>
+                    <div className='text-sm'> {movie?.tagline} </div>
                     {movie?.vote_average! > 0 && <Stars average={movie?.vote_average!} />}
                 </div>
             </div>
@@ -87,22 +87,22 @@ export function Movie({ state, updateState }: Props) {
             )}
         </div>
         {state.movieTab === 'INFO' && <>
-            {movie?.overview && <div className={Bubble}> {movie?.overview} </div>}
+            <div className={Bubble}> {movie?.overview} </div>
             <div className={Bubble}>
                 {movie?.status && <div> Status: {movie?.status} </div>}
-                {movie?.runtime && movie?.runtime > 0 && <div> Runtime: {movie?.runtime} Minutes </div>}
-                {movie?.budget && movie?.budget > 0 && <div> Budget: ${movie?.budget.toLocaleString()} </div>}
-                {movie?.revenue && movie?.revenue > 0 && <div> Revenue: ${movie?.revenue.toLocaleString()} </div>}
+                {movie?.runtime! > 0 && <div> Runtime: {movie?.runtime} Minutes </div>}
+                {movie?.budget! > 0 && <div> Budget: ${movie?.budget!.toLocaleString()} </div>}
+                {movie?.revenue! > 0 && <div> Revenue: ${movie?.revenue!.toLocaleString()} </div>}
                 {movie?.original_language && <div> Original Language: {movie?.original_language} </div>}
                 {movie?.original_title && <div> Original Title: {movie?.original_title} </div>}
                 {movie?.imdb_id && <div>
-                    <a className='underline' target='_blank' rel='noopener noreferrer' href={`https://www.imdb.com/title/${movie?.imdb_id}`}> IMDB </a>
+                    <a className='underline' target='_blank' rel='noopener noreferrer' href={`https://www.imdb.com/title/${movie?.imdb_id}`}>IMDB</a>
                     <span> ID: {movie?.imdb_id} </span>
                 </div>}
-                {movie?.id && <div>
-                    <a className='underline' target='_blank' rel='noopener noreferrer' href={`https://www.themoviedb.org/movie/${movie?.id}`}> TMDB </a>
+                <div>
+                    <a className='underline' target='_blank' rel='noopener noreferrer' href={`https://www.themoviedb.org/movie/${movie?.id}`}>TMDB</a>
                     <span> ID: {id} </span>
-                </div>}
+                </div>
             </div>
             <div className={ButtonRow}>
                 {movie?.genres?.map((x, i) => <div className={Bubble} key={i}> {x.name} </div>)}
@@ -128,9 +128,10 @@ export function Movie({ state, updateState }: Props) {
                             <div> {x.name} </div>
                             <div className={SubText}> {x.character} </div>
                         </div>
-                    </Link>)
-                }
-            </div>}
+                    </Link>
+                )}
+            </div>
+        }
         {state.movieTab === 'CREW' && <>
             <div className={SingleRow}>
                 <select defaultValue={crewFilter} className={Select} onChange={e => setCrewFilter(e.target.value)}>
@@ -215,8 +216,8 @@ export function Movie({ state, updateState }: Props) {
                             <a target='_blank' rel='noopener noreferrer' href={`https://www.youtube.com/watch?v=${x.key}`}>
                                 <img className={VideoCardImg} src={`https://i.ytimg.com/vi/${x.key}/hqdefault.jpg`} alt='' />
                                 <div className={VideoCardTextBox}>
-                                    {x.name && <span> {x.name} </span>}
-                                    {x.published_at && <span className={SubText}> {toDateString(x.published_at)} </span>}
+                                    <span> {x.name} </span>
+                                    <span className={SubText}> {toDateString(x.published_at!)} </span>
                                 </div>
                             </a>
                         </div>
