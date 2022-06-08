@@ -6,7 +6,6 @@ import { toDateString } from './util'
 import { FULLIMGURL, IMGURL, Props } from './consts'
 import {
     BlurCard,
-    Bubble,
     Button,
     ButtonRow,
     Card,
@@ -15,6 +14,7 @@ import {
     Error,
     Grid123,
     Grid234,
+    HoverBubble,
     ImageBG,
     Select,
     SingleRow,
@@ -71,7 +71,7 @@ export function Season({ state, updateState }: Props) {
         {state.seasonTab === 'EPISODES' && <>
             <div className={Grid123}>
                 {season?.episodes?.map((x, i) =>
-                    <Link className={Bubble} key={i} to={`/tv/${id}/season/${season_number}/episode/${x.episode_number}`}>
+                    <Link className={HoverBubble} key={i} to={`/tv/${id}/season/${season_number}/episode/${x.episode_number}`}>
                         {x.still_path && <img className='rounded-xl mb-2' src={IMGURL + x.still_path} alt='' />}
                         <div>
                             <span> {x.episode_number} | </span>

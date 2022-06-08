@@ -59,7 +59,7 @@ function SearchResults({ state, updateState }: Props) {
         <div className={Grid123}>
             {state.homeTab === 'MOVIES' &&
                 movies.map((x, i) =>
-                    <Link to={`/movie/${x.id}`} key={i} className={Card}>
+                    <Link to={`/movie/${x.id}`} key={i} className={Card + ' '}>
                         {x.poster_path && <img className={CardImg} src={IMGURL + x.poster_path} alt='' />}
                         <div className={CardTextBox}>
                             <div> {x.release_date?.substring(0, 4)} </div>
