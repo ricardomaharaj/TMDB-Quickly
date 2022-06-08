@@ -48,6 +48,8 @@ export function Movie({ state, updateState }: Props) {
     let { data, fetching, error } = res
     let movie = data?.movie
 
+    document.title = `${movie?.title} | TMDB Quickly`
+
     let releaseDates = movie?.release_dates?.results?.filter(x => x?.iso_3166_1 === 'US')[0]?.release_dates
 
     let crewFilterOpts: string[] = []
@@ -72,7 +74,10 @@ export function Movie({ state, updateState }: Props) {
                 {movie?.poster_path && <img className={CardImg} src={IMGURL + movie?.poster_path} alt='' />}
                 <div className={CardTextBox}>
                     <div> {toDateString(movie?.release_date!)} </div>
-                    <div> {movie?.title} </div>
+                    <div
+                        onClick={() => navigator.clipboard.writeText(movie?.title?.split(' ').join('.')! + '.' + movie?.release_date?.substring(0, 4))}>
+                        {movie?.title}
+                    </div>
                     <div className='text-sm'> {movie?.tagline} </div>
                     {movie?.vote_average! > 0 && <Stars average={movie?.vote_average!} />}
                 </div>
@@ -97,7 +102,7 @@ export function Movie({ state, updateState }: Props) {
                 {movie?.original_title && <div> Original Title: {movie?.original_title} </div>}
                 {movie?.imdb_id && <div>
                     <a className='underline' target='_blank' rel='noopener noreferrer' href={`https://www.imdb.com/title/${movie?.imdb_id}`}>IMDB</a>
-                    <span> ID: {movie?.imdb_id} </span>
+                    <span onClick={() => navigator.clipboard.writeText(movie?.imdb_id!)}> ID: {movie?.imdb_id} </span>
                 </div>}
                 <div>
                     <a className='underline' target='_blank' rel='noopener noreferrer' href={`https://www.themoviedb.org/movie/${movie?.id}`}>TMDB</a>

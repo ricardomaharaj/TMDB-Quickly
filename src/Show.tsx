@@ -38,6 +38,8 @@ export function Show({ state, updateState }: Props) {
     let { data, fetching, error } = res
     let show = data?.show
 
+    document.title = `${show?.name} | TMDB Quickly`
+
     let crewFilterOpts: string[] = []
     let posterLangOpts: string[] = []
     let backdropsLangOpts: string[] = []
@@ -60,7 +62,10 @@ export function Show({ state, updateState }: Props) {
                 {show?.poster_path && <img className={CardImg} src={IMGURL + show.poster_path} alt='' />}
                 <div className={CardTextBox}>
                     <div> {toDateString(show?.first_air_date!)} </div>
-                    <div> {show?.name} </div>
+                    <div
+                        onClick={() => navigator.clipboard.writeText(show?.name?.split(' ').join('.')! + '.' + show?.first_air_date?.substring(0, 4))}>
+                        {show?.name}
+                    </div>
                     <div className='text-sm'> {show?.tagline} </div>
                     {show?.vote_average! > 0 && <Stars average={show?.vote_average!} />}
                 </div>
@@ -84,7 +89,7 @@ export function Show({ state, updateState }: Props) {
                 {show?.number_of_episodes! > 0 && <div> Episodes: {show?.number_of_episodes} </div>}
                 {show?.external_ids?.imdb_id && <div>
                     <a className='underline' target='_blank' rel='noopener noreferrer' href={`https://www.imdb.com/title/${show?.external_ids.imdb_id}`}>IMDB</a>
-                    <span> ID: {show.external_ids.imdb_id} </span>
+                    <span onClick={() => navigator.clipboard.writeText(show?.external_ids?.imdb_id!)}> ID: {show?.external_ids.imdb_id} </span>
                 </div>}
                 <div>
                     <a className='underline' target='_blank' rel='noopener noreferrer' href={`https://www.themoviedb.org/tv/${show?.id}`}>TMDB</a>

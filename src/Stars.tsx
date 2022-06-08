@@ -12,10 +12,8 @@ export function Stars(props: { average: number }) {
     let split = `${rounded}`.split('.')
     let numStars = parseInt(split[0])
     let arr = new Array(numStars)
-    return <>
-        <div className='row space-x-1'>
-            {arr.fill(FULLSTAR).map((x, i) => <div key={i}>{x}</div>)}
-            {(split.length === 2) && <div> {HALFSTAR} </div>}
-        </div>
-    </>
+    return <div className='row space-x-1'>
+        {arr.fill(FULLSTAR).map((x, i) => <div key={i}>{x}</div>)}
+        {(split.length === 2) && <div> {HALFSTAR} </div>}
+    </div>
 }

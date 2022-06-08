@@ -40,6 +40,8 @@ export function Home({ state, updateState }: Props) {
 
 function SearchResults({ state, updateState }: Props) {
 
+    document.title = 'TMDB Quickly'
+
     let nextPage = () => updateState({ page: state.page + 1 })
     let lastPage = () => updateState({ page: state.page - 1 })
 

@@ -17,7 +17,8 @@ import {
     Card,
     CardImg,
     CardTextBox,
-    Error
+    Error,
+    CardNoHover
 } from './ThemeData'
 
 export function Person({ state, updateState }: Props) {
@@ -29,6 +30,8 @@ export function Person({ state, updateState }: Props) {
     let [res,] = usePersonQuery({ id })
     let { data, fetching, error } = res
     let person = data?.person
+
+    document.title = `${person?.name} | TMDB Quickly`
 
     let crewFilterOpts: string[] = []
     person?.combined_credits?.crew?.forEach(({ job }) => { if (crewFilterOpts.findIndex(x => x === job) === -1) crewFilterOpts.push(job!) })
@@ -46,7 +49,7 @@ export function Person({ state, updateState }: Props) {
     if (fetching) return <Spinner />
     if (error) return <div className={Error}> {error.message} </div>
     return <>
-        <div className={Card}>
+        <div className={CardNoHover}>
             {person?.profile_path && <img className={CardImg} src={IMGURL + person?.profile_path} alt='' />}
             <div className={CardTextBox}>
                 <div> {person?.name} </div>
