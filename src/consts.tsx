@@ -12,4 +12,4 @@ export interface GlobalState {
     personTab: string,
 }
 
-export interface Props { state: GlobalState, updateState: any }
+export interface Props { state: GlobalState, updateState: (update: Partial<GlobalState>) => void }

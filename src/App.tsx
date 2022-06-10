@@ -26,7 +26,7 @@ export function App() {
         personTab: 'BIO',
     })
 
-    let updateState = (update: GlobalState) => setState({ ...state, ...update })
+    let updateState = (update: Partial<GlobalState>) => setState({ ...state, ...update })
 
     document.querySelector('html')?.setAttribute('class', 'bg-slate-900 text-white')
 
