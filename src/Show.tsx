@@ -63,7 +63,7 @@ export function Show({ state, updateState }: Props) {
                 <div className={CardTextBox}>
                     <div> {toDateString(show?.first_air_date!)} </div>
                     <div
-                        onClick={() => navigator.clipboard.writeText(show?.name?.split(' ').join('.')! + '.' + show?.first_air_date?.substring(0, 4))}>
+                        onClick={() => navigator.clipboard.writeText(show?.name?.replaceAll(' ', '.') + '.' + show?.first_air_date?.substring(0, 4))}>
                         {show?.name}
                     </div>
                     <div className='text-sm'> {show?.tagline} </div>

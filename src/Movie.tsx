@@ -75,7 +75,7 @@ export function Movie({ state, updateState }: Props) {
                 <div className={CardTextBox}>
                     <div> {toDateString(movie?.release_date!)} </div>
                     <div
-                        onClick={() => navigator.clipboard.writeText(movie?.title?.split(' ').join('.')! + '.' + movie?.release_date?.substring(0, 4))}>
+                        onClick={() => navigator.clipboard.writeText(movie?.title?.replaceAll(' ', '.') + '.' + movie?.release_date?.substring(0, 4))}>
                         {movie?.title}
                     </div>
                     <div className='text-sm'> {movie?.tagline} </div>
