@@ -18,7 +18,7 @@ export function App() {
     let [state, setState] = useState<GlobalState>({
         query: '',
         page: 1,
-        homeTab: 'MOVIES',
+        homeTab: 'movie',
         movieTab: 'INFO',
         showTab: 'INFO',
         seasonTab: 'EPISODES',
@@ -27,8 +27,6 @@ export function App() {
     })
 
     let updateState = (update: Partial<GlobalState>) => setState({ ...state, ...update })
-
-    document.querySelector('html')?.setAttribute('class', 'bg-slate-900 text-white')
 
     return <>
         <BrowserRouter>

@@ -5,21 +5,6 @@ import { Spinner } from './Spinner'
 import { toDateString } from './util'
 import { IMGURL, Props } from './consts'
 import { Stars } from './Stars'
-import {
-    ButtonRow,
-    Button,
-    SubText,
-    Grid123,
-    Bubble,
-    Grid234,
-    SingleRow,
-    Select,
-    Card,
-    CardImg,
-    CardTextBox,
-    Error,
-    CardNoHover
-} from './ThemeData'
 
 export function Person({ state, updateState }: Props) {
 
@@ -47,32 +32,39 @@ export function Person({ state, updateState }: Props) {
     }
 
     if (fetching) return <Spinner />
-    if (error) return <div className={Error}> {error.message} </div>
+    if (error) return <div className='err'> {error.message} </div>
     return <>
-        <div className={CardNoHover}>
-            {person?.profile_path && <img className={CardImg} src={IMGURL + person?.profile_path} alt='' />}
-            <div className={CardTextBox}>
+        <div className='card'>
+            {person?.profile_path && <img className='card-img' src={IMGURL + person?.profile_path} alt='' />}
+            <div className='card-text'>
                 <div> {person?.name} </div>
                 <div> Born: {toDateString(person?.birthday!)} </div>
                 {person?.deathday && <div> Died: {toDateString(person?.deathday)} </div>}
                 <div> Age: {calculateAge(person?.birthday!, person?.deathday)} </div>
             </div>
         </div>
-        <div className={ButtonRow}>
+        <div className='btn-row'>
             {['BIO', 'CAST', 'CREW', 'IMAGES'].map((x, i) =>
                 <div
-                    className={`${Button} ${state.personTab === x ? 'bg-slate-700' : 'bg-slate-800'}`}
+                    className={`btn ${state.personTab === x ? 'bg3' : 'bg2'}`}
                     onClick={() => updateState({ personTab: x })}
                     key={i}> {x} </div>
             )}
         </div>
-        {state.personTab === 'BIO' && <div className={Bubble}> {person?.biography} </div>}
+        {state.personTab === 'BIO' && <div className='bubble'> {person?.biography} </div>}
         {state.personTab === 'CAST' && <>
-            <div className={ButtonRow}>
-                <div className={`${Button} ${castFilter === 'movie' ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => { setCastFilter('movie') }}> MOVIES </div>
-                <div className={`${Button} ${castFilter === 'tv' ? 'bg-slate-700' : 'bg-slate-800'}`} onClick={() => { setCastFilter('tv') }}> SHOWS </div>
+            <div className='btn-row'>
+                {[
+                    { name: 'MOVIES', val: 'movie' },
+                    { name: 'SHOWS', val: 'tv' }
+                ].map((x, i) =>
+                    <div
+                        className={`btn ${castFilter === x.val ? 'bg3' : 'bg2'}`}
+                        onClick={() => { setCastFilter(x.val) }}
+                        key={i}> {x.name} </div>
+                )}
             </div>
-            <div className={Grid123}>
+            <div className='grid123'>
                 {person?.combined_credits?.cast
                     ?.filter(x => x.media_type === castFilter)
                     ?.sort((a, b) => {
@@ -84,12 +76,12 @@ export function Person({ state, updateState }: Props) {
                     })
                     ?.map((x, i) => {
                         let date = (x.release_date || x.first_air_date)
-                        return <Link to={`/${x.media_type}/${x.id}`} key={i} className={Card}>
-                            {x.poster_path && <img className={CardImg} src={IMGURL + x.poster_path} alt='' />}
-                            <div className={CardTextBox}>
+                        return <Link to={`/${x.media_type}/${x.id}`} key={i} className='card'>
+                            {x.poster_path && <img className='card-img' src={IMGURL + x.poster_path} alt='' />}
+                            <div className='card-text'>
                                 <div> {date ? date.substring(0, 4) : 'TBD'} </div>
                                 <div> {x.name || x.title} </div>
-                                <div className={SubText}> {x.character} </div>
+                                <div className='subtext'> {x.character} </div>
                                 {x.vote_average! > 0 && <Stars average={x.vote_average!} />}
                             </div>
                         </Link>
@@ -98,12 +90,12 @@ export function Person({ state, updateState }: Props) {
             </div>
         </>}
         {state.personTab === 'CREW' && <>
-            <div className={SingleRow}>
-                <select className={Select} defaultValue={crewFilter} onChange={e => setCrewFilter(e.target.value)}>
+            <div className='single-row'>
+                <select className='sel' defaultValue={crewFilter} onChange={e => setCrewFilter(e.target.value)}>
                     {crewFilterOpts.map((x, i) => <option value={x} key={i}> {x} </option>)}
                 </select>
             </div>
-            <div className={Grid123}>
+            <div className='grid123'>
                 {person?.combined_credits?.crew
                     ?.filter(x => {
                         if (crewFilter === 'ALL') return true
@@ -119,12 +111,12 @@ export function Person({ state, updateState }: Props) {
                     })
                     ?.map((x, i) => {
                         let date = x.release_date || x.first_air_date
-                        return <Link to={`/${x.media_type}/${x.id}`} key={i} className={Card}>
-                            {x.poster_path && <img className={CardImg} src={IMGURL + x.poster_path} alt='' />}
-                            <div className={CardTextBox}>
+                        return <Link to={`/${x.media_type}/${x.id}`} key={i} className='card'>
+                            {x.poster_path && <img className='card-img' src={IMGURL + x.poster_path} alt='' />}
+                            <div className='card-text'>
                                 <div> {date ? date.substring(0, 4) : 'TBD'} </div>
                                 <div> {x.name || x.title} </div>
-                                <div className={SubText}> {x.job} </div>
+                                <div className='subtext'> {x.job} </div>
                                 {x.vote_average! > 0 && <Stars average={x.vote_average!} />}
                             </div>
                         </Link>
@@ -133,7 +125,7 @@ export function Person({ state, updateState }: Props) {
             </div>
         </>}
         {state.personTab === 'IMAGES' && <>
-            <div className={Grid234}>
+            <div className='grid234'>
                 {person?.images?.profiles?.map((x, i) => <img src={IMGURL + x.file_path} alt='' key={i} />)}
             </div>
         </>}

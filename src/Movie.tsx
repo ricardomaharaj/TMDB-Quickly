@@ -5,25 +5,6 @@ import { Spinner } from './Spinner'
 import { toDateString } from './util'
 import { FULLIMGURL, IMGURL, Props } from './consts'
 import { Stars } from './Stars'
-import {
-    Button,
-    ButtonRow,
-    Grid123,
-    Select,
-    Grid234,
-    Bubble,
-    SubText,
-    SingleRow,
-    Card,
-    CardImg,
-    CardTextBox,
-    VideoCard,
-    VideoCardImg,
-    VideoCardTextBox,
-    Error,
-    BlurCard,
-    ImageBG,
-} from './ThemeData'
 
 const RELEASE_TYPES = [
     '',
@@ -67,12 +48,12 @@ export function Movie({ state, updateState }: Props) {
     videoFilterOpts.splice(0, 0, 'ALL')
 
     if (fetching) return <Spinner />
-    if (error) return <div className={Error}> {error.message} </div>
+    if (error) return <div className='err'> {error.message} </div>
     return <>
-        <div className={ImageBG} style={{ backgroundImage: `url(${IMGURL + movie?.backdrop_path})` }} >
-            <div className={BlurCard}>
-                {movie?.poster_path && <img className={CardImg} src={IMGURL + movie?.poster_path} alt='' />}
-                <div className={CardTextBox}>
+        <div className='img-bg' style={{ backgroundImage: `url(${IMGURL + movie?.backdrop_path})` }} >
+            <div className='blur-card'>
+                {movie?.poster_path && <img className='card-img' src={IMGURL + movie?.poster_path} alt='' />}
+                <div className='card-text'>
                     <div> {toDateString(movie?.release_date!)} </div>
                     <div
                         onClick={() => navigator.clipboard.writeText(movie?.title?.replaceAll(' ', '.') + '.' + movie?.release_date?.substring(0, 4))}>
@@ -83,17 +64,17 @@ export function Movie({ state, updateState }: Props) {
                 </div>
             </div>
         </div>
-        <div className={ButtonRow}>
+        <div className='btn-row'>
             {['INFO', 'CAST', 'CREW', 'IMAGES', 'VIDEOS'].map((x, i) =>
                 <div
-                    className={`${Button} ${state.movieTab === x ? 'bg-slate-700' : 'bg-slate-800'}`}
+                    className={`btn ${state.movieTab === x ? 'bg3' : 'bg2'}`}
                     onClick={() => updateState({ movieTab: x })}
                     key={i}> {x} </div>
             )}
         </div>
         {state.movieTab === 'INFO' && <>
-            <div className={Bubble}> {movie?.overview} </div>
-            <div className={Bubble}>
+            <div className='bubble'> {movie?.overview} </div>
+            <div className='bubble'>
                 {movie?.status && <div> Status: {movie?.status} </div>}
                 {movie?.runtime! > 0 && <div> Runtime: {movie?.runtime} Minutes </div>}
                 {movie?.budget! > 0 && <div> Budget: ${movie?.budget!.toLocaleString()} </div>}
@@ -109,41 +90,41 @@ export function Movie({ state, updateState }: Props) {
                     <span> ID: {id} </span>
                 </div>
             </div>
-            <div className={ButtonRow}>
-                {movie?.genres?.map((x, i) => <div className={Bubble} key={i}> {x.name} </div>)}
+            <div className='btn-row'>
+                {movie?.genres?.map((x, i) => <div className='bubble' key={i}> {x.name} </div>)}
             </div>
-            <div className={ButtonRow}>
+            <div className='btn-row'>
                 {releaseDates?.map((x, i) =>
-                    <div className={Bubble + ' text-sm'} key={i}>
+                    <div className='bubble text-sm' key={i}>
                         <div> {RELEASE_TYPES[x.type!]} </div>
                         <div> {toDateString(x.release_date!)} </div>
                     </div>)
                 }
             </div>
-            <div className={ButtonRow}>
-                {movie?.production_companies?.map((x, i) => <div className={Bubble} key={i}> {x.name} </div>)}
+            <div className='btn-row'>
+                {movie?.production_companies?.map((x, i) => <div className='bubble' key={i}> {x.name} </div>)}
             </div>
         </>}
         {state.movieTab === 'CAST' &&
-            <div className={Grid123}>
+            <div className='grid123'>
                 {movie?.credits?.cast?.map((x, i) =>
-                    <Link to={`/person/${x.id}`} key={i} className={Card}>
-                        {x.profile_path && <img className={CardImg} src={IMGURL + x.profile_path} alt='' />}
-                        <div className={CardTextBox}>
+                    <Link to={`/person/${x.id}`} key={i} className='card'>
+                        {x.profile_path && <img className='card-img' src={IMGURL + x.profile_path} alt='' />}
+                        <div className='card-text'>
                             <div> {x.name} </div>
-                            <div className={SubText}> {x.character} </div>
+                            <div className='subtext'> {x.character} </div>
                         </div>
                     </Link>
                 )}
             </div>
         }
         {state.movieTab === 'CREW' && <>
-            <div className={SingleRow}>
-                <select defaultValue={crewFilter} className={Select} onChange={e => setCrewFilter(e.target.value)}>
+            <div className='single-row'>
+                <select defaultValue={crewFilter} className='sel' onChange={e => setCrewFilter(e.target.value)}>
                     {crewFilterOpts.map((x, i) => <option value={x} key={i}>{x}</option>)}
                 </select>
             </div>
-            <div className={Grid123}>
+            <div className='grid123'>
                 {movie?.credits?.crew
                     ?.filter(({ job }) => {
                         if (crewFilter === 'ALL') return true
@@ -151,11 +132,11 @@ export function Movie({ state, updateState }: Props) {
                         else return false
                     })
                     ?.map((x, i) =>
-                        <Link to={`/person/${x.id}`} key={i} className={Card}>
-                            {x.profile_path && <img className={CardImg} src={IMGURL + x.profile_path} alt='' />}
-                            <div className={CardTextBox}>
+                        <Link to={`/person/${x.id}`} key={i} className='card'>
+                            {x.profile_path && <img className='card-img' src={IMGURL + x.profile_path} alt='' />}
+                            <div className='card-text'>
                                 <div> {x.name} </div>
-                                <div className={SubText}> {x.job} </div>
+                                <div className='subtext'> {x.job} </div>
                             </div>
                         </Link>
                     )
@@ -163,25 +144,25 @@ export function Movie({ state, updateState }: Props) {
             </div>
         </>}
         {state.movieTab === 'IMAGES' && <>
-            <div className={ButtonRow}>
+            <div className='btn-row'>
                 {['POSTERS', 'BACKDROPS'].map((x, i) =>
                     <div
-                        className={`${Button} ${imageTab === x ? 'bg-slate-700' : 'bg-slate-800'}`}
+                        className={`btn ${imageTab === x ? 'bg3' : 'bg2'}`}
                         onClick={() => setImageTab(x)}
                         key={i}> {x} </div>
                 )}
                 {imageTab === 'POSTERS' &&
-                    <select defaultValue={posterFilter} className={Select} onChange={e => setPosterFilter(e.target.value)}>
+                    <select defaultValue={posterFilter} className='sel' onChange={e => setPosterFilter(e.target.value)}>
                         {posterLangOpts.map((x, i) => <option value={x} key={i}> {x} </option>)}
                     </select>
                 }
                 {imageTab === 'BACKDROPS' &&
-                    <select defaultValue={backdropFilter} className={Select} onChange={e => setBackdropFilter(e.target.value)}>
+                    <select defaultValue={backdropFilter} className='sel' onChange={e => setBackdropFilter(e.target.value)}>
                         {backdropLangOpts.map((x, i) => <option value={x} key={i}> {x} </option>)}
                     </select>
                 }
             </div>
-            {imageTab === 'POSTERS' && <div className={Grid234}>
+            {imageTab === 'POSTERS' && <div className='grid234'>
                 {movie?.images?.posters
                     ?.filter(x => x.iso_639_1 === posterFilter)
                     ?.map((x, i) =>
@@ -191,7 +172,7 @@ export function Movie({ state, updateState }: Props) {
                     )
                 }
             </div>}
-            {imageTab === 'BACKDROPS' && <div className={Grid123}>
+            {imageTab === 'BACKDROPS' && <div className='grid123'>
                 {movie?.images?.backdrops
                     ?.filter(x => x.iso_639_1 === backdropFilter)
                     ?.map((x, i) =>
@@ -203,12 +184,12 @@ export function Movie({ state, updateState }: Props) {
             </div>}
         </>}
         {state.movieTab === 'VIDEOS' && <>
-            <div className={SingleRow}>
-                <select defaultValue={videoFilter} className={Select} onChange={e => setVideoFilter(e.target.value)}>
+            <div className='single-row'>
+                <select defaultValue={videoFilter} className='sel' onChange={e => setVideoFilter(e.target.value)}>
                     {videoFilterOpts.map((x, i) => <option value={x} key={i}> {x} </option>)}
                 </select>
             </div>
-            <div className={Grid234}>
+            <div className='grid234'>
                 {movie?.videos?.results
                     ?.filter(({ type }) => {
                         if (videoFilter === 'ALL') return true
@@ -217,12 +198,12 @@ export function Movie({ state, updateState }: Props) {
                     })
                     ?.sort((a, b) => Date.parse(a.published_at!) > Date.parse(b.published_at!) ? -1 : 1)
                     ?.map((x, i) =>
-                        <div className={VideoCard} key={i}>
+                        <div className='video-card' key={i}>
                             <a target='_blank' rel='noopener noreferrer' href={`https://www.youtube.com/watch?v=${x.key}`}>
-                                <img className={VideoCardImg} src={`https://i.ytimg.com/vi/${x.key}/hqdefault.jpg`} alt='' />
-                                <div className={VideoCardTextBox}>
+                                <img className='video-card-img' src={`https://i.ytimg.com/vi/${x.key}/hqdefault.jpg`} alt='' />
+                                <div className='video-card-text'>
                                     <span> {x.name} </span>
-                                    <span className={SubText}> {toDateString(x.published_at!)} </span>
+                                    <span className='subtext'> {toDateString(x.published_at!)} </span>
                                 </div>
                             </a>
                         </div>

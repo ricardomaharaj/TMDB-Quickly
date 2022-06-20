@@ -5,20 +5,6 @@ import { Spinner } from './Spinner'
 import { toDateString } from './util'
 import { FULLIMGURL, IMGURL, Props } from './consts'
 import { Stars } from './Stars'
-import {
-    Bubble,
-    Button,
-    ButtonRow,
-    Card,
-    CardImg,
-    CardTextBox,
-    Error,
-    Grid123,
-    ImageBG,
-    Select,
-    SingleRow,
-    SubText
-} from './ThemeData'
 
 export function Episode({ state, updateState }: Props) {
 
@@ -35,9 +21,9 @@ export function Episode({ state, updateState }: Props) {
     crewFilterOpts.splice(0, 0, 'ALL')
 
     if (fetching) return <Spinner />
-    if (error) return <div className={Error}> {error.message} </div>
+    if (error) return <div className='err'> {error.message} </div>
     return <>
-        <div className={ImageBG} style={{ backgroundImage: `url(${IMGURL + episode?.still_path})` }}>
+        <div className='img-bg' style={{ backgroundImage: `url(${IMGURL + episode?.still_path})` }}>
             <div className='col backdrop-blur-sm backdrop-brightness-50 rounded-xl p-10 space-y-2'>
                 <div>
                     <span> S{episode?.season_number?.toString().padStart(2, '0')} </span>
@@ -48,24 +34,24 @@ export function Episode({ state, updateState }: Props) {
                 {episode?.vote_average! > 0 && <Stars average={episode?.vote_average!} />}
             </div>
         </div>
-        <div className={ButtonRow}>
+        <div className='btn-row'>
             {['INFO', 'GUEST', 'CREW', 'IMAGES'].map((x, i) =>
                 <div
-                    className={`${Button} ${state.episodeTab === x ? 'bg-slate-700' : 'bg-slate-800'}`}
+                    className={`btn ${state.episodeTab === x ? 'bg3' : 'bg2'}`}
                     onClick={() => updateState({ episodeTab: x })}
                     key={i}> {x} </div>
             )}
         </div>
-        {state.episodeTab === 'INFO' && <div className={Bubble}> {episode?.overview} </div>}
+        {state.episodeTab === 'INFO' && <div className='bubble'> {episode?.overview} </div>}
         {state.episodeTab === 'CREW' && <>
-            <div className={SingleRow}>
+            <div className='single-row'>
                 <select defaultValue={crewFilter}
-                    className={Select}
+                    className='sel'
                     onChange={e => setCrewFilter(e.target.value)}>
                     {crewFilterOpts.map((x, i) => <option value={x} key={i}> {x} </option>)}
                 </select>
             </div>
-            <div className={Grid123}>
+            <div className='grid123'>
                 {episode?.crew
                     ?.filter(({ job }) => {
                         if (crewFilter === 'ALL') return true
@@ -73,31 +59,31 @@ export function Episode({ state, updateState }: Props) {
                         else return false
                     })
                     ?.map((x, i) =>
-                        <Link to={`/person/${x.id}`} className={Card} key={i}>
-                            {x.profile_path && <img className={CardImg} src={IMGURL + x.profile_path} alt='' />}
-                            <div className={CardTextBox}>
+                        <Link to={`/person/${x.id}`} className='card' key={i}>
+                            {x.profile_path && <img className='card-img' src={IMGURL + x.profile_path} alt='' />}
+                            <div className='card-text'>
                                 <div> {x.name} </div>
-                                <div className={SubText}> {x.job} </div>
+                                <div className='subtext'> {x.job} </div>
                             </div>
                         </Link>
                     )}
             </div>
         </>}
         {state.episodeTab === 'GUEST' && <>
-            <div className={Grid123}>
+            <div className='grid123'>
                 {episode?.guest_stars?.map((x, i) =>
-                    <Link to={`/person/${x.id}`} className={Card} key={i}>
-                        {x.profile_path && <img className={CardImg} src={IMGURL + x.profile_path} alt='' />}
-                        <div className={CardTextBox}>
+                    <Link to={`/person/${x.id}`} className='card' key={i}>
+                        {x.profile_path && <img className='card-img' src={IMGURL + x.profile_path} alt='' />}
+                        <div className='card-text'>
                             <div> {x.name} </div>
-                            <div className={SubText}> {x.character} </div>
+                            <div className='subtext'> {x.character} </div>
                         </div>
                     </Link>
                 )}
             </div>
         </>}
         {state.episodeTab === 'IMAGES' && <>
-            <div className={Grid123}>
+            <div className='grid123'>
                 {episode?.images?.stills?.map((x, i) =>
                     <a target='_blank' rel='noopener noreferrer' href={FULLIMGURL + x.file_path} key={i}>
                         <img src={IMGURL + x.file_path} alt='' />

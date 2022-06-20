@@ -1,0 +1,101 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu&display=swap');
+
+* {
+    font-family: 'Ubuntu', sans-serif;
+}
+
+.row {
+    @apply flex flex-row
+}
+
+.col {
+    @apply flex flex-col
+}
+
+.bg1 {
+    @apply bg-slate-100 text-black dark:bg-slate-900 dark:text-white
+}
+
+.bg2 {
+    @apply bg-slate-200 text-black dark:bg-slate-800 dark:text-white
+}
+
+.bg3 {
+    @apply bg-slate-300 text-black dark:bg-slate-700 dark:text-white
+}
+
+body {
+    @apply bg1
+}
+
+.btn {
+    @apply px-3 py-1 rounded-xl 
+}
+
+.btn-row {
+    @apply row space-x-2 justify-items-center overflow-scroll md:overflow-hidden xl:justify-start
+}
+
+.bubble {
+    @apply bg2 p-4 rounded-xl
+}
+
+.blur-card {
+    @apply row rounded-xl backdrop-brightness-50 backdrop-blur-sm xl:p-10 text-white
+}
+
+.card {
+    @apply row bg2 rounded-xl
+}
+
+.card-img {
+    @apply w-32 md:w-40 p-2 rounded-xl
+}
+
+.card-text {
+    @apply space-y-1 p-2
+}
+
+.err {
+    @apply bg-red-400 dark:bg-red-800 rounded-xl p-2 m-2
+}
+
+.grid123 {
+    @apply grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2
+}
+
+.grid234 {
+    @apply grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2
+}
+
+.img-bg {
+    @apply rounded-xl bg-cover bg-center
+}
+
+.subtext {
+    @apply text-slate-600 dark:text-slate-400
+}
+
+.sel {
+    @apply bg2 px-3 py-1 rounded-xl text-center
+}
+
+.single-row {
+    @apply row justify-center md:justify-start
+}
+
+.video-card {
+    @apply bg2 rounded
+}
+
+.video-card-img {
+    @apply rounded-t
+}
+
+.video-card-text {
+    @apply p-2
+}

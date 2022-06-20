@@ -4,25 +4,6 @@ import { useSeasonQuery } from './gql'
 import { Spinner } from './Spinner'
 import { toDateString } from './util'
 import { FULLIMGURL, IMGURL, Props } from './consts'
-import {
-    BlurCard,
-    Button,
-    ButtonRow,
-    Card,
-    CardImg,
-    CardTextBox,
-    Error,
-    Grid123,
-    Grid234,
-    HoverBubble,
-    ImageBG,
-    Select,
-    SingleRow,
-    SubText,
-    VideoCard,
-    VideoCardImg,
-    VideoCardTextBox
-} from './ThemeData'
 
 export function Season({ state, updateState }: Props) {
 
@@ -48,30 +29,30 @@ export function Season({ state, updateState }: Props) {
     videoFilterOpts.splice(0, 0, 'ALL')
 
     if (fetching) return <Spinner />
-    if (error) return <div className={Error}> {error.message} </div>
+    if (error) return <div className='err'> {error.message} </div>
     return <>
-        <div className={ImageBG} style={{ backgroundImage: `url(${IMGURL + season?.poster_path})` }}>
-            <div className={BlurCard}>
-                {season?.poster_path && <img className={CardImg} src={IMGURL + season.poster_path} alt='' />}
-                <div className={CardTextBox}>
+        <div className='img-bg' style={{ backgroundImage: `url(${IMGURL + season?.poster_path})` }}>
+            <div className='blur-card'>
+                {season?.poster_path && <img className='card-img' src={IMGURL + season.poster_path} alt='' />}
+                <div className='card-text'>
                     <div> {season?.name} </div>
                     <div> {season?.episodes?.length} Episodes </div>
                     <div> {toDateString(season?.air_date!)} </div>
                 </div>
             </div>
         </div>
-        <div className={ButtonRow}>
+        <div className='btn-row'>
             {['EPISODES', 'CAST', 'CREW', 'IMAGES', 'VIDEOS'].map((x, i) =>
                 <div
-                    className={`${Button} ${state.seasonTab === x ? 'bg-slate-700' : 'bg-slate-800'}`}
+                    className={`btn ${state.seasonTab === x ? 'bg3' : 'bg2'}`}
                     onClick={() => updateState({ seasonTab: x })}
                     key={i}> {x} </div>
             )}
         </div>
         {state.seasonTab === 'EPISODES' && <>
-            <div className={Grid123}>
+            <div className='grid123'>
                 {season?.episodes?.map((x, i) =>
-                    <Link className={HoverBubble} key={i} to={`/tv/${id}/season/${season_number}/episode/${x.episode_number}`}>
+                    <Link className='bubble' key={i} to={`/tv/${id}/season/${season_number}/episode/${x.episode_number}`}>
                         {x.still_path && <img className='rounded-xl mb-2' src={IMGURL + x.still_path} alt='' />}
                         <div>
                             <span> {x.episode_number} | </span>
@@ -79,33 +60,33 @@ export function Season({ state, updateState }: Props) {
                             <span> {toDateString(x.air_date!)} | </span>
                             {x.vote_average! > 0 && <span> {x.vote_average?.toFixed(1)} </span>}
                         </div>
-                        <div className={SubText}> {x.overview} </div>
+                        <div className='subtext'> {x.overview} </div>
                     </Link>
                 )}
             </div>
         </>}
         {state.seasonTab === 'CAST' &&
-            <div className={Grid123}>
+            <div className='grid123'>
                 {season?.credits?.cast?.map((x, i) =>
-                    <Link to={`/person/${x.id}`} className={Card} key={i}>
-                        {x.profile_path && <img className={CardImg} src={IMGURL + x.profile_path} alt='' />}
-                        <div className={CardTextBox}>
+                    <Link to={`/person/${x.id}`} className='card' key={i}>
+                        {x.profile_path && <img className='card-img' src={IMGURL + x.profile_path} alt='' />}
+                        <div className='card-text'>
                             <div> {x.name} </div>
-                            <div className={SubText}> {x.character} </div>
+                            <div className='subtext'> {x.character} </div>
                         </div>
                     </Link>
                 )}
             </div>
         }
         {state.seasonTab === 'CREW' && <>
-            <div className={SingleRow}>
+            <div className='single-row'>
                 <select defaultValue={crewFilter}
-                    className={Select}
+                    className='sel'
                     onChange={e => setCrewFilter(e.target.value)}>
                     {crewFilterOpts.map((x, i) => <option value={x} key={i}>{x}</option>)}
                 </select>
             </div>
-            <div className={Grid123}>
+            <div className='grid123'>
                 {season?.credits?.crew
                     ?.filter(({ job }) => {
                         if (crewFilter === 'ALL') return true
@@ -113,11 +94,11 @@ export function Season({ state, updateState }: Props) {
                         else return false
                     })
                     ?.map((x, i) =>
-                        <Link to={`/person/${x.id}`} className={Card} key={i}>
-                            {x.profile_path && <img className={CardImg} src={IMGURL + x.profile_path} alt='' />}
-                            <div className={CardTextBox}>
+                        <Link to={`/person/${x.id}`} className='card' key={i}>
+                            {x.profile_path && <img className='card-img' src={IMGURL + x.profile_path} alt='' />}
+                            <div className='card-text'>
                                 <div> {x.name} </div>
-                                <div className={SubText}> {x.job} </div>
+                                <div className='subtext'> {x.job} </div>
                             </div>
                         </Link>
                     )
@@ -125,14 +106,14 @@ export function Season({ state, updateState }: Props) {
             </div>
         </>}
         {state.seasonTab === 'IMAGES' && <>
-            <div className={SingleRow}>
+            <div className='single-row'>
                 <select defaultValue={posterFilter}
-                    className={Select}
+                    className='sel'
                     onChange={e => setPosterFilter(e.target.value)}>
                     {posterLangOpts.map((x, i) => <option value={x} key={i}>{x} </option>)}
                 </select>
             </div>
-            <div className={Grid234}>
+            <div className='grid234'>
                 {season?.images?.posters
                     ?.filter(x => x.iso_639_1 === posterFilter)
                     ?.map((x, i) =>
@@ -144,14 +125,14 @@ export function Season({ state, updateState }: Props) {
             </div>
         </>}
         {state.seasonTab === 'VIDEOS' && <>
-            <div className={SingleRow}>
+            <div className='single-row'>
                 <select defaultValue={videoFilter}
-                    className={Select}
+                    className='sel'
                     onChange={e => setVideoFilter(e.target.value)}>
                     {videoFilterOpts.map((x, i) => <option value={x} key={i}>{x} </option>)}
                 </select>
             </div>
-            <div className={Grid234}>
+            <div className='grid234'>
                 {season?.videos?.results
                     ?.filter(({ type }) => {
                         if (videoFilter === 'ALL') return true
@@ -160,13 +141,13 @@ export function Season({ state, updateState }: Props) {
                     })
                     ?.sort((a, b) => Date.parse(a.published_at!) > Date.parse(b.published_at!) ? -1 : 1)
                     ?.map((x, i) =>
-                        <div className={VideoCard} key={i}>
+                        <div className='video-card' key={i}>
                             <a target='_blank' rel='noopener noreferrer' href={`https://www.youtube.com/watch?v=${x.key}`}>
-                                <img className={VideoCardImg} src={`https://i.ytimg.com/vi/${x.key}/hqdefault.jpg`} alt='' />
+                                <img className='video-card-img' src={`https://i.ytimg.com/vi/${x.key}/hqdefault.jpg`} alt='' />
                             </a>
-                            <div className={VideoCardTextBox}>
+                            <div className='video-card-text'>
                                 <span> {x.name}  </span>
-                                <span className={SubText}> {toDateString(x.published_at!)} </span>
+                                <span className='subtext'> {toDateString(x.published_at!)} </span>
                             </div>
                         </div>
                     )
