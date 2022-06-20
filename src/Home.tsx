@@ -12,11 +12,11 @@ export function Home({ state, updateState }: Props) {
     }
 
     return <>
-        <div className='row'>
+        <div className='row bg2 px-4 py-2 text-xl rounded-xl w-full justify-center'>
             <input type='text' id='query' placeholder='SEARCH' defaultValue={state.query}
-                className='bg2 text-center text-xl w-full p-2 rounded-xl'
-                onKeyDown={e => { if (e.key === 'Enter') updateState({ query: e.currentTarget.value }) }} />
-            {state.query && <div className='bg2 text-center fixed mx-2 text-xl font-extrabold p-2' onClick={clearQuery}> X </div>}
+                className='bg2 text-center outline-none'
+                onKeyDown={e => e.key === 'Enter' ? updateState({ query: e.currentTarget.value }) : null} />
+            {state.query && <div className='font-extrabold' onClick={clearQuery}> X </div>}
         </div>
         <div className='btn-row'>
             {[
@@ -58,7 +58,7 @@ function SearchResults({ state, updateState }: Props) {
                         {(x.release_date || x.first_air_date) && <div>{(x.release_date || x.first_air_date)?.substring(0, 4)}</div>}
                         <div>{(x.name || x.title)}</div>
                         {x.vote_average! > 0 && <Stars average={x.vote_average} />}
-                        {x.overview && <div className='subtext'>{x.overview.substring(0,97).padEnd(100,'.')}</div>}
+                        {x.overview && <div className='subtext'>{x.overview.substring(0, 97).padEnd(100, '.')}</div>}
                     </div>
                 </Link>
             )}
