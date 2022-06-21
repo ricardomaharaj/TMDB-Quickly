@@ -12,11 +12,11 @@ export function Home({ state, updateState }: Props) {
     }
 
     return <>
-        <div className='row bg2 px-4 py-2 text-xl rounded-xl w-full justify-center'>
+        <div className='bg2 px-4 py-2 text-xl rounded-xl w-full'>
             <input type='text' id='query' placeholder='SEARCH' defaultValue={state.query}
-                className='bg2 text-center outline-none'
+                className='bg2 outline-none xl:w-96'
                 onKeyDown={e => e.key === 'Enter' ? updateState({ query: e.currentTarget.value }) : null} />
-            {state.query && <div className='font-extrabold' onClick={clearQuery}> X </div>}
+            {state.query && <div className='font-extrabold float-right' onClick={clearQuery}> X </div>}
         </div>
         <div className='btn-row'>
             {[
@@ -55,10 +55,14 @@ function SearchResults({ state, updateState }: Props) {
                 <Link to={`${x.media_type}/${x.id}`} className='card' key={i}>
                     <img src={IMGURL + (x.poster_path || x.profile_path)} alt='' className='card-img' />
                     <div className='card-text'>
-                        {(x.release_date || x.first_air_date) && <div>{(x.release_date || x.first_air_date)?.substring(0, 4)}</div>}
-                        <div>{(x.name || x.title)}</div>
+                        {(state.query && (x.release_date || x.first_air_date)) && <div>{(x.release_date || x.first_air_date)?.substring(0, 4)}</div>}
+                        <div> {(x.name || x.title)} </div>
                         {x.vote_average! > 0 && <Stars average={x.vote_average} />}
-                        {x.overview && <div className='subtext'>{x.overview.substring(0, 97).padEnd(100, '.')}</div>}
+                        {x.overview && <div className='subtext'>
+                            {x.overview.length > 100
+                                ? x.overview.substring(0, 97).padEnd(100, '.')
+                                : x.overview}
+                        </div>}
                     </div>
                 </Link>
             )}

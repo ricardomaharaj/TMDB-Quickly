@@ -16,20 +16,16 @@
     @apply flex flex-col
 }
 
-.bg1 {
-    @apply bg-slate-100 text-black dark:bg-slate-900 dark:text-white
+body {
+    @apply  bg-slate-900 text-white
 }
 
 .bg2 {
-    @apply bg-slate-200 text-black dark:bg-slate-800 dark:text-white
+    @apply  bg-slate-800 
 }
 
 .bg3 {
-    @apply bg-slate-300 text-black dark:bg-slate-700 dark:text-white
-}
-
-body {
-    @apply bg1
+    @apply  bg-slate-700 
 }
 
 .btn {
@@ -45,7 +41,7 @@ body {
 }
 
 .blur-card {
-    @apply row rounded-xl backdrop-brightness-50 backdrop-blur-sm xl:p-10 text-white
+    @apply row rounded-xl backdrop-brightness-50 backdrop-blur-sm xl:p-10 
 }
 
 .card {
@@ -77,7 +73,7 @@ body {
 }
 
 .subtext {
-    @apply text-slate-600 dark:text-slate-400
+    @apply text-slate-400
 }
 
 .sel {
