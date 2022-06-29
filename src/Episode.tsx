@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useEpisodeQuery } from './gql'
-import { Spinner } from './Spinner'
 import { toDateString } from './util'
 import { FULLIMGURL, IMGURL, Props } from './consts'
 import { Stars } from './Stars'
@@ -20,11 +19,11 @@ export function Episode({ state, updateState }: Props) {
     crewFilterOpts.sort((a, b) => { return a > b ? 1 : -1 })
     crewFilterOpts.splice(0, 0, 'ALL')
 
-    if (fetching) return <Spinner />
+    if (fetching) return <div className='spinner' />
     if (error) return <div className='err'> {error.message} </div>
     return <>
         <div className='img-bg' style={{ backgroundImage: `url(${IMGURL + episode?.still_path})` }}>
-            <div className='col backdrop-blur-sm backdrop-brightness-50 rounded-xl p-10 space-y-2'>
+            <div className='col bg-black bg-opacity-50 rounded-xl p-10 xl:p-20 space-y-2'>
                 <div>
                     <span> S{episode?.season_number?.toString().padStart(2, '0')} </span>
                     <span> E{episode?.episode_number?.toString().padStart(2, '0')} </span>
@@ -45,8 +44,8 @@ export function Episode({ state, updateState }: Props) {
         {state.episodeTab === 'INFO' && <div className='bubble'> {episode?.overview} </div>}
         {state.episodeTab === 'CREW' && <>
             <div className='single-row'>
-                <select defaultValue={crewFilter}
-                    className='sel'
+                <select
+                    defaultValue={crewFilter}
                     onChange={e => setCrewFilter(e.target.value)}>
                     {crewFilterOpts.map((x, i) => <option value={x} key={i}> {x} </option>)}
                 </select>

@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom'
 import { useSearchQuery } from './gql'
-import { Spinner } from './Spinner'
 import { IMGURL, Props } from './consts'
 import { Stars } from './Stars'
 
@@ -47,13 +46,13 @@ function SearchResults({ state, updateState }: Props) {
     let results = data?.search?.results
     let maxPages = data?.search?.total_pages
 
-    if (fetching) return <Spinner />
+    if (fetching) return <div className='spinner' />
     if (error) return <div className='err'> {error.message} </div>
     return <>
         <div className='grid123'>
             {results?.filter(x => x.media_type === state.homeTab).map((x, i) =>
                 <Link to={`${x.media_type}/${x.id}`} className='card' key={i}>
-                    <img src={IMGURL + (x.poster_path || x.profile_path)} alt='' className='card-img' />
+                    {(x.poster_path || x.profile_path) && <img src={IMGURL + (x.poster_path || x.profile_path)} alt='' className='card-img' />}
                     <div className='card-text'>
                         {(state.query && (x.release_date || x.first_air_date)) && <div>{(x.release_date || x.first_air_date)?.substring(0, 4)}</div>}
                         <div> {(x.name || x.title)} </div>

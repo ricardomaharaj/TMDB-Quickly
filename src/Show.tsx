@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useShowQuery } from './gql'
-import { Spinner } from './Spinner'
+
 import { toDateString } from './util'
 import { FULLIMGURL, IMGURL, Props } from './consts'
 import { Stars } from './Stars'
@@ -35,11 +35,11 @@ export function Show({ state, updateState }: Props) {
     crewFilterOpts.splice(0, 0, 'ALL')
     videoFilterOpts.splice(0, 0, 'ALL')
 
-    if (fetching) return <Spinner />
+    if (fetching) return <div className='spinner' />
     if (error) return <div className='err'> {error.message} </div>
     return <>
         <div className='img-bg' style={{ backgroundImage: `url(${IMGURL + show?.backdrop_path})` }}>
-            <div className='blur-card'>
+            <div className='dark-card'>
                 {show?.poster_path && <img className='card-img' src={IMGURL + show.poster_path} alt='' />}
                 <div className='card-text'>
                     <div> {toDateString(show?.first_air_date!)} </div>
@@ -98,7 +98,7 @@ export function Show({ state, updateState }: Props) {
         {state.showTab === 'CREW' && <>
             <div className='single-row'>
                 <select defaultValue={crewFilter}
-                    className='sel'
+                    
                     onChange={e => setCrewFilter(e.target.value)}>
                     {crewFilterOpts.map((x, i) => <option value={x} key={i}>{x}</option>)}
                 </select>
@@ -145,12 +145,16 @@ export function Show({ state, updateState }: Props) {
                         key={i}> {x} </div>
                 )}
                 {imageTab === 'POSTERS' &&
-                    <select defaultValue={posterFilter} className='sel' onChange={e => setPosterFilter(e.target.value)}>
+                    <select
+                        defaultValue={posterFilter}
+                        onChange={e => setPosterFilter(e.target.value)}>
                         {posterLangOpts.map((x, i) => <option value={x} key={i}>{x} </option>)}
                     </select>
                 }
                 {imageTab === 'BACKDROPS' &&
-                    <select defaultValue={backdropFilter} className='sel' onChange={e => setBackdropFilter(e.target.value)}>
+                    <select
+                        defaultValue={backdropFilter}
+                        onChange={e => setBackdropFilter(e.target.value)}>
                         {backdropsLangOpts.map((x, i) => <option value={x} key={i}>{x} </option>)}
                     </select>
                 }
@@ -183,7 +187,7 @@ export function Show({ state, updateState }: Props) {
         {state.showTab === 'VIDEOS' && <>
             <div className='single-row'>
                 <select defaultValue={videoFilter}
-                    className='sel'
+                    
                     onChange={e => setVideoFilter(e.target.value)}>
                     {videoFilterOpts.map((x, i) => <option value={x} key={i}>{x} </option>)}
                 </select>

@@ -1,7 +1,6 @@
 {
     "name": "tmdb-quickly",
     "version": "0",
-    "private": true,
     "dependencies": {
         "autoprefixer": "10.4.7",
         "graphql": "16.5.0",
@@ -34,11 +33,6 @@
     "scripts": {
         "dev": "react-scripts start",
         "build": "react-scripts build"
-    },
-    "eslintConfig": {
-        "extends": [
-            "react-app"
-        ]
     },
     "browserslist": {
         "production": [

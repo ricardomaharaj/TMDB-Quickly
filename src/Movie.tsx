@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useMovieQuery } from './gql'
-import { Spinner } from './Spinner'
 import { toDateString } from './util'
 import { FULLIMGURL, IMGURL, Props } from './consts'
 import { Stars } from './Stars'
@@ -47,11 +46,11 @@ export function Movie({ state, updateState }: Props) {
     crewFilterOpts.splice(0, 0, 'ALL')
     videoFilterOpts.splice(0, 0, 'ALL')
 
-    if (fetching) return <Spinner />
+    if (fetching) return <div className='spinner' />
     if (error) return <div className='err'> {error.message} </div>
     return <>
         <div className='img-bg' style={{ backgroundImage: `url(${IMGURL + movie?.backdrop_path})` }} >
-            <div className='blur-card'>
+            <div className='dark-card'>
                 {movie?.poster_path && <img className='card-img' src={IMGURL + movie?.poster_path} alt='' />}
                 <div className='card-text'>
                     <div> {toDateString(movie?.release_date!)} </div>
@@ -120,7 +119,9 @@ export function Movie({ state, updateState }: Props) {
         }
         {state.movieTab === 'CREW' && <>
             <div className='single-row'>
-                <select defaultValue={crewFilter} className='sel' onChange={e => setCrewFilter(e.target.value)}>
+                <select
+                    defaultValue={crewFilter}
+                    onChange={e => setCrewFilter(e.target.value)}>
                     {crewFilterOpts.map((x, i) => <option value={x} key={i}>{x}</option>)}
                 </select>
             </div>
@@ -152,12 +153,16 @@ export function Movie({ state, updateState }: Props) {
                         key={i}> {x} </div>
                 )}
                 {imageTab === 'POSTERS' &&
-                    <select defaultValue={posterFilter} className='sel' onChange={e => setPosterFilter(e.target.value)}>
+                    <select
+                        defaultValue={posterFilter}
+                        onChange={e => setPosterFilter(e.target.value)}>
                         {posterLangOpts.map((x, i) => <option value={x} key={i}> {x} </option>)}
                     </select>
                 }
                 {imageTab === 'BACKDROPS' &&
-                    <select defaultValue={backdropFilter} className='sel' onChange={e => setBackdropFilter(e.target.value)}>
+                    <select
+                        defaultValue={backdropFilter}
+                        onChange={e => setBackdropFilter(e.target.value)}>
                         {backdropLangOpts.map((x, i) => <option value={x} key={i}> {x} </option>)}
                     </select>
                 }
@@ -185,7 +190,9 @@ export function Movie({ state, updateState }: Props) {
         </>}
         {state.movieTab === 'VIDEOS' && <>
             <div className='single-row'>
-                <select defaultValue={videoFilter} className='sel' onChange={e => setVideoFilter(e.target.value)}>
+                <select
+                    defaultValue={videoFilter}
+                    onChange={e => setVideoFilter(e.target.value)}>
                     {videoFilterOpts.map((x, i) => <option value={x} key={i}> {x} </option>)}
                 </select>
             </div>

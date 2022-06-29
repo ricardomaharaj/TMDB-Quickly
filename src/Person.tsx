@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { usePersonQuery } from './gql'
-import { Spinner } from './Spinner'
 import { toDateString } from './util'
 import { IMGURL, Props } from './consts'
 import { Stars } from './Stars'
@@ -31,16 +30,16 @@ export function Person({ state, updateState }: Props) {
         return age
     }
 
-    if (fetching) return <Spinner />
+    if (fetching) return <div className='spinner' />
     if (error) return <div className='err'> {error.message} </div>
     return <>
         <div className='card'>
             {person?.profile_path && <img className='card-img' src={IMGURL + person?.profile_path} alt='' />}
             <div className='card-text'>
                 <div> {person?.name} </div>
-                <div> Born: {toDateString(person?.birthday!)} </div>
+                {person?.birthday && <div> Born: {toDateString(person?.birthday!)} </div>}
                 {person?.deathday && <div> Died: {toDateString(person?.deathday)} </div>}
-                <div> Age: {calculateAge(person?.birthday!, person?.deathday)} </div>
+                {person?.birthday && <div> Age: {calculateAge(person?.birthday!, person?.deathday)} </div>}
             </div>
         </div>
         <div className='btn-row'>
@@ -51,7 +50,9 @@ export function Person({ state, updateState }: Props) {
                     key={i}> {x} </div>
             )}
         </div>
-        {state.personTab === 'BIO' && <div className='bubble'> {person?.biography} </div>}
+        {state.personTab === 'BIO' && <>
+            {person?.biography && <div className='bubble'> {person?.biography} </div>}
+        </>}
         {state.personTab === 'CAST' && <>
             <div className='btn-row'>
                 {[
@@ -91,7 +92,9 @@ export function Person({ state, updateState }: Props) {
         </>}
         {state.personTab === 'CREW' && <>
             <div className='single-row'>
-                <select className='sel' defaultValue={crewFilter} onChange={e => setCrewFilter(e.target.value)}>
+                <select
+                    defaultValue={crewFilter}
+                    onChange={e => setCrewFilter(e.target.value)}>
                     {crewFilterOpts.map((x, i) => <option value={x} key={i}> {x} </option>)}
                 </select>
             </div>
