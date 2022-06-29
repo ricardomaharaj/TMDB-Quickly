@@ -17,15 +17,15 @@
 }
 
 body {
-    @apply  bg-slate-900 text-white
+    @apply bg-slate-100 text-black dark:bg-slate-900 dark:text-white
 }
 
 .bg2 {
-    @apply  bg-slate-800 
+    @apply bg-slate-200 dark:bg-slate-800 
 }
 
 .bg3 {
-    @apply  bg-slate-700 
+    @apply bg-slate-300 dark:bg-slate-700
 }
 
 .btn {
@@ -40,8 +40,8 @@ body {
     @apply bg2 p-4 rounded-xl
 }
 
-.blur-card {
-    @apply row rounded-xl backdrop-brightness-50 backdrop-blur-sm xl:p-10 
+.dark-card {
+    @apply row bg-black bg-opacity-50 rounded-xl xl:p-10
 }
 
 .card {
@@ -69,14 +69,14 @@ body {
 }
 
 .img-bg {
-    @apply rounded-xl bg-cover bg-center
+    @apply bg-cover bg-center rounded-xl
 }
 
 .subtext {
-    @apply text-slate-400
+    @apply text-slate-600 dark:text-slate-400
 }
 
-.sel {
+select {
     @apply bg2 px-3 py-1 rounded-xl text-center
 }
 
@@ -94,4 +94,35 @@ body {
 
 .video-card-text {
     @apply p-2
+}
+
+/* Spinner */
+
+.spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    vertical-align: middle;
+}
+
+.spinner:after {
+    content: " ";
+    display: block;
+    width: 64px;
+    height: 64px;
+    margin: 8px;
+    border-radius: 50%;
+    border: 6px solid #fff;
+    border-color: #fff transparent #fff transparent;
+    animation: spinner 1.2s linear infinite;
+}
+
+@keyframes spinner {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
