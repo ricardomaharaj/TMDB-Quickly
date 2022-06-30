@@ -51,15 +51,18 @@ export function Movie({ state, updateState }: Props) {
     return <>
         <div className='img-bg' style={{ backgroundImage: `url(${IMGURL + movie?.backdrop_path})` }} >
             <div className='dark-card'>
-                {movie?.poster_path && <img className='card-img' src={IMGURL + movie?.poster_path} alt='' />}
+                {movie?.poster_path && <img className='card-img' src={IMGURL + movie.poster_path} alt='' />}
                 <div className='card-text'>
-                    <div> {toDateString(movie?.release_date!)} </div>
-                    <div
+                    {movie?.release_date && <div> {toDateString(movie.release_date)} </div>}
+                    {movie?.title && <div
                         onClick={() => navigator.clipboard.writeText(movie?.title?.replaceAll(' ', '.') + '.' + movie?.release_date?.substring(0, 4))}>
                         {movie?.title}
-                    </div>
-                    <div className='text-sm'> {movie?.tagline} </div>
-                    {movie?.vote_average! > 0 && <Stars average={movie?.vote_average!} />}
+                    </div>}
+                    {movie?.tagline && <div className='text-sm'> {movie.tagline} </div>}
+                    {movie?.vote_average
+                        ? ((movie.vote_average > 0) && <Stars average={movie.vote_average} />)
+                        : null
+                    }
                 </div>
             </div>
         </div>
@@ -72,17 +75,30 @@ export function Movie({ state, updateState }: Props) {
             )}
         </div>
         {state.movieTab === 'INFO' && <>
-            <div className='bubble'> {movie?.overview} </div>
+            {movie?.overview && <div className='bubble'> {movie.overview} </div>}
             <div className='bubble'>
                 {movie?.status && <div> Status: {movie?.status} </div>}
-                {movie?.runtime! > 0 && <div> Runtime: {movie?.runtime} Minutes </div>}
-                {movie?.budget! > 0 && <div> Budget: ${movie?.budget!.toLocaleString()} </div>}
-                {movie?.revenue! > 0 && <div> Revenue: ${movie?.revenue!.toLocaleString()} </div>}
+                {movie?.runtime
+                    ? ((movie.runtime > 0) && <div> Runtime: {(movie.runtime / 60).toString().substring(0, 1)}h{movie.runtime % 60}m </div>)
+                    : null
+                }
+                {movie?.budget
+                    ? ((movie.budget > 0) && <div> Budget: ${movie.budget.toLocaleString()} </div>)
+                    : null
+                }
+                {movie?.revenue
+                    ? ((movie.revenue > 0) && <div> Revenue: ${movie.revenue.toLocaleString()} </div>)
+                    : null
+                }
+                {(movie?.budget && movie.revenue)
+                    ? (((movie.budget > 0) && (movie.revenue > 0)) && <div> Earnings: ${(movie.revenue - movie.budget).toLocaleString()} </div> )
+                    : null
+                }
                 {movie?.original_language && <div> Original Language: {movie?.original_language} </div>}
                 {movie?.original_title && <div> Original Title: {movie?.original_title} </div>}
                 {movie?.imdb_id && <div>
-                    <a className='underline' target='_blank' rel='noopener noreferrer' href={`https://www.imdb.com/title/${movie?.imdb_id}`}>IMDB</a>
-                    <span onClick={() => navigator.clipboard.writeText(movie?.imdb_id!)}> ID: {movie?.imdb_id} </span>
+                    <a className='underline' target='_blank' rel='noopener noreferrer' href={`https://www.imdb.com/title/${movie.imdb_id}`}>IMDB</a>
+                    <span onClick={() => navigator.clipboard.writeText(movie?.imdb_id!)}> ID: {movie.imdb_id} </span>
                 </div>}
                 <div>
                     <a className='underline' target='_blank' rel='noopener noreferrer' href={`https://www.themoviedb.org/movie/${movie?.id}`}>TMDB</a>
@@ -95,8 +111,8 @@ export function Movie({ state, updateState }: Props) {
             <div className='btn-row'>
                 {releaseDates?.map((x, i) =>
                     <div className='bubble text-sm' key={i}>
-                        <div> {RELEASE_TYPES[x.type!]} </div>
-                        <div> {toDateString(x.release_date!)} </div>
+                        {x.type && <div> {RELEASE_TYPES[x.type]} </div>}
+                        {x.release_date && <div> {toDateString(x.release_date)} </div>}
                     </div>)
                 }
             </div>
@@ -110,8 +126,8 @@ export function Movie({ state, updateState }: Props) {
                     <Link to={`/person/${x.id}`} key={i} className='card'>
                         {x.profile_path && <img className='card-img' src={IMGURL + x.profile_path} alt='' />}
                         <div className='card-text'>
-                            <div> {x.name} </div>
-                            <div className='subtext'> {x.character} </div>
+                            {x.name && <div> {x.name} </div>}
+                            {x.character && <div className='subtext'> {x.character} </div>}
                         </div>
                     </Link>
                 )}
@@ -119,10 +135,8 @@ export function Movie({ state, updateState }: Props) {
         }
         {state.movieTab === 'CREW' && <>
             <div className='single-row'>
-                <select
-                    defaultValue={crewFilter}
-                    onChange={e => setCrewFilter(e.target.value)}>
-                    {crewFilterOpts.map((x, i) => <option value={x} key={i}>{x}</option>)}
+                <select defaultValue={crewFilter} onChange={e => setCrewFilter(e.target.value)}>
+                    {crewFilterOpts.map((x, i) => <option value={x} key={i}> {x} </option>)}
                 </select>
             </div>
             <div className='grid123'>
@@ -136,8 +150,8 @@ export function Movie({ state, updateState }: Props) {
                         <Link to={`/person/${x.id}`} key={i} className='card'>
                             {x.profile_path && <img className='card-img' src={IMGURL + x.profile_path} alt='' />}
                             <div className='card-text'>
-                                <div> {x.name} </div>
-                                <div className='subtext'> {x.job} </div>
+                                {x.name && <div> {x.name} </div>}
+                                {x.job && <div className='subtext'> {x.job} </div>}
                             </div>
                         </Link>
                     )
@@ -153,30 +167,28 @@ export function Movie({ state, updateState }: Props) {
                         key={i}> {x} </div>
                 )}
                 {imageTab === 'POSTERS' &&
-                    <select
-                        defaultValue={posterFilter}
-                        onChange={e => setPosterFilter(e.target.value)}>
+                    <select defaultValue={posterFilter} onChange={e => setPosterFilter(e.target.value)}>
                         {posterLangOpts.map((x, i) => <option value={x} key={i}> {x} </option>)}
                     </select>
                 }
                 {imageTab === 'BACKDROPS' &&
-                    <select
-                        defaultValue={backdropFilter}
-                        onChange={e => setBackdropFilter(e.target.value)}>
+                    <select defaultValue={backdropFilter} onChange={e => setBackdropFilter(e.target.value)}>
                         {backdropLangOpts.map((x, i) => <option value={x} key={i}> {x} </option>)}
                     </select>
                 }
             </div>
-            {imageTab === 'POSTERS' && <div className='grid234'>
-                {movie?.images?.posters
-                    ?.filter(x => x.iso_639_1 === posterFilter)
-                    ?.map((x, i) =>
-                        <a target='_blank' rel='noopener noreferrer' href={FULLIMGURL + x.file_path} key={i}>
-                            <img src={IMGURL + x.file_path} alt='' />
-                        </a>
-                    )
-                }
-            </div>}
+            {imageTab === 'POSTERS' &&
+                <div className='grid234'>
+                    {movie?.images?.posters
+                        ?.filter(x => x.iso_639_1 === posterFilter)
+                        ?.map((x, i) =>
+                            <a target='_blank' rel='noopener noreferrer' href={FULLIMGURL + x.file_path} key={i}>
+                                <img src={IMGURL + x.file_path} alt='' />
+                            </a>
+                        )
+                    }
+                </div>
+            }
             {imageTab === 'BACKDROPS' && <div className='grid123'>
                 {movie?.images?.backdrops
                     ?.filter(x => x.iso_639_1 === backdropFilter)
@@ -190,9 +202,7 @@ export function Movie({ state, updateState }: Props) {
         </>}
         {state.movieTab === 'VIDEOS' && <>
             <div className='single-row'>
-                <select
-                    defaultValue={videoFilter}
-                    onChange={e => setVideoFilter(e.target.value)}>
+                <select defaultValue={videoFilter} onChange={e => setVideoFilter(e.target.value)}>
                     {videoFilterOpts.map((x, i) => <option value={x} key={i}> {x} </option>)}
                 </select>
             </div>
@@ -210,7 +220,7 @@ export function Movie({ state, updateState }: Props) {
                                 <img className='video-card-img' src={`https://i.ytimg.com/vi/${x.key}/hqdefault.jpg`} alt='' />
                                 <div className='video-card-text'>
                                     <span> {x.name} </span>
-                                    <span className='subtext'> {toDateString(x.published_at!)} </span>
+                                    {x.published_at && <span className='subtext'> {toDateString(x.published_at)} </span>}
                                 </div>
                             </a>
                         </div>

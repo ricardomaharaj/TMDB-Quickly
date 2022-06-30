@@ -55,7 +55,7 @@ function SearchResults({ state, updateState }: Props) {
                     {(x.poster_path || x.profile_path) && <img src={IMGURL + (x.poster_path || x.profile_path)} alt='' className='card-img' />}
                     <div className='card-text'>
                         {(state.query && (x.release_date || x.first_air_date)) && <div>{(x.release_date || x.first_air_date)?.substring(0, 4)}</div>}
-                        <div> {(x.name || x.title)} </div>
+                        {(x.name || x.title) && <div> {(x.name || x.title)} </div>}
                         {x.vote_average! > 0 && <Stars average={x.vote_average} />}
                         {x.overview && <div className='subtext'>
                             {x.overview.length > 100

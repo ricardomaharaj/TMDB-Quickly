@@ -27,16 +27,16 @@ export function Season({ state, updateState }: Props) {
     crewFilterOpts.splice(0, 0, 'ALL')
     videoFilterOpts.splice(0, 0, 'ALL')
 
-    if (fetching) return <div className='spinner'/>
+    if (fetching) return <div className='spinner' />
     if (error) return <div className='err'> {error.message} </div>
     return <>
         <div className='img-bg' style={{ backgroundImage: `url(${IMGURL + season?.poster_path})` }}>
             <div className='dark-card'>
                 {season?.poster_path && <img className='card-img' src={IMGURL + season.poster_path} alt='' />}
                 <div className='card-text'>
-                    <div> {season?.name} </div>
-                    <div> {season?.episodes?.length} Episodes </div>
-                    <div> {toDateString(season?.air_date!)} </div>
+                    {season?.name && <div> {season.name} </div>}
+                    {season?.episodes?.length && <div> {season.episodes.length} Episodes </div>}
+                    {season?.air_date && <div> {toDateString(season.air_date)} </div>}
                 </div>
             </div>
         </div>
@@ -54,12 +54,15 @@ export function Season({ state, updateState }: Props) {
                     <Link className='bubble' key={i} to={`/tv/${id}/season/${season_number}/episode/${x.episode_number}`}>
                         {x.still_path && <img className='rounded-xl mb-2' src={IMGURL + x.still_path} alt='' />}
                         <div>
-                            <span> {x.episode_number} | </span>
-                            <span> {x.name} | </span>
-                            <span> {toDateString(x.air_date!)} | </span>
-                            {x.vote_average! > 0 && <span> {x.vote_average?.toFixed(1)} </span>}
+                            {x.episode_number && <span> {x.episode_number} | </span>}
+                            {x.name && <span> {x.name} | </span>}
+                            {x.air_date && <span> {toDateString(x.air_date)} | </span>}
+                            {x.vote_average
+                                ? ((x.vote_average > 0) && <span> {x.vote_average.toFixed(1)} </span>)
+                                : null
+                            }
                         </div>
-                        <div className='subtext'> {x.overview} </div>
+                        {x.overview && <div className='subtext'> {x.overview} </div>}
                     </Link>
                 )}
             </div>
@@ -70,8 +73,8 @@ export function Season({ state, updateState }: Props) {
                     <Link to={`/person/${x.id}`} className='card' key={i}>
                         {x.profile_path && <img className='card-img' src={IMGURL + x.profile_path} alt='' />}
                         <div className='card-text'>
-                            <div> {x.name} </div>
-                            <div className='subtext'> {x.character} </div>
+                            {x.name && <div> {x.name} </div>}
+                            {x.character && <div className='subtext'> {x.character} </div>}
                         </div>
                     </Link>
                 )}
@@ -79,10 +82,8 @@ export function Season({ state, updateState }: Props) {
         }
         {state.seasonTab === 'CREW' && <>
             <div className='single-row'>
-                <select defaultValue={crewFilter}
-                    
-                    onChange={e => setCrewFilter(e.target.value)}>
-                    {crewFilterOpts.map((x, i) => <option value={x} key={i}>{x}</option>)}
+                <select defaultValue={crewFilter} onChange={e => setCrewFilter(e.target.value)}>
+                    {crewFilterOpts.map((x, i) => <option value={x} key={i}> {x} </option>)}
                 </select>
             </div>
             <div className='grid123'>
@@ -96,8 +97,8 @@ export function Season({ state, updateState }: Props) {
                         <Link to={`/person/${x.id}`} className='card' key={i}>
                             {x.profile_path && <img className='card-img' src={IMGURL + x.profile_path} alt='' />}
                             <div className='card-text'>
-                                <div> {x.name} </div>
-                                <div className='subtext'> {x.job} </div>
+                                {x.name && <div> {x.name} </div>}
+                                {x.job && <div className='subtext'> {x.job} </div>}
                             </div>
                         </Link>
                     )
@@ -106,10 +107,8 @@ export function Season({ state, updateState }: Props) {
         </>}
         {state.seasonTab === 'IMAGES' && <>
             <div className='single-row'>
-                <select defaultValue={posterFilter}
-                    
-                    onChange={e => setPosterFilter(e.target.value)}>
-                    {posterLangOpts.map((x, i) => <option value={x} key={i}>{x} </option>)}
+                <select defaultValue={posterFilter} onChange={e => setPosterFilter(e.target.value)}>
+                    {posterLangOpts.map((x, i) => <option value={x} key={i}> {x} </option>)}
                 </select>
             </div>
             <div className='grid234'>
@@ -125,10 +124,8 @@ export function Season({ state, updateState }: Props) {
         </>}
         {state.seasonTab === 'VIDEOS' && <>
             <div className='single-row'>
-                <select defaultValue={videoFilter}
-                    
-                    onChange={e => setVideoFilter(e.target.value)}>
-                    {videoFilterOpts.map((x, i) => <option value={x} key={i}>{x} </option>)}
+                <select defaultValue={videoFilter} onChange={e => setVideoFilter(e.target.value)}>
+                    {videoFilterOpts.map((x, i) => <option value={x} key={i}> {x} </option>)}
                 </select>
             </div>
             <div className='grid234'>
@@ -145,8 +142,8 @@ export function Season({ state, updateState }: Props) {
                                 <img className='video-card-img' src={`https://i.ytimg.com/vi/${x.key}/hqdefault.jpg`} alt='' />
                             </a>
                             <div className='video-card-text'>
-                                <span> {x.name}  </span>
-                                <span className='subtext'> {toDateString(x.published_at!)} </span>
+                                <span> {x.name} </span>
+                                {x.published_at && <span className='subtext'> {toDateString(x.published_at)} </span>}
                             </div>
                         </div>
                     )

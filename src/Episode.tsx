@@ -29,8 +29,11 @@ export function Episode({ state, updateState }: Props) {
                     <span> E{episode?.episode_number?.toString().padStart(2, '0')} </span>
                 </div>
                 <div> {episode?.name} </div>
-                <div> {toDateString(episode?.air_date!)} </div>
-                {episode?.vote_average! > 0 && <Stars average={episode?.vote_average!} />}
+                {episode?.air_date && <div> {toDateString(episode.air_date)} </div>}
+                {episode?.vote_average
+                    ? ((episode.vote_average > 0) && <Stars average={episode.vote_average} />)
+                    : null
+                }
             </div>
         </div>
         <div className='btn-row'>
@@ -41,12 +44,12 @@ export function Episode({ state, updateState }: Props) {
                     key={i}> {x} </div>
             )}
         </div>
-        {state.episodeTab === 'INFO' && <div className='bubble'> {episode?.overview} </div>}
+        {state.episodeTab === 'INFO' && <>
+            {episode?.overview && <div className='bubble'> {episode.overview} </div>}
+        </>}
         {state.episodeTab === 'CREW' && <>
             <div className='single-row'>
-                <select
-                    defaultValue={crewFilter}
-                    onChange={e => setCrewFilter(e.target.value)}>
+                <select defaultValue={crewFilter} onChange={e => setCrewFilter(e.target.value)}>
                     {crewFilterOpts.map((x, i) => <option value={x} key={i}> {x} </option>)}
                 </select>
             </div>
@@ -61,8 +64,8 @@ export function Episode({ state, updateState }: Props) {
                         <Link to={`/person/${x.id}`} className='card' key={i}>
                             {x.profile_path && <img className='card-img' src={IMGURL + x.profile_path} alt='' />}
                             <div className='card-text'>
-                                <div> {x.name} </div>
-                                <div className='subtext'> {x.job} </div>
+                                {x.name && <div> {x.name} </div>}
+                                {x.job && <div className='subtext'> {x.job} </div>}
                             </div>
                         </Link>
                     )}
@@ -74,8 +77,8 @@ export function Episode({ state, updateState }: Props) {
                     <Link to={`/person/${x.id}`} className='card' key={i}>
                         {x.profile_path && <img className='card-img' src={IMGURL + x.profile_path} alt='' />}
                         <div className='card-text'>
-                            <div> {x.name} </div>
-                            <div className='subtext'> {x.character} </div>
+                            {x.name && <div> {x.name} </div>}
+                            {x.character && <div className='subtext'> {x.character} </div>}
                         </div>
                     </Link>
                 )}

@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useShowQuery } from './gql'
-
 import { toDateString } from './util'
 import { FULLIMGURL, IMGURL, Props } from './consts'
 import { Stars } from './Stars'
@@ -42,13 +41,16 @@ export function Show({ state, updateState }: Props) {
             <div className='dark-card'>
                 {show?.poster_path && <img className='card-img' src={IMGURL + show.poster_path} alt='' />}
                 <div className='card-text'>
-                    <div> {toDateString(show?.first_air_date!)} </div>
-                    <div
+                    {show?.first_air_date && <div> {toDateString(show.first_air_date)} </div>}
+                    {show?.name && <div
                         onClick={() => navigator.clipboard.writeText(show?.name?.replaceAll(' ', '.') + '.' + show?.first_air_date?.substring(0, 4))}>
-                        {show?.name}
-                    </div>
-                    <div className='text-sm'> {show?.tagline} </div>
-                    {show?.vote_average! > 0 && <Stars average={show?.vote_average!} />}
+                        {show.name}
+                    </div>}
+                    {show?.tagline && <div className='text-sm'> {show?.tagline} </div>}
+                    {show?.vote_average
+                        ? ((show.vote_average > 0) && <Stars average={show.vote_average} />)
+                        : null
+                    }
                 </div>
             </div>
         </div>
@@ -61,16 +63,25 @@ export function Show({ state, updateState }: Props) {
             )}
         </div>
         {state.showTab === 'INFO' && <>
-            <div className='bubble'> {show?.overview} </div>
+            {show?.overview && <div className='bubble'> {show?.overview} </div>}
             <div className='bubble'>
                 {show?.status && <div> Status: {show.status} </div>}
                 {show?.type && <div> Show Type: {show.type} </div>}
-                {show?.episode_run_time![0]! > 0 && <div> Runtime: {show?.episode_run_time![0]!} Minutes </div>}
-                {show?.number_of_seasons! > 0 && <div> Seasons: {show?.number_of_seasons} </div>}
-                {show?.number_of_episodes! > 0 && <div> Episodes: {show?.number_of_episodes} </div>}
+                {show?.episode_run_time
+                    ? ((show.episode_run_time[0] > 0) && <div> Runtime: {show?.episode_run_time[0]} Minutes </div>)
+                    : null
+                }
+                {show?.number_of_seasons
+                    ? ((show.number_of_seasons > 0) && <div> Seasons: {show?.number_of_seasons} </div>)
+                    : null
+                }
+                {show?.number_of_episodes
+                    ? ((show.number_of_episodes > 0) && <div> Episodes: {show?.number_of_episodes} </div>)
+                    : null
+                }
                 {show?.external_ids?.imdb_id && <div>
-                    <a className='underline' target='_blank' rel='noopener noreferrer' href={`https://www.imdb.com/title/${show?.external_ids.imdb_id}`}>IMDB</a>
-                    <span onClick={() => navigator.clipboard.writeText(show?.external_ids?.imdb_id!)}> ID: {show?.external_ids.imdb_id} </span>
+                    <a className='underline' target='_blank' rel='noopener noreferrer' href={`https://www.imdb.com/title/${show.external_ids.imdb_id}`}>IMDB</a>
+                    <span onClick={() => navigator.clipboard.writeText(show?.external_ids?.imdb_id!)}> ID: {show.external_ids.imdb_id} </span>
                 </div>}
                 <div>
                     <a className='underline' target='_blank' rel='noopener noreferrer' href={`https://www.themoviedb.org/tv/${show?.id}`}>TMDB</a>
@@ -86,10 +97,10 @@ export function Show({ state, updateState }: Props) {
             <div className='grid123'>
                 {show?.credits?.cast?.map((x, i) =>
                     <Link to={`/person/${x.id}`} className='card' key={i} >
-                        {x.profile_path && <img className='card-img' src={IMGURL + x.profile_path!} alt='' />}
+                        {x.profile_path && <img className='card-img' src={IMGURL + x.profile_path} alt='' />}
                         <div className='card-text'>
-                            <div> {x.name} </div>
-                            <div className='subtext'> {x.character} </div>
+                            {x.name && <div> {x.name} </div>}
+                            {x.character && <div className='subtext'> {x.character} </div>}
                         </div>
                     </Link>
                 )}
@@ -97,10 +108,8 @@ export function Show({ state, updateState }: Props) {
         }
         {state.showTab === 'CREW' && <>
             <div className='single-row'>
-                <select defaultValue={crewFilter}
-                    
-                    onChange={e => setCrewFilter(e.target.value)}>
-                    {crewFilterOpts.map((x, i) => <option value={x} key={i}>{x}</option>)}
+                <select defaultValue={crewFilter} onChange={e => setCrewFilter(e.target.value)}>
+                    {crewFilterOpts.map((x, i) => <option value={x} key={i}> {x} </option>)}
                 </select>
             </div>
             <div className='grid123'>
@@ -114,8 +123,8 @@ export function Show({ state, updateState }: Props) {
                         <Link to={`/person/${x.id}`} className='card' key={i} >
                             {x.profile_path && <img className='card-img' src={IMGURL + x.profile_path} alt='' />}
                             <div className='card-text'>
-                                <div> {x.name} </div>
-                                <div className='subtext'> {x.job} </div>
+                                {x.name && <div> {x.name} </div>}
+                                {x.job && <div className='subtext'> {x.job} </div>}
                             </div>
                         </Link>
                     )
@@ -128,9 +137,9 @@ export function Show({ state, updateState }: Props) {
                     <Link to={`/tv/${id}/season/${x.season_number}`} className='card' key={i}>
                         {x.poster_path && <img className='card-img' src={IMGURL + x.poster_path} alt='' />}
                         <div className='card-text'>
-                            <div> {x.name} </div>
-                            <div className='subtext'> {x.episode_count} Episodes </div>
-                            <div className='subtext'> {toDateString(x.air_date!)} </div>
+                            {x.name && <div> {x.name} </div>}
+                            {x.episode_count && <div className='subtext'> {x.episode_count} Episodes </div>}
+                            {x.air_date && <div className='subtext'> {toDateString(x.air_date)} </div>}
                         </div>
                     </Link>
                 )}
@@ -145,17 +154,13 @@ export function Show({ state, updateState }: Props) {
                         key={i}> {x} </div>
                 )}
                 {imageTab === 'POSTERS' &&
-                    <select
-                        defaultValue={posterFilter}
-                        onChange={e => setPosterFilter(e.target.value)}>
-                        {posterLangOpts.map((x, i) => <option value={x} key={i}>{x} </option>)}
+                    <select defaultValue={posterFilter} onChange={e => setPosterFilter(e.target.value)}>
+                        {posterLangOpts.map((x, i) => <option value={x} key={i}> {x} </option>)}
                     </select>
                 }
                 {imageTab === 'BACKDROPS' &&
-                    <select
-                        defaultValue={backdropFilter}
-                        onChange={e => setBackdropFilter(e.target.value)}>
-                        {backdropsLangOpts.map((x, i) => <option value={x} key={i}>{x} </option>)}
+                    <select defaultValue={backdropFilter} onChange={e => setBackdropFilter(e.target.value)}>
+                        {backdropsLangOpts.map((x, i) => <option value={x} key={i}> {x} </option>)}
                     </select>
                 }
             </div>
@@ -186,10 +191,8 @@ export function Show({ state, updateState }: Props) {
         </>}
         {state.showTab === 'VIDEOS' && <>
             <div className='single-row'>
-                <select defaultValue={videoFilter}
-                    
-                    onChange={e => setVideoFilter(e.target.value)}>
-                    {videoFilterOpts.map((x, i) => <option value={x} key={i}>{x} </option>)}
+                <select defaultValue={videoFilter} onChange={e => setVideoFilter(e.target.value)}>
+                    {videoFilterOpts.map((x, i) => <option value={x} key={i}> {x} </option>)}
                 </select>
             </div>
             <div className='grid234'>
@@ -207,7 +210,7 @@ export function Show({ state, updateState }: Props) {
                             </a>
                             <div className='video-card-text'>
                                 <span> {x.name} </span>
-                                <span className='subtext'> {toDateString(x.published_at!)} </span>
+                                {x.published_at && <span className='subtext'> {toDateString(x.published_at)} </span>}
                             </div>
                         </div>
                     )
