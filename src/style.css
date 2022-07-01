@@ -17,15 +17,15 @@
 }
 
 body {
-    @apply bg-slate-100 text-black dark:bg-slate-900 dark:text-white
+    @apply bg-slate-900 text-white
 }
 
 .bg2 {
-    @apply bg-slate-200 dark:bg-slate-800 
+    @apply bg-slate-800 
 }
 
 .bg3 {
-    @apply bg-slate-300 dark:bg-slate-700
+    @apply bg-slate-700
 }
 
 .btn {
@@ -57,7 +57,7 @@ body {
 }
 
 .err {
-    @apply bg-red-400 dark:bg-red-800 rounded-xl p-2 m-2
+    @apply bg-red-800 rounded-xl p-2 m-2
 }
 
 .grid123 {
@@ -73,7 +73,7 @@ body {
 }
 
 .subtext {
-    @apply text-slate-600 dark:text-slate-400
+    @apply text-slate-400
 }
 
 select {
