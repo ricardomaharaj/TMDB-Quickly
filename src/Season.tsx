@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useSeasonQuery } from './gql'
-import { toDateString } from './util'
+import { runtimeCalc, toDateString } from './util'
 import { FULLIMGURL, IMGURL, Props } from './consts'
 
 export function Season({ state, updateState }: Props) {
@@ -57,10 +57,7 @@ export function Season({ state, updateState }: Props) {
                             {x.episode_number && <span> {x.episode_number} | </span>}
                             {x.name && <span> {x.name} | </span>}
                             {x.air_date && <span> {toDateString(x.air_date)} | </span>}
-                            {x.vote_average
-                                ? ((x.vote_average > 0) && <span> {x.vote_average.toFixed(1)} </span>)
-                                : null
-                            }
+                            {x.runtime && runtimeCalc(x.runtime)}
                         </div>
                         {x.overview && <div className='subtext'> {x.overview} </div>}
                     </Link>

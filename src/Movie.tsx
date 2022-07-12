@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useMovieQuery } from './gql'
-import { toDateString } from './util'
+import { runtimeCalc, toDateString } from './util'
 import { FULLIMGURL, IMGURL, Props } from './consts'
 import { Stars } from './Stars'
 
@@ -79,7 +79,7 @@ export function Movie({ state, updateState }: Props) {
             <div className='bubble'>
                 {movie?.status && <div> Status: {movie?.status} </div>}
                 {movie?.runtime
-                    ? ((movie.runtime > 0) && <div> Runtime: {(movie.runtime / 60).toString().substring(0, 1)}h{movie.runtime % 60}m </div>)
+                    ? ((movie.runtime > 0) && <div> Runtime: {runtimeCalc(movie.runtime)} </div>)
                     : null
                 }
                 {movie?.budget
@@ -91,7 +91,7 @@ export function Movie({ state, updateState }: Props) {
                     : null
                 }
                 {(movie?.budget && movie.revenue)
-                    ? (((movie.budget > 0) && (movie.revenue > 0)) && <div> Earnings: ${(movie.revenue - movie.budget).toLocaleString()} </div> )
+                    ? (((movie.budget > 0) && (movie.revenue > 0)) && <div> Earnings: ${(movie.revenue - movie.budget).toLocaleString()} </div>)
                     : null
                 }
                 {movie?.original_language && <div> Original Language: {movie?.original_language} </div>}

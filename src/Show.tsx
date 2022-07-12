@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useShowQuery } from './gql'
-import { toDateString } from './util'
+import { runtimeCalc, toDateString } from './util'
 import { FULLIMGURL, IMGURL, Props } from './consts'
 import { Stars } from './Stars'
 
@@ -68,7 +68,7 @@ export function Show({ state, updateState }: Props) {
                 {show?.status && <div> Status: {show.status} </div>}
                 {show?.type && <div> Show Type: {show.type} </div>}
                 {show?.episode_run_time
-                    ? ((show.episode_run_time[0] > 0) && <div> Runtime: {show?.episode_run_time[0]} Minutes </div>)
+                    ? ((show.episode_run_time[0] > 0) && <div> Runtime: {runtimeCalc(show.episode_run_time[0])} </div>)
                     : null
                 }
                 {show?.number_of_seasons
