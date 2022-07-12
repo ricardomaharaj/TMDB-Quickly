@@ -7,7 +7,7 @@ export interface SearchResults {
     total_pages?: number
 }
 
-interface Result {
+export interface Result {
     poster_path: string
     adult: boolean
     overview: string
@@ -417,6 +417,7 @@ interface Season {
         name?: string
         overview?: string
         production_code?: string
+        runtime?: number
         season_number?: number
         still_path?: string
         vote_average?: number
