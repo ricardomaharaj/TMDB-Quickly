@@ -39,7 +39,7 @@ export function Person({ state, updateState }: Props) {
                 <div> {person?.name} </div>
                 {person?.birthday && <div> Born: {toDateString(person.birthday)} </div>}
                 {person?.deathday && <div> Died: {toDateString(person.deathday)} </div>}
-                {person?.birthday && <div> Age: {calculateAge(person.birthday, person.deathday)} </div>}
+                {(person?.birthday && !isNaN(calculateAge(person.birthday, person.deathday))) && <div> Age: {calculateAge(person.birthday, person.deathday)} </div>}
             </div>
         </div>
         <div className='btn-row'>

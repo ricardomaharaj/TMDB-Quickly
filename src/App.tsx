@@ -7,7 +7,7 @@ import { Season } from './Season'
 import { Episode } from './Episode'
 import { Person } from './Person'
 import { useState } from 'react'
-import { GlobalState } from './consts'
+import { State } from './consts'
 
 let url = process.env.NODE_ENV === 'production' ? 'https://r8r-gql.herokuapp.com/' : 'http://localhost:4000/'
 
@@ -15,7 +15,7 @@ let urqlClient = createClient({ url })
 
 export function App() {
 
-    let [state, setState] = useState<GlobalState>({
+    let [state, setState] = useState<State>({
         query: '',
         page: 1,
         homeTab: 'movie',
@@ -26,7 +26,7 @@ export function App() {
         personTab: 'BIO',
     })
 
-    let updateState = (update: Partial<GlobalState>) => setState({ ...state, ...update })
+    let updateState = (update: Partial<State>) => setState({ ...state, ...update })
 
     return <>
         <BrowserRouter>

@@ -1,7 +1,7 @@
 export const IMGURL = 'https://image.tmdb.org/t/p/w500'
 export const FULLIMGURL = 'https://image.tmdb.org/t/p/original'
 
-export interface GlobalState {
+export interface State {
     query: string,
     page: number,
     homeTab: string,
@@ -12,4 +12,4 @@ export interface GlobalState {
     personTab: string,
 }
 
-export interface Props { state: GlobalState, updateState: (update: Partial<GlobalState>) => void }
+export interface Props { state: State, updateState: (update: Partial<State>) => void }
