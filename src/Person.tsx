@@ -30,6 +30,20 @@ export function Person({ state, updateState }: Props) {
         return age
     }
 
+    let bioSplitter = (bio: string) => {
+        bio = bio.replaceAll('\.\ ', '\.\n')
+        bio = bio.replaceAll('Dr\.\n', 'Dr\.\ ')
+        bio = bio.replaceAll('Mr\.\n', 'Mr\.\ ')
+        bio = bio.replaceAll('Ms\.\n', 'Ms\.\ ')
+        bio = bio.replaceAll('Mrs\.\n', 'Mrs\.\ ')
+
+        return <>
+            {bio.split('\n').map((x, i) =>
+                <div key={i}>{x}</div>
+            )}
+        </>
+    }
+
     if (fetching) return <div className='spinner' />
     if (error) return <div className='err'> {error.message} </div>
     return <>
@@ -52,9 +66,7 @@ export function Person({ state, updateState }: Props) {
         </div>
         {state.personTab === 'BIO' && <>
             {person?.biography && <div className='bubble space-y-2'>
-                {person.biography.split('. ').map((x, i) =>
-                    <div key={i}> {x} </div>
-                )}
+                {bioSplitter(person.biography)}
             </div>}
         </>}
         {state.personTab === 'CAST' && <>
